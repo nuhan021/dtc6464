@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../../../core/utils/constants/image_path.dart';
+import '../../../../core/utils/constants/image_path.dart';
 
 class Background extends StatelessWidget {
   const Background({super.key, required this.child});
