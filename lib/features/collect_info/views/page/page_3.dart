@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/utils/constants/colors.dart';
 import '../widgets/selection_chip.dart';
 
 class Page3 extends StatelessWidget {
@@ -23,7 +24,11 @@ class Page3 extends StatelessWidget {
           80.verticalSpace,
           Text(
             'Which company are you interviewing with?',
-            style: getTextStyle(fontSize: 28.sp, fontWeight: FontWeight.w700),
+            style: getTextStyle(
+              fontSize: 28.sp,
+              fontWeight: FontWeight.w700,
+              color: AppColors.softPurpleDarker,
+            ),
           ).paddingOnly(left: 26.w),
 
           20.verticalSpace,
@@ -36,18 +41,22 @@ class Page3 extends StatelessWidget {
 
           12.verticalSpace,
 
-          Obx(() => Wrap(
-            spacing: 5.w,   // Gap between chips
-            runSpacing: 15.h, // Gap between lines
-            children: controller.companies.map((company) {
-              final isSelected = controller.selectedCompanies.contains(company);
-              return SelectionChip(
-                label: company,
-                isSelected: isSelected,
-                onTap: () => controller.toggleSelection(company),
-              );
-            }).toList(),
-          )),
+          Obx(
+            () => Wrap(
+              spacing: 5.w, // Gap between chips
+              runSpacing: 15.h, // Gap between lines
+              children: controller.companies.map((company) {
+                final isSelected = controller.selectedCompanies.contains(
+                  company,
+                );
+                return SelectionChip(
+                  label: company,
+                  isSelected: isSelected,
+                  onTap: () => controller.toggleSelection(company),
+                );
+              }).toList(),
+            ),
+          ),
         ],
       ).paddingSymmetric(horizontal: 16.w),
     );

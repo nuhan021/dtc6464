@@ -91,4 +91,41 @@ class CollectInfoController extends GetxController {
       }
     }
   }
+
+
+
+
+// weak areas
+  final List<String> areas = [
+    'Interview anxiety',
+    'STAR structure',
+    'Long answers',
+    'Lack metrics',
+    'System design',
+    'Technical depth',
+    'Thinking Of examples',
+    'Filler words',
+  ].obs;
+
+  final List<String> areasIcon = [
+    IconPath.anxiety,
+    IconPath.crown,
+    IconPath.noteBook,
+    IconPath.human,
+    IconPath.monitor,
+    IconPath.monitorSetting,
+    IconPath.pencil,
+    IconPath.speaker,
+  ].obs;
+
+  // Using a set or list to allow multiple selection
+  var selectedAreas = <String>[].obs;
+
+  void toggleArea(String area) {
+    if (selectedAreas.contains(area)) {
+      selectedAreas.remove(area);
+    } else {
+      selectedAreas.add(area);
+    }
+  }
 }

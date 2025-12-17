@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/utils/constants/colors.dart';
 import '../widgets/experience_card.dart';
 
 class Page4 extends StatelessWidget {
@@ -23,21 +24,27 @@ class Page4 extends StatelessWidget {
           80.verticalSpace,
           Text(
             'Select your experience level',
-            style: getTextStyle(fontSize: 28.sp, fontWeight: FontWeight.w700),
+            style: getTextStyle(
+              fontSize: 28.sp,
+              fontWeight: FontWeight.w700,
+              color: AppColors.softPurpleDarker,
+            ),
           ).paddingOnly(left: 26.w),
 
           20.verticalSpace,
 
           // Generate cards dynamically
-          Obx(() => Column(
-            children: controller.levels.map((level) {
-              return ExperienceCard(
-                title: level,
-                isSelected: controller.selectedLevel.value == level,
-                onTap: () => controller.selectLevel(level),
-              );
-            }).toList(),
-          )),
+          Obx(
+            () => Column(
+              children: controller.levels.map((level) {
+                return ExperienceCard(
+                  title: level,
+                  isSelected: controller.selectedLevel.value == level,
+                  onTap: () => controller.selectLevel(level),
+                );
+              }).toList(),
+            ),
+          ),
         ],
       ).paddingSymmetric(horizontal: 16.w),
     );

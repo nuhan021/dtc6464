@@ -25,7 +25,11 @@ class Page5 extends StatelessWidget {
           80.verticalSpace,
           Text(
             'What are your career goals?',
-            style: getTextStyle(fontSize: 28.sp, fontWeight: FontWeight.w700, color: AppColors.softPurpleDarker),
+            style: getTextStyle(
+              fontSize: 28.sp,
+              fontWeight: FontWeight.w700,
+              color: AppColors.softPurpleDarker,
+            ),
           ),
 
           8.verticalSpace,
@@ -35,7 +39,7 @@ class Page5 extends StatelessWidget {
             style: getTextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w500,
-              color: AppColors.softBlueDark
+              color: AppColors.softBlueDark,
             ),
           ),
 
@@ -61,7 +65,7 @@ class Page5 extends StatelessWidget {
                 });
               },
             ),
-          )
+          ),
         ],
       ).paddingSymmetric(horizontal: 16.w),
     );

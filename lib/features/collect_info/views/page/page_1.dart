@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/utils/constants/colors.dart';
+
 class Page1 extends StatelessWidget {
   Page1({super.key, required this.pageController, required this.controller});
 
@@ -21,12 +23,19 @@ class Page1 extends StatelessWidget {
           80.verticalSpace,
           Text(
             'What is your current role?',
-            style: getTextStyle(fontSize: 28.sp, fontWeight: FontWeight.w700),
+            style: getTextStyle(
+              fontSize: 28.sp,
+              fontWeight: FontWeight.w700,
+              color: AppColors.softPurpleDarker,
+            ),
           ).paddingOnly(left: 26.w),
-          
+
           20.verticalSpace,
-          
-          CustomTextField(controller: controller.roleController, hintText: "e.g., Software Engineer")
+
+          CustomTextField(
+            controller: controller.roleController,
+            hintText: "e.g., Software Engineer",
+          ),
         ],
       ).paddingSymmetric(horizontal: 16.w),
     );

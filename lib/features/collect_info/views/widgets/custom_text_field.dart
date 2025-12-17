@@ -6,12 +6,14 @@ class CustomTextField extends StatelessWidget {
   final String hintText;
   final Widget? suffixIcon; // Optional suffix icon
   final bool obscureText;
+  final int maxLine;
 
   const CustomTextField({
     super.key,
     required this.controller,
     required this.hintText,
     this.suffixIcon,
+    this.maxLine = 1,
     this.obscureText = false,
   });
 
@@ -20,6 +22,7 @@ class CustomTextField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
+      maxLines: maxLine,
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: TextStyle(color: Colors.grey, fontSize: 14.sp),
