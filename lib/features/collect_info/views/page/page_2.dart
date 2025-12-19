@@ -24,7 +24,6 @@ class Page2 extends StatelessWidget {
     return Background(
       child: Column(
         children: [
-          80.verticalSpace,
           Text(
             'What role are you preparing for?',
             style: getTextStyle(
@@ -32,7 +31,7 @@ class Page2 extends StatelessWidget {
               fontWeight: FontWeight.w700,
               color: AppColors.softPurpleDarker,
             ),
-          ).paddingOnly(left: 26.w),
+          ),
 
           20.verticalSpace,
 

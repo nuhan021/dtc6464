@@ -22,4 +22,9 @@ class IconPath {
   static const String crown = 'assets/icon/crown.png';
   static const String monitorSetting = 'assets/icon/monitor-setting.png';
   static const String anxiety = 'assets/icon/anxiety.png';
+  static const String upload = 'assets/icon/upload.png';
+  static const String close = 'assets/icon/close.png';
+  static const String refresh = 'assets/icon/refresh.png';
+  static const String verify = 'assets/icon/verify.png';
+  static const String question = 'assets/icon/question.png';
 }

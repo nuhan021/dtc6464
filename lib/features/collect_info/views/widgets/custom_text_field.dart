@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/common/styles/global_text_style.dart';
+import '../../../../core/utils/constants/colors.dart';
+
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
@@ -23,13 +26,17 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       obscureText: obscureText,
       maxLines: maxLine,
+      style: getTextStyle(
+        fontSize: 14.sp,
+        fontWeight: FontWeight.w400,
+        color: AppColors.softPurpleDarker,
+      ),
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: TextStyle(color: Colors.grey, fontSize: 14.sp),
+        hintStyle: TextStyle(color: Colors.grey, fontSize: 14.sp,),
 
         // 1. Conditional Suffix Icon
         suffixIcon: suffixIcon,
-
         // 2. The Style (Border, Radius, Color)
         contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
         enabledBorder: OutlineInputBorder(

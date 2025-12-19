@@ -21,7 +21,6 @@ class Page4 extends StatelessWidget {
     return Background(
       child: Column(
         children: [
-          80.verticalSpace,
           Text(
             'Select your experience level',
             style: getTextStyle(

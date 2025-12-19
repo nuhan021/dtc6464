@@ -21,7 +21,6 @@ class Page3 extends StatelessWidget {
     return Background(
       child: Column(
         children: [
-          80.verticalSpace,
           Text(
             'Which company are you interviewing with?',
             style: getTextStyle(

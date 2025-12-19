@@ -20,7 +20,6 @@ class Page7 extends StatelessWidget {
     return Background(
       child: Column(
         children: [
-          80.verticalSpace,
           Text(
             'Paste the job description',
             style: getTextStyle(
@@ -33,7 +32,7 @@ class Page7 extends StatelessWidget {
           20.verticalSpace,
 
           CustomTextField(
-            controller: controller.roleController,
+            controller: controller.jobDescriptionController,
             hintText: "Paste the full job description here...",
             maxLine: 5,
           ),

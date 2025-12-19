@@ -22,7 +22,6 @@ class Page5 extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          80.verticalSpace,
           Text(
             'What are your career goals?',
             style: getTextStyle(
