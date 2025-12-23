@@ -3,6 +3,7 @@ import 'package:dtc6464/core/common/widgets/custom_filled_button.dart';
 import 'package:dtc6464/core/utils/constants/colors.dart';
 import 'package:dtc6464/core/utils/constants/image_path.dart';
 import 'package:dtc6464/features/background/views/widgets/background.dart';
+import 'package:dtc6464/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -65,6 +66,7 @@ class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
                       'Selected avatar: ${_selectedIndex! + 1}',
                       snackPosition: SnackPosition.BOTTOM,
                     );
+                    Get.offAllNamed(AppRoute.bottomNavBar);
                   },
                 ),
                 40.verticalSpace,
@@ -228,14 +230,10 @@ class _Footer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
-          width: double.infinity,
-          height: 66.h,
-          child: CustomFilledButton(
-            text: 'Start Interview',
-            onPressed: onStart,
-            isIcon: false,
-          ),
+        CustomFilledButton(
+          text: 'Start Interview',
+          onPressed: onStart,
+          isIcon: false,
         ),
       ],
     );

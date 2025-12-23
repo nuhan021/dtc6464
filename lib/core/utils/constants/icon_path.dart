@@ -35,4 +35,9 @@ class IconPath {
   static const String location = 'assets/icon/location.png';
   static const String microphone = 'assets/icon/microphone.png';
   static const String profile = 'assets/icon/profile.png';
+  static const String notification = 'assets/icon/notification.png';
+  static const String bulb = 'assets/icon/bulb.png';
+  static const String group = 'assets/icon/group.png';
+  static const String micColor = 'assets/icon/mic-color.png';
+  static const String planner = 'assets/icon/planner.png';
 }
