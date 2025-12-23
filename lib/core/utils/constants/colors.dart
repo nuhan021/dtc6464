@@ -6,6 +6,7 @@ class AppColors {
   static const Color softBlueNormal = Color(0xFF38BDF8);
   static const Color softPurpleDark = Color(0xFF7D68BC);
   static const Color softPurpleDarker = Color(0xFF3A3158);
+  static const Color softPurpleDarkerHover = Color(0xFF645396);
   static const Color softPurpleLight = Color(0xFFE4DBFD);
   static const Color softPurpleNormal = Color(0xFFA78BFA);
   static const Color softPurpleNormalHover = Color(0xFF967DE1);
