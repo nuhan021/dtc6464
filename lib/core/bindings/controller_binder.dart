@@ -2,7 +2,7 @@ import 'package:dtc6464/features/auth/controller/reset_password_controller.dart'
 import 'package:dtc6464/features/auth/controller/sign_in_controller.dart';
 import 'package:dtc6464/features/auth/controller/sign_up_controller.dart';
 import 'package:dtc6464/features/collect_info/controller/collect_info_controller.dart';
-import 'package:dtc6464/features/onboarding/controller/onboarding_controller.dart';
+import 'package:dtc6464/features/onboarding/controllers/onboarding_controller.dart';
 import 'package:get/get.dart';
 
 class ControllerBinder extends Bindings {
