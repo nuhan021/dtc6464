@@ -12,6 +12,7 @@ class AppColors {
   static const Color whiteLight = Color(0xFFFFFFFF);
   static const Color tealBlueNormal = Color(0xFF367588);
   static const Color softBlueDark = Color(0xFF2A8EBA);
+  static const Color lightGreyNormal = Color(0xFFC2C3C5);
 
   // Utility Colors
   static const Color success = Color(0xFF4CAF50); // Green for success messages
