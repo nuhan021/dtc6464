@@ -5,6 +5,7 @@ import 'package:dtc6464/features/background/views/widgets/background.dart';
 import 'package:dtc6464/features/collect_info/views/widgets/focus_area_card.dart';
 import 'package:dtc6464/features/collect_info/views/widgets/question_card.dart';
 import 'package:dtc6464/features/collect_info/views/widgets/roadmap_card.dart';
+import 'package:dtc6464/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -232,7 +233,9 @@ class AiBrief extends StatelessWidget {
                   
                   20.verticalSpace,
                   
-                  CustomFilledButton(text: 'Save My Plan', isIcon: true, onPressed: (){}),
+                  CustomFilledButton(text: 'Save My Plan', isIcon: true, onPressed: (){
+                    Get.offAllNamed(AppRoute.getSignUpScreen());
+                  }),
 
                   20.verticalSpace,
 

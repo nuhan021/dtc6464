@@ -82,27 +82,28 @@ class Onboarding2 extends StatelessWidget {
               12.verticalSpace,
 
               // sign in button
-              InkWell(
-                onTap: () => Get.to(() => const CollectInfoScreen()),
-                borderRadius: BorderRadius.circular(60.r),
-                child: Container(
-                  height: 52.h,
-                  width: double.maxFinite,
-                  padding: EdgeInsets.all(2.w),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(60.r),
-                    gradient: const LinearGradient(
-                      begin: Alignment(-0.7, -0.6),
-                      end: Alignment(0.7, 0.6),
-                      colors: [Color(0xFFA78BFA), Color(0xFF5835C0)],
-                      stops: [0.1541, 0.8459],
-                    ),
+              Container(
+                height: 52.h,
+                width: double.maxFinite,
+                padding: EdgeInsets.all(2.w),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(60.r),
+                  gradient: const LinearGradient(
+                    begin: Alignment(-0.7, -0.6),
+                    end: Alignment(0.7, 0.6),
+                    colors: [Color(0xFFA78BFA), Color(0xFF5835C0)],
+                    stops: [0.1541, 0.8459],
                   ),
+                ),
+
+                child: GestureDetector(
+                  onTap: () => Get.offAllNamed(AppRoute.signInScreen),
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(60.r),
                       color: AppColors.whiteLight,
                     ),
+                  
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -115,6 +116,7 @@ class Onboarding2 extends StatelessWidget {
                             color: AppColors.softPurpleDarker,
                           ),
                         ),
+                  
                         Text(
                           'Sign In',
                           style: getTextStyle(
