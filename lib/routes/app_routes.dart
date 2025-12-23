@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 import '../features/auth/views/screens/reset_password_screen.dart';
 import '../features/auth/views/screens/sign_up_screen.dart';
+import '../features/bottom_nav_bar/views/screens/bottom_nav_bar_screen.dart';
 import '../features/collect_info/views/screens/ai_breaf.dart';
 import '../features/collect_info/views/screens/collect_info_screen.dart';
 import '../features/collect_info/views/screens/profile_analyzing.dart';
@@ -24,6 +25,7 @@ class AppRoute {
   static String resetPasswordScreen = "/resetPasswordScreen";
   static String enterNameScreen = "/enterNameScreen";
   static String avatarSelectionScreen = "/avatarSelectionScreen";
+  static String bottomNavBar = "/bottomNavBar";
 
   static String getSplashScreen() => splashScreen;
   static String getOnboardingScreen1() => onboardingScreen1;
@@ -36,6 +38,7 @@ class AppRoute {
   static String getResetPasswordScreen() => resetPasswordScreen;
   static String getEnterNameScreen() => enterNameScreen;
   static String getAvatarSelectionScreen() => avatarSelectionScreen;
+  static String getBottomNavBar() => bottomNavBar;
 
   static List<GetPage> routes = [
     GetPage(name: splashScreen, page: () => const SplashScreen()),
@@ -49,5 +52,6 @@ class AppRoute {
     GetPage(name: resetPasswordScreen, page: () => ResetPasswordScreen()),
     GetPage(name: enterNameScreen, page: () => EnterNameScreen()),
     GetPage(name: avatarSelectionScreen, page: () => AvatarSelectionScreen()),
+    GetPage(name: bottomNavBar, page: () => BottomNavBarScreen()),
   ];
 }
