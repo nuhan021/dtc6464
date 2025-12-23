@@ -37,19 +37,20 @@ class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                40.verticalSpace,
+                60.verticalSpace,
+                43.horizontalSpace,
                 _Header(),
-                28.verticalSpace,
+                56.verticalSpace,
                 const _ProgressDots(),
                 24.verticalSpace,
                 const _Title(),
-                18.verticalSpace,
+                20.verticalSpace,
                 _AvatarGrid(
                   avatars: _avatars,
                   selectedIndex: _selectedIndex,
                   onSelect: (i) => setState(() => _selectedIndex = i),
                 ),
-                28.verticalSpace,
+                12.verticalSpace,
                 _Footer(
                   onStart: () {
                     if (_selectedIndex == null) {
@@ -83,22 +84,20 @@ class _Header extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Image.asset(ImagePath.roboatHead, width: 92.w),
+        Padding(
+          padding: EdgeInsets.only(top: 60.h),
+          child: Image.asset(ImagePath.roboatHead, width: 82.w),
+        ),
         14.horizontalSpace,
         Expanded(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-            decoration: BoxDecoration(
-              color: AppColors.whiteLight,
-              borderRadius: BorderRadius.circular(14.r),
-              border: Border.all(color: AppColors.softPurpleLight),
-            ),
-            child: Text(
-              'Before we begin let me know the basic details about you!',
-              style: getTextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-                color: AppColors.softPurpleDarker,
+          child: Padding(
+            padding: EdgeInsets.only(top: 8.h, left: 8.w),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Image.asset(
+                ImagePath.chooseAvatarMessage,
+                width: 237.w,
+                fit: BoxFit.contain,
               ),
             ),
           ),
@@ -147,8 +146,8 @@ class _Title extends StatelessWidget {
       'Choose your avatar',
       textAlign: TextAlign.center,
       style: getTextStyle(
-        fontSize: 28.sp,
-        fontWeight: FontWeight.w700,
+        fontSize: 24.sp,
+        fontWeight: FontWeight.w600,
         color: AppColors.softPurpleDarker,
       ),
     );
@@ -176,8 +175,8 @@ class _AvatarGrid extends StatelessWidget {
         itemCount: avatars.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
-          mainAxisSpacing: 16.h,
-          crossAxisSpacing: 12.w,
+          mainAxisSpacing: 8.h,
+          crossAxisSpacing: 8.w,
           childAspectRatio: 1,
         ),
         itemBuilder: (context, index) {
@@ -230,7 +229,6 @@ class _Footer extends StatelessWidget {
       children: [
         SizedBox(
           width: double.infinity,
-          height: 66.h,
           child: CustomFilledButton(
             text: 'Start Interview',
             onPressed: onStart,

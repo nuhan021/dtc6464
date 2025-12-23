@@ -16,4 +16,6 @@ class ImagePath {
   static String avatar_6 = 'assets/images/avatar_6.png';
   static String avatar_7 = 'assets/images/avatar_7.png';
   static String avatar_8 = 'assets/images/avatar_8.png';
+  static String enterNameMessage = 'assets/images/enter_name_message.png';
+  static String chooseAvatarMessage = 'assets/images/choose_avatar_message.png';
 }

@@ -7,7 +7,6 @@ import 'package:dtc6464/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'avatar_selection_screen.dart';
 
 class EnterNameScreen extends StatelessWidget {
   const EnterNameScreen({super.key});
@@ -21,9 +20,9 @@ class EnterNameScreen extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                40.verticalSpace,
+                60.verticalSpace,
                 _HeaderSection(),
-                30.verticalSpace,
+                56.verticalSpace,
                 _ProgressIndicator(),
                 24.verticalSpace,
                 _TitleSection(),
@@ -49,22 +48,20 @@ class _HeaderSection extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Image.asset(ImagePath.roboatHead, width: 96.w),
+        Padding(
+          padding: EdgeInsets.only(top: 60.h),
+          child: Image.asset(ImagePath.roboatHead, width: 82.w),
+        ),
         12.horizontalSpace,
         Expanded(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 14.h),
-            decoration: BoxDecoration(
-              color: AppColors.whiteLight,
-              borderRadius: BorderRadius.circular(16.r),
-              border: Border.all(color: AppColors.softPurpleLight),
-            ),
-            child: Text(
-              "Let’s begin with some simple details about you!",
-              style: getTextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-                color: AppColors.softPurpleDarker,
+          child: Padding(
+            padding: EdgeInsets.only(top: 8.h, left: 8.w),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Image.asset(
+                ImagePath.enterNameMessage,
+                width: 237.w,
+                fit: BoxFit.contain,
               ),
             ),
           ),
@@ -115,8 +112,8 @@ class _TitleSection extends StatelessWidget {
           'What should I call you?',
           textAlign: TextAlign.center,
           style: getTextStyle(
-            fontSize: 28.sp,
-            fontWeight: FontWeight.w700,
+            fontSize: 24.sp,
+            fontWeight: FontWeight.w600,
             color: AppColors.softPurpleDarker,
           ),
         ),
@@ -149,36 +146,47 @@ class _NameFormSectionState extends State<_NameFormSection> {
       child: Column(
         children: [
           Container(
+            height: 52.h,
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             decoration: BoxDecoration(
               color: AppColors.whiteLight,
-              borderRadius: BorderRadius.circular(14.r),
+              borderRadius: BorderRadius.circular(12.r),
               border: Border.all(color: AppColors.softPurpleLight),
-            ),
-            child: TextFormField(
-              controller: _controller,
-              style: getTextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-                color: AppColors.softPurpleDarker,
-              ),
-              decoration: InputDecoration(
-                hintText: 'Your Full Name',
-                hintStyle: getTextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.softPurpleNormal,
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0x14A0A0C8),
+                  blurRadius: 16,
+                  offset: const Offset(0, 8),
                 ),
-                border: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
+              ],
+            ),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: TextFormField(
+                controller: _controller,
+                style: getTextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.softPurpleDarker,
+                ),
+                decoration: InputDecoration(
+                  hintText: 'Your Full Name',
+                  hintStyle: getTextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.softPurpleNormalHover,
+                  ),
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                ),
+                validator: (v) {
+                  if (v == null || v.trim().isEmpty) {
+                    return 'Please enter your name';
+                  }
+                  return null;
+                },
               ),
-              validator: (v) {
-                if (v == null || v.trim().isEmpty) {
-                  return 'Please enter your name';
-                }
-                return null;
-              },
             ),
           ),
           18.verticalSpace,
@@ -203,14 +211,9 @@ class _ActionSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
-          width: double.infinity,
-          height: 66.h,
-          child: CustomFilledButton(
-            text: 'Next',
-            onPressed: () => Get.toNamed(AppRoute.avatarSelectionScreen),
-            isIcon: false,
-          ),
+        CustomFilledButton(
+          text: 'Next',
+          onPressed: () => Get.toNamed(AppRoute.avatarSelectionScreen),
         ),
         18.verticalSpace,
         TextButton(
