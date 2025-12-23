@@ -29,4 +29,10 @@ class IconPath {
   static const String question = 'assets/icon/question.png';
   static const String linkedin = 'assets/icon/linkedin.png';
   static const String google = 'assets/icon/google.png';
+
+  static const String calender = 'assets/icon/calender.png';
+  static const String home = 'assets/icon/home.png';
+  static const String location = 'assets/icon/location.png';
+  static const String microphone = 'assets/icon/microphone.png';
+  static const String profile = 'assets/icon/profile.png';
 }
