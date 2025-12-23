@@ -3,6 +3,7 @@ import 'package:dtc6464/core/common/widgets/custom_filled_button.dart';
 import 'package:dtc6464/core/utils/constants/colors.dart';
 import 'package:dtc6464/core/utils/constants/image_path.dart';
 import 'package:dtc6464/features/background/views/widgets/background.dart';
+import 'package:dtc6464/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -61,11 +62,8 @@ class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
                       );
                       return;
                     }
-                    Get.snackbar(
-                      'Starting',
-                      'Selected avatar: ${_selectedIndex! + 1}',
-                      snackPosition: SnackPosition.BOTTOM,
-                    );
+                    // Route to bottom navigation (clear previous stack)
+                    Get.offAllNamed(AppRoute.getBottomNavBar());
                   },
                 ),
                 40.verticalSpace,
