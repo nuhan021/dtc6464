@@ -7,6 +7,7 @@ import 'package:dtc6464/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'collect_info_screen.dart';
 
 class Onboarding2 extends StatelessWidget {
   const Onboarding2({super.key});
@@ -81,48 +82,49 @@ class Onboarding2 extends StatelessWidget {
               12.verticalSpace,
 
               // sign in button
-              Container(
-                height: 52.h,
-                width: double.maxFinite,
-                padding: EdgeInsets.all(2.w),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(60.r),
-                  gradient: const LinearGradient(
-                    begin: Alignment(-0.7, -0.6),
-                    end: Alignment(0.7, 0.6),
-                    colors: [Color(0xFFA78BFA), Color(0xFF5835C0)],
-                    stops: [0.1541, 0.8459],
-                  ),
-                ),
-
+              InkWell(
+                onTap: () => Get.to(() => const CollectInfoScreen()),
+                borderRadius: BorderRadius.circular(60.r),
                 child: Container(
+                  height: 52.h,
+                  width: double.maxFinite,
+                  padding: EdgeInsets.all(2.w),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(60.r),
-                    color: AppColors.whiteLight,
+                    gradient: const LinearGradient(
+                      begin: Alignment(-0.7, -0.6),
+                      end: Alignment(0.7, 0.6),
+                      colors: [Color(0xFFA78BFA), Color(0xFF5835C0)],
+                      stops: [0.1541, 0.8459],
+                    ),
                   ),
-
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Already have an account? ',
-                        style: getTextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.softPurpleDarker,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(60.r),
+                      color: AppColors.whiteLight,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Already have an account? ',
+                          style: getTextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.softPurpleDarker,
+                          ),
                         ),
-                      ),
-
-                      Text(
-                        'Sign In',
-                        style: getTextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.tealBlueNormal,
+                        Text(
+                          'Sign In',
+                          style: getTextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.tealBlueNormal,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

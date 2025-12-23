@@ -1,12 +1,19 @@
+class ImagePath {
+  static String logo = 'assets/logo/logo.png';
+  static String textLogo = 'assets/logo/text_logo.png';
+  static String background = 'assets/background/background.png';
 
-class ImagePath{
-  static const  String logo='assets/logo/logo.png';
-  static const  String textLogo='assets/logo/text_logo.png';
-  static const String background = 'assets/background/background.png';
-
-  static const String roboatHead = 'assets/images/roboat_head.png';
-  static const String roboatMessage = 'assets/images/robot_message.png';
-  static const String aiLogo = 'assets/lottie/ai-log.json';
-  static const String aiLogo2 = 'assets/lottie/ai-logo-2.json';
-  static const String banner = 'assets/banner/banner.png';
+  static String roboatHead = 'assets/images/roboat_head.png';
+  static String roboatMessage = 'assets/images/robot_message.png';
+  static String aiLogo = 'assets/lottie/ai-log.json';
+  static String aiLogo2 = 'assets/lottie/ai-logo-2.json';
+  static String banner = 'assets/banner/banner.png';
+  static String avatar_1 = 'assets/images/avatar_1.png';
+  static String avatar_2 = 'assets/images/avatar_2.png';
+  static String avatar_3 = 'assets/images/avatar_3.png';
+  static String avatar_4 = 'assets/images/avatar_4.png';
+  static String avatar_5 = 'assets/images/avatar_5.png';
+  static String avatar_6 = 'assets/images/avatar_6.png';
+  static String avatar_7 = 'assets/images/avatar_7.png';
+  static String avatar_8 = 'assets/images/avatar_8.png';
 }
