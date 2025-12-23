@@ -1,4 +1,5 @@
 import 'package:dtc6464/features/auth/views/screens/sign_in_screen.dart';
+import 'package:dtc6464/features/nav_screens/profile/views/screens/profile_screen.dart';
 import 'package:dtc6464/features/onboarding/views/screens/avatar_selection_screen.dart';
 import 'package:dtc6464/features/onboarding/views/screens/enter_name_screen.dart';
 import 'package:get/get.dart';
@@ -26,6 +27,7 @@ class AppRoute {
   static String enterNameScreen = "/enterNameScreen";
   static String avatarSelectionScreen = "/avatarSelectionScreen";
   static String bottomNavBar = "/bottomNavBar";
+  static String profileScreen = "/profileScreen";
 
   static String getSplashScreen() => splashScreen;
   static String getOnboardingScreen1() => onboardingScreen1;
@@ -39,6 +41,7 @@ class AppRoute {
   static String getEnterNameScreen() => enterNameScreen;
   static String getAvatarSelectionScreen() => avatarSelectionScreen;
   static String getBottomNavBar() => bottomNavBar;
+  static String getProfileScreen() => profileScreen;
 
   static List<GetPage> routes = [
     GetPage(name: splashScreen, page: () => const SplashScreen()),
@@ -53,5 +56,6 @@ class AppRoute {
     GetPage(name: enterNameScreen, page: () => EnterNameScreen()),
     GetPage(name: avatarSelectionScreen, page: () => AvatarSelectionScreen()),
     GetPage(name: bottomNavBar, page: () => BottomNavBarScreen()),
+    GetPage(name: profileScreen, page: () => ProfileScreen()),
   ];
 }
