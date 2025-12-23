@@ -15,11 +15,11 @@ class BottomNavBarScreen extends StatelessWidget {
 
   List<Widget> _buildScreens() {
     return [
-      Placeholder(),
-      Placeholder(),
-      Placeholder(),
-      Placeholder(),
-      Placeholder(),
+      const Placeholder(),
+      const Placeholder(),
+      const Placeholder(),
+      const Placeholder(),
+      const Placeholder(),
     ];
   }
 
@@ -27,14 +27,7 @@ class BottomNavBarScreen extends StatelessWidget {
     PersistentTabConfig(
       screen: _buildScreens()[0],
       item: ItemConfig(
-        icon: Obx(
-                () {
-              return Image.asset(
-                width: 20.w,
-                IconPath.home,
-              );
-            }
-        ),
+        icon: Image.asset(IconPath.home, width: 20.w), // Obx রিমোভ করা হয়েছে
         title: "Home",
         textStyle: getTextStyle(fontSize: 10.sp, fontWeight: FontWeight.w500),
         activeForegroundColor: AppColors.softPurpleNormal,
@@ -45,14 +38,7 @@ class BottomNavBarScreen extends StatelessWidget {
     PersistentTabConfig(
       screen: _buildScreens()[1],
       item: ItemConfig(
-        icon: Obx(
-                () {
-              return Image.asset(
-                width: 20.w,
-                IconPath.calender
-              );
-            }
-        ),
+        icon: Image.asset(IconPath.calender, width: 20.w),
         title: "Planer",
         textStyle: getTextStyle(fontSize: 10.sp, fontWeight: FontWeight.w500),
         activeForegroundColor: AppColors.softPurpleNormal,
@@ -63,14 +49,7 @@ class BottomNavBarScreen extends StatelessWidget {
     PersistentTabConfig(
       screen: _buildScreens()[2],
       item: ItemConfig(
-        icon: Obx(
-                () {
-              return Image.asset(
-                width: 20.w,
-                IconPath.microphone
-              );
-            }
-        ),
+        icon: Image.asset(IconPath.microphone, width: 20.w),
         title: "Practice",
         textStyle: getTextStyle(fontSize: 10.sp, fontWeight: FontWeight.w500),
         activeForegroundColor: AppColors.softPurpleNormal,
@@ -81,14 +60,7 @@ class BottomNavBarScreen extends StatelessWidget {
     PersistentTabConfig(
       screen: _buildScreens()[3],
       item: ItemConfig(
-        icon: Obx(
-                () {
-              return Image.asset(
-                width: 20.w,
-                IconPath.location
-              );
-            }
-        ),
+        icon: Image.asset(IconPath.location, width: 20.w),
         title: "Roadmap",
         textStyle: getTextStyle(fontSize: 10.sp, fontWeight: FontWeight.w500),
         activeForegroundColor: AppColors.softPurpleNormal,
@@ -99,14 +71,7 @@ class BottomNavBarScreen extends StatelessWidget {
     PersistentTabConfig(
       screen: _buildScreens()[4],
       item: ItemConfig(
-        icon: Obx(
-                () {
-              return Image.asset(
-                width: 20.w,
-                IconPath.profile,
-              );
-            }
-        ),
+        icon: Image.asset(IconPath.profile, width: 20.w),
         title: "Profile",
         textStyle: getTextStyle(fontSize: 10.sp, fontWeight: FontWeight.w500),
         activeForegroundColor: AppColors.softPurpleNormal,
@@ -119,9 +84,11 @@ class BottomNavBarScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return PersistentTabView(
       controller: controller.controller,
-
       tabs: _tabs(),
-      navBarBuilder: (navBarConfig) => Style1BottomNavBar(navBarConfig: navBarConfig, height: 60.h),
+      navBarBuilder: (navBarConfig) => Style1BottomNavBar(
+        navBarConfig: navBarConfig,
+        height: 60.h,
+      ),
       onTabChanged: (index) {
         controller.changeCurrentIndex(index);
       },
