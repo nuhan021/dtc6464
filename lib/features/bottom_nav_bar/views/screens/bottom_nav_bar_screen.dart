@@ -1,5 +1,6 @@
 import 'package:dtc6464/features/bottom_nav_bar/controller/bottom_nav_bar_conroller.dart';
 import 'package:dtc6464/features/home/views/screens/home_screen.dart';
+import 'package:dtc6464/features/nav_screens/profile/views/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -20,7 +21,7 @@ class BottomNavBarScreen extends StatelessWidget {
       const Placeholder(),
       const Placeholder(),
       const Placeholder(),
-      const Placeholder(),
+      const ProfileScreen(),
     ];
   }
 
@@ -86,10 +87,8 @@ class BottomNavBarScreen extends StatelessWidget {
     return PersistentTabView(
       controller: controller.controller,
       tabs: _tabs(),
-      navBarBuilder: (navBarConfig) => Style1BottomNavBar(
-        navBarConfig: navBarConfig,
-        height: 60.h,
-      ),
+      navBarBuilder: (navBarConfig) =>
+          Style1BottomNavBar(navBarConfig: navBarConfig, height: 60.h),
       onTabChanged: (index) {
         controller.changeCurrentIndex(index);
       },

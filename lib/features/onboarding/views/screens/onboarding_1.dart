@@ -3,7 +3,7 @@ import 'package:dtc6464/core/utils/constants/colors.dart';
 import 'package:dtc6464/core/utils/constants/icon_path.dart';
 import 'package:dtc6464/core/utils/constants/image_path.dart';
 import 'package:dtc6464/features/background/views/widgets/background.dart';
-import 'package:dtc6464/features/onboarding/controller/onboarding_controller.dart';
+import 'package:dtc6464/features/onboarding/controllers/onboarding_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
