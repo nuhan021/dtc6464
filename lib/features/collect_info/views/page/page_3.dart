@@ -19,45 +19,47 @@ class Page3 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Background(
-      child: Column(
-        children: [
-          Text(
-            'Which company are you interviewing with?',
-            style: getTextStyle(
-              fontSize: 28.sp,
-              fontWeight: FontWeight.w700,
-              color: AppColors.softPurpleDarker,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Text(
+              'Which company are you interviewing with?',
+              style: getTextStyle(
+                fontSize: 28.sp,
+                fontWeight: FontWeight.w700,
+                color: AppColors.softPurpleDarker,
+              ),
+            ).paddingOnly(left: 26.w),
+        
+            20.verticalSpace,
+        
+            CustomTextField(
+              controller: controller.interviewingCompanyController,
+              hintText: "IT Company",
+              suffixIcon: Icon(Icons.search),
             ),
-          ).paddingOnly(left: 26.w),
-
-          20.verticalSpace,
-
-          CustomTextField(
-            controller: controller.interviewingCompanyController,
-            hintText: "IT Company",
-            suffixIcon: Icon(Icons.search),
-          ),
-
-          12.verticalSpace,
-
-          Obx(
-            () => Wrap(
-              spacing: 5.w, // Gap between chips
-              runSpacing: 15.h, // Gap between lines
-              children: controller.companies.map((company) {
-                final isSelected = controller.selectedCompanies.contains(
-                  company,
-                );
-                return SelectionChip(
-                  label: company,
-                  isSelected: isSelected,
-                  onTap: () => controller.toggleSelection(company),
-                );
-              }).toList(),
+        
+            12.verticalSpace,
+        
+            Obx(
+              () => Wrap(
+                spacing: 5.w, // Gap between chips
+                runSpacing: 15.h, // Gap between lines
+                children: controller.companies.map((company) {
+                  final isSelected = controller.selectedCompanies.contains(
+                    company,
+                  );
+                  return SelectionChip(
+                    label: company,
+                    isSelected: isSelected,
+                    onTap: () => controller.toggleSelection(company),
+                  );
+                }).toList(),
+              ),
             ),
-          ),
-        ],
-      ).paddingSymmetric(horizontal: 16.w),
+          ],
+        ).paddingSymmetric(horizontal: 16.w),
+      ),
     );
   }
 }

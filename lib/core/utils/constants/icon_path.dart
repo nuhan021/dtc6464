@@ -27,4 +27,6 @@ class IconPath {
   static const String refresh = 'assets/icon/refresh.png';
   static const String verify = 'assets/icon/verify.png';
   static const String question = 'assets/icon/question.png';
+  static const String linkedin = 'assets/icon/linkedin.png';
+  static const String google = 'assets/icon/google.png';
 }

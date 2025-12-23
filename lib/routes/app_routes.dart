@@ -1,5 +1,8 @@
+import 'package:dtc6464/features/auth/views/screens/sign_in_screen.dart';
 import 'package:get/get.dart';
 
+import '../features/auth/views/screens/reset_password_screen.dart';
+import '../features/auth/views/screens/sign_up_screen.dart';
 import '../features/collect_info/views/screens/ai_breaf.dart';
 import '../features/collect_info/views/screens/collect_info_screen.dart';
 import '../features/collect_info/views/screens/profile_analyzing.dart';
@@ -13,6 +16,9 @@ class AppRoute {
   static String collectInfoScreen = "/collectInfoScreen";
   static String profileAnalyzingScreen = "/profileAnalyzingScreen";
   static String aiBriefScreen = "/aiBriefScreen";
+  static String signUpScreen = "/signUpScreen";
+  static String signInScreen = "/signInScreen";
+  static String resetPasswordScreen = "/resetPasswordScreen";
 
   static String getSplashScreen() => splashScreen;
   static String getOnboardingScreen1() => onboardingScreen1;
@@ -20,6 +26,11 @@ class AppRoute {
   static String getCollectInfoScreen() => collectInfoScreen;
   static String getProfileAnalyzingScreen() => profileAnalyzingScreen;
   static String getAiBriefScreen() => aiBriefScreen;
+  static String getSignUpScreen() => signUpScreen;
+  static String getSignInScreen() => signInScreen;
+  static String getResetPasswordScreen() => resetPasswordScreen;
+
+
 
 
 
@@ -30,5 +41,8 @@ class AppRoute {
     GetPage(name: collectInfoScreen, page: () => CollectInfoScreen()),
     GetPage(name: profileAnalyzingScreen, page: () => ProfileAnalyzing()),
     GetPage(name: aiBriefScreen, page: () => const AiBrief()),
+    GetPage(name: signUpScreen, page: () => SignUpScreen()),
+    GetPage(name: signInScreen, page: () => SignInScreen()),
+    GetPage(name: resetPasswordScreen, page: () => ResetPasswordScreen()),
   ];
 }

@@ -95,34 +95,37 @@ class Onboarding2 extends StatelessWidget {
                   ),
                 ),
 
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(60.r),
-                    color: AppColors.whiteLight,
-                  ),
-
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Already have an account? ',
-                        style: getTextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.softPurpleDarker,
+                child: GestureDetector(
+                  onTap: () => Get.offAllNamed(AppRoute.signInScreen),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(60.r),
+                      color: AppColors.whiteLight,
+                    ),
+                  
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Already have an account? ',
+                          style: getTextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.softPurpleDarker,
+                          ),
                         ),
-                      ),
-
-                      Text(
-                        'Sign In',
-                        style: getTextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.tealBlueNormal,
+                  
+                        Text(
+                          'Sign In',
+                          style: getTextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.tealBlueNormal,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
