@@ -27,9 +27,9 @@ class SignInScreen extends StatelessWidget {
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               80.verticalSpace,
-              
+
               // logo
-              Image.asset(ImagePath.logo, height: 120.h,),
+              Image.asset(ImagePath.logo, height: 120.h),
 
               40.verticalSpace,
 
@@ -45,34 +45,43 @@ class SignInScreen extends StatelessWidget {
               20.verticalSpace,
 
               // email
-              CustomTextField(controller: controller.emailController, hintText: "Email"),
+              CustomTextField(
+                controller: controller.emailController,
+                hintText: "Email",
+              ),
 
               10.verticalSpace,
 
               // password
-              Obx(() => CustomTextField(
-                controller: controller.passwordController,
-                hintText: "Password",
-                obscureText: !controller.isPasswordVisible.value,
-                suffixIcon: IconButton(
-                  onPressed: () => controller.togglePasswordVisibility(),
-                  icon: Icon(
-                    controller.isPasswordVisible.value
-                        ? Icons.visibility
-                        : Icons.visibility_off,
-                    color: Colors.grey,
+              Obx(
+                () => CustomTextField(
+                  controller: controller.passwordController,
+                  hintText: "Password",
+                  obscureText: !controller.isPasswordVisible.value,
+                  suffixIcon: IconButton(
+                    onPressed: () => controller.togglePasswordVisibility(),
+                    icon: Icon(
+                      controller.isPasswordVisible.value
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: Colors.grey,
+                    ),
                   ),
                 ),
-              )),
+              ),
 
               20.verticalSpace,
 
               // submit
-              
-              CustomFilledButton(text: 'Sign In', onPressed: () {}),
-              
+              CustomFilledButton(
+                text: 'Sign In',
+                onPressed: () {
+                  Get.toNamed(AppRoute.getEnterNameScreen());
+                },
+              ),
+
               10.verticalSpace,
-              
+
               Align(
                 alignment: Alignment.centerRight,
                 child: InkWell(
@@ -87,31 +96,31 @@ class SignInScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              
+
               10.verticalSpace,
 
               // seperate lines
               Row(
                 children: [
-                  Expanded(child: Divider(color: AppColors.softBlueNormal,)),
+                  Expanded(child: Divider(color: AppColors.softBlueNormal)),
                   Text(
                     'or',
                     style: getTextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w400,
-                      color: AppColors.softBlueNormal
+                      color: AppColors.softBlueNormal,
                     ),
                   ).paddingSymmetric(horizontal: 13.sp),
-                  Expanded(child: Divider(color: AppColors.softBlueNormal,)),
+                  Expanded(child: Divider(color: AppColors.softBlueNormal)),
                 ],
               ),
 
               20.verticalSpace,
 
-              SignInWith(icon: IconPath.google, methodNane: "Google",),
+              SignInWith(icon: IconPath.google, methodNane: "Google"),
               15.verticalSpace,
 
-              SignInWith(icon: IconPath.linkedin, methodNane: "LinkedIn",),
+              SignInWith(icon: IconPath.linkedin, methodNane: "LinkedIn"),
 
               20.verticalSpace,
 

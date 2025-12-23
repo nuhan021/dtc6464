@@ -1,4 +1,6 @@
 import 'package:dtc6464/features/auth/views/screens/sign_in_screen.dart';
+import 'package:dtc6464/features/onboarding/views/screens/avatar_selection_screen.dart';
+import 'package:dtc6464/features/onboarding/views/screens/enter_name_screen.dart';
 import 'package:get/get.dart';
 
 import '../features/auth/views/screens/reset_password_screen.dart';
@@ -9,6 +11,7 @@ import '../features/collect_info/views/screens/profile_analyzing.dart';
 import '../features/onboarding/views/screens/onboarding_1.dart';
 import '../features/onboarding/views/screens/onboarding_2.dart';
 import '../features/splash/view/screen/splash_screen.dart';
+
 class AppRoute {
   static String splashScreen = "/splashScreen";
   static String onboardingScreen1 = "/onboardingScreen1";
@@ -19,6 +22,8 @@ class AppRoute {
   static String signUpScreen = "/signUpScreen";
   static String signInScreen = "/signInScreen";
   static String resetPasswordScreen = "/resetPasswordScreen";
+  static String enterNameScreen = "/enterNameScreen";
+  static String avatarSelectionScreen = "/avatarSelectionScreen";
 
   static String getSplashScreen() => splashScreen;
   static String getOnboardingScreen1() => onboardingScreen1;
@@ -29,10 +34,8 @@ class AppRoute {
   static String getSignUpScreen() => signUpScreen;
   static String getSignInScreen() => signInScreen;
   static String getResetPasswordScreen() => resetPasswordScreen;
-
-
-
-
+  static String getEnterNameScreen() => enterNameScreen;
+  static String getAvatarSelectionScreen() => avatarSelectionScreen;
 
   static List<GetPage> routes = [
     GetPage(name: splashScreen, page: () => const SplashScreen()),
@@ -44,5 +47,7 @@ class AppRoute {
     GetPage(name: signUpScreen, page: () => SignUpScreen()),
     GetPage(name: signInScreen, page: () => SignInScreen()),
     GetPage(name: resetPasswordScreen, page: () => ResetPasswordScreen()),
+    GetPage(name: enterNameScreen, page: () => EnterNameScreen()),
+    GetPage(name: avatarSelectionScreen, page: () => AvatarSelectionScreen()),
   ];
 }
