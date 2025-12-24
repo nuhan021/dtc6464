@@ -23,12 +23,15 @@ class InterviewPlannerScreen extends StatelessWidget {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              'Interview Planner',
-              style: getTextStyle(
-                fontSize: 24.sp,
-                fontWeight: FontWeight.w700,
-                color: const Color(0xFF111827),
+            Flexible(
+              child: Text(
+                'Interview Planner',
+                style: getTextStyle(
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFF111827),
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
             GestureDetector(
