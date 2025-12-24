@@ -1,9 +1,9 @@
 import 'package:dtc6464/core/common/styles/global_text_style.dart';
-import 'package:dtc6464/core/common/widgets/custom_filled_button.dart';
 import 'package:dtc6464/core/utils/constants/colors.dart';
 import 'package:dtc6464/core/utils/constants/icon_path.dart';
 import 'package:dtc6464/features/background/views/widgets/background.dart';
 import 'package:dtc6464/features/home/views/widgets/quick_action.dart';
+import 'package:dtc6464/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -31,7 +31,10 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             actions: [
-              InkWell(onTap: () {}, child: Image.asset(IconPath.notification)),
+              InkWell(
+                onTap: () => Get.toNamed(AppRoute.viewNotificationsScreen),
+                child: Image.asset(IconPath.notification),
+              ),
             ],
             bottom: PreferredSize(
               preferredSize: Size(double.maxFinite, 30.h),
@@ -91,7 +94,11 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.check_circle, color: AppColors.softPurpleNormal, size: 18.h,),
+                        Icon(
+                          Icons.check_circle,
+                          color: AppColors.softPurpleNormal,
+                          size: 18.h,
+                        ),
                         10.horizontalSpace,
                         Expanded(
                           child: Text(
@@ -100,10 +107,10 @@ class HomeScreen extends StatelessWidget {
                             style: getTextStyle(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w600,
-                              color: AppColors.softPurpleNormalHover
+                              color: AppColors.softPurpleNormalHover,
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
 
@@ -114,7 +121,7 @@ class HomeScreen extends StatelessWidget {
                       style: getTextStyle(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w500,
-                        color: AppColors.lightGreyNormal
+                        color: AppColors.lightGreyNormal,
                       ),
                     ).paddingOnly(left: 27.w),
 
@@ -123,9 +130,9 @@ class HomeScreen extends StatelessWidget {
                     Text(
                       'Behavioral Questions - Score:85%',
                       style: getTextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0xFF555556)
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFF555556),
                       ),
                     ).paddingOnly(left: 27.w),
                   ],
@@ -150,10 +157,7 @@ class HomeScreen extends StatelessWidget {
                   gradient: const LinearGradient(
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
-                    colors: [
-                      Color(0xFFC7EEFF),
-                      Color(0xFFDFF5FF),
-                    ],
+                    colors: [Color(0xFFC7EEFF), Color(0xFFDFF5FF)],
                   ),
                 ),
                 child: Row(
@@ -168,7 +172,10 @@ class HomeScreen extends StatelessWidget {
                         shape: BoxShape.circle,
                       ),
                       alignment: Alignment.center,
-                      child: Image.asset(IconPath.bulb, color: AppColors.softBlueNormal,),
+                      child: Image.asset(
+                        IconPath.bulb,
+                        color: AppColors.softBlueNormal,
+                      ),
                     ),
                     10.horizontalSpace,
                     Expanded(
@@ -180,7 +187,7 @@ class HomeScreen extends StatelessWidget {
                             style: getTextStyle(
                               fontSize: 18.sp,
                               fontWeight: FontWeight.w600,
-                              color: const Color(0xFF4A4A6A)
+                              color: const Color(0xFF4A4A6A),
                             ),
                           ),
 
@@ -191,7 +198,7 @@ class HomeScreen extends StatelessWidget {
                             style: getTextStyle(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w400,
-                              color: const Color(0xFF4A4A6A)
+                              color: const Color(0xFF4A4A6A),
                             ),
                           ),
 
@@ -202,18 +209,17 @@ class HomeScreen extends StatelessWidget {
                             style: getTextStyle(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w400,
-                              color: const Color(0xFF6B6B8A)
+                              color: const Color(0xFF6B6B8A),
                             ),
                           ),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
 
               60.verticalSpace,
-
             ],
           ).paddingSymmetric(horizontal: 16.w),
         ),
@@ -409,15 +415,9 @@ class Progress extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                 decoration: BoxDecoration(
                   border: Border(
-                    left: BorderSide(
-                      color: Colors.white,
-                      width: 2.w,
-                    ),
-                    right: BorderSide(
-                      color: Colors.white,
-                      width: 2.w,
-                    ),
-                  )
+                    left: BorderSide(color: Colors.white, width: 2.w),
+                    right: BorderSide(color: Colors.white, width: 2.w),
+                  ),
                 ),
                 child: Column(
                   children: [
@@ -475,5 +475,3 @@ class Progress extends StatelessWidget {
     );
   }
 }
-
-

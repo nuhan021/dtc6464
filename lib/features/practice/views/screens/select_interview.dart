@@ -25,7 +25,7 @@ class SelectInterview extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
-          centerTitle: false,
+          centerTitle: true,
           title: Text(
             'Select Interview Type',
             style: getTextStyle(
@@ -34,48 +34,59 @@ class SelectInterview extends StatelessWidget {
               color: const Color(0xFF333333),
             ),
           ),
-          
-          actions: [
-            InkWell(
-              onTap: (){},
-              child: Image.asset(IconPath.bell, height: 30.h,).paddingOnly(right: 15.w),
-            )
-          ],
+
+          // actions: [
+          //   InkWell(
+          //     onTap: (){},
+          //     child: Image.asset(IconPath.bell, height: 30.h,).paddingOnly(right: 15.w),
+          //   )
+          // ],
         ),
 
         body: SingleChildScrollView(
-          child: Obx(() => Column(
-            children: [
-              20.verticalSpace,
+          child: Obx(
+            () => Column(
+              children: [
+                20.verticalSpace,
 
-              // --- Technical Interview Card ---
-              buildInterviewCard(
-                index: 0,
-                icon: IconPath.arrows,
-                title: 'Technical Interview',
-                subtitle: 'Coding challenges, algorithms, system design',
-              ),
+                // --- Technical Interview Card ---
+                buildInterviewCard(
+                  index: 0,
+                  icon: IconPath.arrows,
+                  title: 'Technical Interview',
+                  subtitle: 'Coding challenges, algorithms, system design',
+                ),
 
-              20.verticalSpace,
+                20.verticalSpace,
 
-              // --- Non-Technical Interview Card ---
-              buildInterviewCard(
-                index: 1,
-                icon: IconPath.users,
-                title: 'Non-Technical / Behavioral Interview',
-                subtitle: 'STAR method, soft skills, past experiences',
-              ),
+                // --- Non-Technical Interview Card ---
+                buildInterviewCard(
+                  index: 1,
+                  icon: IconPath.users,
+                  title: 'Non-Technical / Behavioral Interview',
+                  subtitle: 'STAR method, soft skills, past experiences',
+                ),
 
-              40.verticalSpace,
-              CustomFilledButton(text: "Continue", onPressed: () {
-                if(controller.selectedIndex.value == 0) {
-                  AppHelperFunctions.navigateToScreen(context, TechnicalTopicSelection());
-                } else {
-                  AppHelperFunctions.navigateToScreen(context, NonTechnicalTopicSelection());
-                }
-              })
-            ],
-          ).paddingSymmetric(horizontal: 16.w)),
+                40.verticalSpace,
+                CustomFilledButton(
+                  text: "Continue",
+                  onPressed: () {
+                    if (controller.selectedIndex.value == 0) {
+                      AppHelperFunctions.navigateToScreen(
+                        context,
+                        TechnicalTopicSelection(),
+                      );
+                    } else {
+                      AppHelperFunctions.navigateToScreen(
+                        context,
+                        NonTechnicalTopicSelection(),
+                      );
+                    }
+                  },
+                ),
+              ],
+            ).paddingSymmetric(horizontal: 16.w),
+          ),
         ),
       ),
     );
@@ -113,7 +124,9 @@ class SelectInterview extends StatelessWidget {
               style: getTextStyle(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w500,
-                color: isSelected ? AppColors.softPurpleNormalActive : const Color(0xFF4A4A6A),
+                color: isSelected
+                    ? AppColors.softPurpleNormalActive
+                    : const Color(0xFF4A4A6A),
               ),
             ),
             15.verticalSpace,
@@ -123,9 +136,11 @@ class SelectInterview extends StatelessWidget {
               style: getTextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
-                color: isSelected ? AppColors.softPurpleNormalActive : const Color(0xFF6B6B8A),
+                color: isSelected
+                    ? AppColors.softPurpleNormalActive
+                    : const Color(0xFF6B6B8A),
               ),
-            )
+            ),
           ],
         ),
       ),
