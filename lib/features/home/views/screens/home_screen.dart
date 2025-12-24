@@ -2,6 +2,7 @@ import 'package:dtc6464/core/common/styles/global_text_style.dart';
 import 'package:dtc6464/core/utils/constants/colors.dart';
 import 'package:dtc6464/core/utils/constants/icon_path.dart';
 import 'package:dtc6464/features/background/views/widgets/background.dart';
+import 'package:dtc6464/features/bottom_nav_bar/controller/bottom_nav_bar_conroller.dart';
 import 'package:dtc6464/features/home/views/widgets/quick_action.dart';
 import 'package:dtc6464/routes/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -229,7 +230,7 @@ class HomeScreen extends StatelessWidget {
 }
 
 class Practice extends StatelessWidget {
-  const Practice({super.key});
+  const Practice({super.key,});
 
   @override
   Widget build(BuildContext context) {

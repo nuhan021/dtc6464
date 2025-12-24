@@ -1,3 +1,5 @@
+import 'package:dtc6464/core/utils/helpers/app_helper.dart';
+import 'package:dtc6464/features/practice/views/screens/ai_coach_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -11,7 +13,6 @@ import '../../controller/practice_controller.dart';
 class NonTechnicalTopicSelection extends StatelessWidget {
   NonTechnicalTopicSelection({super.key});
 
-  // Get.find ব্যবহার করা হয়েছে কারণ PracticeController অলরেডি মেমোরিতে আছে
   final PracticeController controller = Get.find<PracticeController>();
 
   final List<String> topics = [
@@ -44,7 +45,6 @@ class NonTechnicalTopicSelection extends StatelessWidget {
             child: Column(
               children: [
                 20.verticalSpace,
-                // Obx ব্যবহার করা হয়েছে যাতে সিলেকশন চেঞ্জ হলে UI আপডেট হয়
                 Obx(() => Column(
                   children: topics.map((topic) => buildTopicCard(topic)).toList(),
                 )),
@@ -53,8 +53,7 @@ class NonTechnicalTopicSelection extends StatelessWidget {
                     text: "Start Practice",
                     onPressed: () {
                       if (controller.selectedTopic.value.isNotEmpty) {
-                        // এখানে আপনার পরবর্তী স্ক্রিনে যাওয়ার লজিক দিন
-                        print("Starting practice for: ${controller.selectedTopic.value}");
+                        AppHelperFunctions.navigateToScreen(context, AiCoachMode());
                       } else {
                         Get.snackbar("Notice", "Please select a topic first");
                       }

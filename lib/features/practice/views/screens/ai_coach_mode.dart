@@ -50,7 +50,7 @@ class AiCoachMode extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              60.verticalSpace,
+              20.verticalSpace,
 
               // interview question
               Container(
@@ -140,7 +140,8 @@ class AiCoachMode extends StatelessWidget {
                         ),
                       ),
 
-                      40.verticalSpace,
+                      Obx(() => controller.inputType.value == 'type' ? 20.verticalSpace : 0.verticalSpace),
+
 
                       CustomFilledButton(
                         text: 'Submit Answer',
@@ -151,7 +152,10 @@ class AiCoachMode extends StatelessWidget {
                           colors: [Color(0xFF72D3FF), Color(0xFF00A3EA)],
                         ),
                         onPressed: () {
-                          AppHelperFunctions.navigateToScreen(context, PracticeSummary());
+                          AppHelperFunctions.navigateToScreen(
+                            context,
+                            PracticeSummary(),
+                          );
                         },
                       ).paddingSymmetric(horizontal: 35.w),
                     ],
@@ -160,7 +164,7 @@ class AiCoachMode extends StatelessWidget {
                 return VoiceNote(controller: controller);
               }),
 
-              20.verticalSpace,
+              Obx(() => controller.inputType.value == 'type' ? 20.verticalSpace : 0.verticalSpace),
 
               CustomFilledButton(
                 text: 'End Practice',
@@ -168,13 +172,12 @@ class AiCoachMode extends StatelessWidget {
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => SelectInterview()),
-                    (route) => false,
+                        (route) => false,
                   );
-
                 },
               ).paddingSymmetric(horizontal: 35.w),
 
-              10.verticalSpace,
+              20.verticalSpace,
 
               Obx(() {
                 return TextButton(
@@ -197,6 +200,12 @@ class AiCoachMode extends StatelessWidget {
                   ),
                 );
               }),
+
+
+
+
+
+
 
               30.verticalSpace,
             ],
@@ -221,250 +230,179 @@ class VoiceNote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          'Hold the microphone and start answering',
-          textAlign: TextAlign.center,
-          style: getTextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-            color: AppColors.softPurpleDark,
+    return Obx(() {
+      bool isVoice = controller.inputType.value == 'voice';
+      // রেকর্ডিং ফাইল আছে কি না এবং এখন রেকর্ডিং চলছে কি না তা চেক করা হচ্ছে
+      bool hasRecording = controller.recordedPath.value.isNotEmpty && !controller.isRecording.value;
+
+      return Column(
+        children: [
+          Text(
+            isVoice ? 'Hold the microphone and start answering' : 'Type your answer below',
+            textAlign: TextAlign.center,
+            style: getTextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+              color: AppColors.softPurpleDark,
+            ),
           ),
-        ),
+          20.verticalSpace,
 
-        // microphone recording
-        Obx(() {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                height: 240.h,
-                width: 240.h,
-                child: Stack(
-                  alignment: Alignment.center,
-                  clipBehavior: Clip.none,
-                  children: [
-                    if (controller.isRecording.value)
-                      ...List.generate(3, (index) {
-                        double rippleSize =
-                            140.h +
-                            (controller.amplitude.value * 90.h * (index + 0.5));
-                        return AnimatedContainer(
-                          duration: const Duration(milliseconds: 100),
-                          height: rippleSize,
-                          width: rippleSize,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: const Color(0xFF8A5CF6).withOpacity(
-                              (0.2 - (index * 0.05)).clamp(0.0, 1.0),
-                            ),
-                          ),
-                        );
-                      }),
-
-                    GestureDetector(
-                      onLongPress: () {
-                        controller.startRecording();
-                      },
-                      onLongPressUp: () {
-                        controller.stopRecording();
-                      },
-                      child: Container(
-                        height: 140.h,
-                        width: 140.h,
+          if (isVoice) ...[
+            // --- VOICE MODE UI ---
+            SizedBox(
+              height: 240.h,
+              width: 240.h,
+              child: Stack(
+                alignment: Alignment.center,
+                clipBehavior: Clip.none,
+                children: [
+                  if (controller.isRecording.value)
+                    ...List.generate(3, (index) {
+                      double rippleSize = 140.h + (controller.amplitude.value * 90.h * (index + 0.5));
+                      return AnimatedContainer(
+                        duration: const Duration(milliseconds: 100),
+                        height: rippleSize,
+                        width: rippleSize,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF8A5CF6).withOpacity(0.60),
-                              offset: const Offset(0, 4),
-                              blurRadius: 20,
-                            ),
-                          ],
-                          gradient: const LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [Color(0xFFA78BFA), Color(0xFF5835C0)],
+                          color: const Color(0xFF8A5CF6).withOpacity(
+                            (0.2 - (index * 0.05)).clamp(0.0, 1.0),
                           ),
                         ),
-                        child: Icon(
-                          controller.isRecording.value ? Icons.stop : Icons.mic,
-                          color: Colors.white,
-                          size: 50.sp,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              if (controller.isRecording.value)
-                Text(
-                  "Recording...",
-                  style: getTextStyle(
-                    color: AppColors.softBlueNormal,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-
-              if (!controller.isRecording.value)
-                Text(
-                  "Speak clearly and confidently",
-                  style: getTextStyle(
-                    color: AppColors.softBlueNormal,
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-
-              10.verticalSpace,
-
-              if (controller.recordedPath.value.isNotEmpty &&
-                  !controller.isRecording.value)
-                Column(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 16.w),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 12.w,
-                        vertical: 12.h,
-                      ),
+                      );
+                    }),
+                  GestureDetector(
+                    onLongPress: () => controller.startRecording(),
+                    onLongPressUp: () => controller.stopRecording(),
+                    child: Container(
+                      height: 140.h,
+                      width: 140.h,
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20.r),
-                        border: Border.all(color: const Color(0xFFE4DBFD)),
+                        shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFA0A0C8).withOpacity(0.1),
+                            color: const Color(0xFF8A5CF6).withOpacity(0.60),
                             offset: const Offset(0, 4),
-                            blurRadius: 10,
+                            blurRadius: 20,
                           ),
                         ],
+                        gradient: const LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [Color(0xFFA78BFA), Color(0xFF5835C0)],
+                        ),
                       ),
-                      child: Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () => controller.playRecording(),
-                            child: Container(
-                              height: 40.h,
-                              width: 40.h,
-                              decoration: const BoxDecoration(
-                                color: Color(0xFFF6F3FF),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                controller.isPlaying.value
-                                    ? Icons.pause_rounded
-                                    : Icons.play_arrow_rounded,
-                                color: const Color(0xFF5835C0),
-                                size: 28.sp,
-                              ),
-                            ),
-                          ),
-
-                          8.horizontalSpace,
-
-                          Expanded(
-                            child: SliderTheme(
-                              data: SliderThemeData(
-                                trackHeight: 4.h,
-                                thumbShape: RoundSliderThumbShape(
-                                  enabledThumbRadius: 6.r,
-                                ),
-                                activeTrackColor: const Color(0xFF8A5CF6),
-                                inactiveTrackColor: const Color(0xFFE4DBFD),
-                                thumbColor: const Color(0xFF5835C0),
-                                overlayColor: const Color(
-                                  0xFF8A5CF6,
-                                ).withOpacity(0.2),
-                              ),
-                              child: Slider(
-                                value: controller.position.value.inMilliseconds
-                                    .toDouble()
-                                    .clamp(
-                                      0.0,
-                                      controller.duration.value.inMilliseconds
-                                                  .toDouble() >
-                                              0
-                                          ? controller.duration.value.inMilliseconds
-                                                .toDouble()
-                                          : 1.0,
-                                    ),
-                                max:
-                                    controller.duration.value.inMilliseconds
-                                            .toDouble() >
-                                        0
-                                    ? controller.duration.value.inMilliseconds
-                                          .toDouble()
-                                    : 1.0,
-                                onChanged: (value) {
-                                  controller.audioPlayer.seek(
-                                    Duration(milliseconds: value.toInt()),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-
-                          Padding(
-                            padding: EdgeInsets.only(right: 8.w),
-                            child: Text(
-                              "${_formatDuration(controller.position.value)} / ${_formatDuration(controller.duration.value)}",
-                              style: getTextStyle(
-                                fontSize: 12.sp,
-                                color: const Color(0xFF6B6B8A),
-                              ),
-                            ),
-                          ),
-                        ],
+                      child: Icon(
+                        controller.isRecording.value ? Icons.stop : Icons.mic,
+                        color: Colors.white,
+                        size: 50.sp,
                       ),
                     ),
-                  ],
-                );
-              }),
-
-              20.verticalSpace,
-
-              CustomFilledButton(
-                text: 'End Practice',
-                onPressed: () {},
-              ).paddingSymmetric(horizontal: 35.w),
-
-                    20.verticalSpace,
-
-                    CustomFilledButton(
-                      text: 'Submit Answer',
-                      gradient: const LinearGradient(
-                        begin: Alignment(-0.81, -0.59),
-                        end: Alignment(0.81, 0.59),
-                        stops: [-0.1206, 0.8995],
-                        colors: [Color(0xFF72D3FF), Color(0xFF00A3EA)],
-                      ),
-                      onPressed: () {
-                        AppHelperFunctions.navigateToScreen(context, PracticeSummary());
-                      },
-                    ).paddingSymmetric(horizontal: 35.w),
-                  ],
-                ),
-              TextButton(
-                onPressed: () {},
-                child: Text(
-                  'Prefer typing instead?',
-                  style: getTextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.softPurpleNormalActive,
                   ),
-                ),
+                ],
               ),
+            ),
+            Text(
+              controller.isRecording.value ? "Recording..." : "Speak clearly and confidently",
+              style: getTextStyle(
+                color: AppColors.softBlueNormal,
+                fontSize: 12.sp,
+              ),
+            ),
+            10.verticalSpace,
 
-              30.verticalSpace,
-            ],
-          );
-        }),
-      ],
+            // রেকর্ডিং শেষ হলে প্লেয়ার দেখাবে
+            if (hasRecording) _buildAudioPlayer(),
+          ] else ...[
+            // --- TYPING MODE UI ---
+            _buildTextField(),
+          ],
+
+          30.verticalSpace,
+
+          // --- SUBMIT BUTTON LOGIC ---
+          // ভয়েস মোডে থাকলে রেকর্ডিং শেষ হলে দেখাবে, টাইপিং মোডে সবসময় দেখাবে
+          if (!isVoice || hasRecording)
+            CustomFilledButton(
+              text: 'Submit Answer',
+              gradient: const LinearGradient(
+                begin: Alignment(-0.81, -0.59),
+                end: Alignment(0.81, 0.59),
+                stops: [-0.1206, 0.8995],
+                colors: [Color(0xFF72D3FF), Color(0xFF00A3EA)],
+              ),
+              onPressed: () {
+                AppHelperFunctions.navigateToScreen(context, PracticeSummary());
+              },
+            ).paddingSymmetric(horizontal: 35.w),
+
+          30.verticalSpace,
+        ],
+      );
+    });
+  }
+
+  Widget _buildTextField() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20.w),
+      padding: EdgeInsets.all(4.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.r),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF8A5CF6).withOpacity(0.20),
+            blurRadius: 12,
+          ),
+        ],
+      ),
+      child: TextField(
+        maxLines: 5,
+        minLines: 3,
+        decoration: InputDecoration(
+          hintText: "Type your answer here...",
+          contentPadding: EdgeInsets.all(16.w),
+          border: InputBorder.none,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAudioPlayer() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.all(12.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(color: const Color(0xFFE4DBFD)),
+      ),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () => controller.playRecording(),
+            child: Icon(
+              controller.isPlaying.value ? Icons.pause_rounded : Icons.play_arrow_rounded,
+              color: const Color(0xFF5835C0),
+              size: 28.sp,
+            ),
+          ),
+          Expanded(
+            child: Slider(
+              value: controller.position.value.inMilliseconds.toDouble(),
+              max: controller.duration.value.inMilliseconds.toDouble() > 0
+                  ? controller.duration.value.inMilliseconds.toDouble()
+                  : 1.0,
+              onChanged: (value) => controller.audioPlayer.seek(Duration(milliseconds: value.toInt())),
+            ),
+          ),
+          Text(
+            "${_formatDuration(controller.position.value)} / ${_formatDuration(controller.duration.value)}",
+            style: getTextStyle(fontSize: 12.sp, color: const Color(0xFF6B6B8A)),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -1,15 +1,21 @@
 import 'package:dtc6464/core/common/styles/global_text_style.dart';
 import 'package:dtc6464/core/utils/constants/icon_path.dart';
+import 'package:dtc6464/core/utils/helpers/app_helper.dart';
+import 'package:dtc6464/features/bottom_nav_bar/controller/bottom_nav_bar_conroller.dart';
 import 'package:dtc6464/features/practice/views/screens/select_interview.dart';
+import 'package:dtc6464/features/pro_tips/views/screens/pro_tips_screen.dart';
 import 'package:dtc6464/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 
 class QuickAction extends StatelessWidget {
-  const QuickAction({super.key});
-
+  QuickAction({super.key});
+  
+  final BottomNavBarController controller = Get.find<BottomNavBarController>();
+  
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -30,7 +36,7 @@ class QuickAction extends StatelessWidget {
           children: [
             Expanded(
               child: GestureDetector(
-                onTap: () => Get.to(() => SelectInterview()),
+                onTap: () => controller.jumpToScreen(2),
                 child: ActionCard(
                   icon: IconPath.micColor,
                   title: "Start Practice",
@@ -49,7 +55,7 @@ class QuickAction extends StatelessWidget {
 
             Expanded(
               child: GestureDetector(
-                onTap: () => Get.toNamed(AppRoute.proTipsScreen),
+                onTap: () => AppHelperFunctions.navigateToScreen(context, ProTipsScreen()),
                 child: ActionCard(
                   icon: IconPath.bulb,
                   title: "Pro Tips",
@@ -70,9 +76,9 @@ class QuickAction extends StatelessWidget {
           children: [
             Expanded(
               child: GestureDetector(
-                onTap: () => Get.toNamed(AppRoute.learningRoadmapScreen),
+                onTap: () => controller.jumpToScreen(3),
                 child: ActionCard(
-                  icon: IconPath.micColor,
+                  icon: IconPath.group,
                   title: "Learning Roadmap",
                   subtitle: "Skill development",
                   subTitleColor: const Color(0xFFEC4899),
@@ -89,9 +95,9 @@ class QuickAction extends StatelessWidget {
 
             Expanded(
               child: GestureDetector(
-                onTap: () => Get.toNamed(AppRoute.interviewPlannerScreen),
+                onTap: () => controller.jumpToScreen(1),
                 child: ActionCard(
-                  icon: IconPath.micColor,
+                  icon: IconPath.planner,
                   title: "Interview Planner",
                   subtitle: "Schedule & track",
                   subTitleColor: const Color(0xFF8A5CF6),

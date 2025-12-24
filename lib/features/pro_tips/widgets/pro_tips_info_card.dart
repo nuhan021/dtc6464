@@ -1,3 +1,4 @@
+import 'package:dtc6464/core/utils/constants/icon_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -38,9 +39,9 @@ class ProTipsInfoCard extends StatelessWidget {
               color: AppColors.softPurpleNormal.withValues(alpha: 0.1),
             ),
             child: Center(
-              child: Icon(
-                Icons.lightbulb,
-                size: 48.w,
+              child: Image.asset(
+                IconPath.bulb,
+                height: 48.w,
                 color: const Color(0xFFFFA500),
               ),
             ),
