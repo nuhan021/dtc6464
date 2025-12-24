@@ -9,6 +9,7 @@ import 'package:dtc6464/features/nav_screens/profile/view_profile/views/screens/
 import 'package:dtc6464/features/onboarding/views/screens/avatar_selection_screen.dart';
 import 'package:dtc6464/features/onboarding/views/screens/enter_name_screen.dart';
 import 'package:dtc6464/features/pro_tips/views/screens/pro_tips_screen.dart';
+import 'package:dtc6464/features/view_notifications/views/screens/view_notifications_screen.dart';
 import 'package:get/get.dart';
 
 import '../features/auth/views/screens/reset_password_screen.dart';
@@ -42,6 +43,7 @@ class AppRoute {
   static String learningRoadmapScreen = "/learningRoadmapScreen";
   static String interviewPlannerScreen = "/interviewPlannerScreen";
   static String addInterviewScreen = "/addInterviewScreen";
+  static String viewNotificationsScreen = "/viewNotificationsScreen";
 
   static String getSplashScreen() => splashScreen;
   static String getOnboardingScreen1() => onboardingScreen1;
@@ -63,6 +65,7 @@ class AppRoute {
   static String getLearningRoadmapScreen() => learningRoadmapScreen;
   static String getInterviewPlannerScreen() => interviewPlannerScreen;
   static String getAddInterviewScreen() => addInterviewScreen;
+  static String getViewNotificationsScreen() => viewNotificationsScreen;
 
   static List<GetPage> routes = [
     GetPage(name: splashScreen, page: () => const SplashScreen()),
@@ -85,5 +88,9 @@ class AppRoute {
     GetPage(name: learningRoadmapScreen, page: () => LearningRoadmapScreen()),
     GetPage(name: interviewPlannerScreen, page: () => InterviewPlannerScreen()),
     GetPage(name: addInterviewScreen, page: () => AddInterviewScreen()),
+    GetPage(
+      name: viewNotificationsScreen,
+      page: () => ViewNotificationsScreen(),
+    ),
   ];
 }

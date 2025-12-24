@@ -37,14 +37,6 @@ class _AddInterviewScreenState extends State<AddInterviewScreen> {
             color: const Color(0xFF111827),
           ),
         ),
-        leading: GestureDetector(
-          onTap: () => Get.back(),
-          child: Icon(
-            Icons.arrow_back_ios_new,
-            size: 18.w,
-            color: const Color(0xFF111827),
-          ),
-        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
