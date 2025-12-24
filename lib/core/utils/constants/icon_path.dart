@@ -54,4 +54,7 @@ class IconPath {
   static const String weeklyProgressIcon =
       'assets/icon/weekly_progress_icon.png';
   static const String tipsIcon = 'assets/icon/tips_icon.png';
+  static const String strength = 'assets/icon/strength.png';
+  static const String bulbUpdated = 'assets/icon/bulb_updated.png';
+  static const String ai2 = 'assets/icon/ai2.png';
 }

@@ -1,6 +1,5 @@
 import 'package:dtc6464/features/bottom_nav_bar/controller/bottom_nav_bar_conroller.dart';
 import 'package:dtc6464/features/home/views/screens/home_screen.dart';
-import 'package:dtc6464/features/nav_screens/profile/views/screens/profile_screen.dart';
 import 'package:dtc6464/features/practice/views/screens/select_interview.dart';
 import 'package:dtc6464/features/nav_screens/profile/view_profile/views/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
