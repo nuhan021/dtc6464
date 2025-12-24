@@ -1,5 +1,5 @@
 import 'package:dtc6464/features/auth/views/screens/sign_in_screen.dart';
-import 'package:dtc6464/features/nav_screens/profile/views/screens/profile_screen.dart';
+import 'package:dtc6464/features/nav_screens/profile/view_profile/views/screens/profile_screen.dart';
 import 'package:dtc6464/features/onboarding/views/screens/avatar_selection_screen.dart';
 import 'package:dtc6464/features/onboarding/views/screens/enter_name_screen.dart';
 import 'package:get/get.dart';

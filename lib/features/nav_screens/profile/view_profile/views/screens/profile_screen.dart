@@ -1,9 +1,9 @@
 import 'package:dtc6464/core/utils/constants/icon_path.dart';
 import 'package:dtc6464/features/background/views/widgets/background.dart';
-import 'package:dtc6464/features/nav_screens/profile/controllers/profile_controller.dart';
-import 'package:dtc6464/features/nav_screens/profile/widgets/logout_button.dart';
-import 'package:dtc6464/features/nav_screens/profile/widgets/profile_card.dart';
-import 'package:dtc6464/features/nav_screens/profile/widgets/profile_menu_item.dart';
+import 'package:dtc6464/features/nav_screens/profile/view_profile/controllers/profile_controller.dart';
+import 'package:dtc6464/features/nav_screens/profile/view_profile/widgets/logout_button.dart';
+import 'package:dtc6464/features/nav_screens/profile/view_profile/widgets/profile_card.dart';
+import 'package:dtc6464/features/nav_screens/profile/view_profile/widgets/profile_menu_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
