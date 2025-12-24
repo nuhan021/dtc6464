@@ -1,10 +1,15 @@
 import 'package:dtc6464/features/auth/views/screens/sign_in_screen.dart';
+import 'package:dtc6464/features/interview_planner/views/screens/add_interview_screen.dart';
+import 'package:dtc6464/features/interview_planner/views/screens/interview_planner_screen.dart';
+import 'package:dtc6464/features/learning_roadmap/views/screens/learning_roadmap_screen.dart';
 import 'package:dtc6464/features/nav_screens/profile/history/views/screens/history_screen.dart';
 import 'package:dtc6464/features/nav_screens/profile/notifications/views/screens/notifications_screen.dart';
 import 'package:dtc6464/features/nav_screens/profile/statistics/views/screens/statistics_screen.dart';
 import 'package:dtc6464/features/nav_screens/profile/view_profile/views/screens/profile_screen.dart';
 import 'package:dtc6464/features/onboarding/views/screens/avatar_selection_screen.dart';
 import 'package:dtc6464/features/onboarding/views/screens/enter_name_screen.dart';
+import 'package:dtc6464/features/pro_tips/views/screens/pro_tips_screen.dart';
+import 'package:dtc6464/features/view_notifications/views/screens/view_notifications_screen.dart';
 import 'package:get/get.dart';
 
 import '../features/auth/views/screens/reset_password_screen.dart';
@@ -34,6 +39,11 @@ class AppRoute {
   static String statisticsScreen = "/statisticsScreen";
   static String notificationsScreen = "/notificationsScreen";
   static String historyScreen = "/historyScreen";
+  static String proTipsScreen = "/proTipsScreen";
+  static String learningRoadmapScreen = "/learningRoadmapScreen";
+  static String interviewPlannerScreen = "/interviewPlannerScreen";
+  static String addInterviewScreen = "/addInterviewScreen";
+  static String viewNotificationsScreen = "/viewNotificationsScreen";
 
   static String getSplashScreen() => splashScreen;
   static String getOnboardingScreen1() => onboardingScreen1;
@@ -51,6 +61,11 @@ class AppRoute {
   static String getStatisticsScreen() => statisticsScreen;
   static String getNotificationsScreen() => notificationsScreen;
   static String getHistoryScreen() => historyScreen;
+  static String getProTipsScreen() => proTipsScreen;
+  static String getLearningRoadmapScreen() => learningRoadmapScreen;
+  static String getInterviewPlannerScreen() => interviewPlannerScreen;
+  static String getAddInterviewScreen() => addInterviewScreen;
+  static String getViewNotificationsScreen() => viewNotificationsScreen;
 
   static List<GetPage> routes = [
     GetPage(name: splashScreen, page: () => const SplashScreen()),
@@ -69,5 +84,13 @@ class AppRoute {
     GetPage(name: statisticsScreen, page: () => StatisticsScreen()),
     GetPage(name: notificationsScreen, page: () => NotificationsScreen()),
     GetPage(name: historyScreen, page: () => HistoryScreen()),
+    GetPage(name: proTipsScreen, page: () => ProTipsScreen()),
+    GetPage(name: learningRoadmapScreen, page: () => LearningRoadmapScreen()),
+    GetPage(name: interviewPlannerScreen, page: () => InterviewPlannerScreen()),
+    GetPage(name: addInterviewScreen, page: () => AddInterviewScreen()),
+    GetPage(
+      name: viewNotificationsScreen,
+      page: () => ViewNotificationsScreen(),
+    ),
   ];
 }
