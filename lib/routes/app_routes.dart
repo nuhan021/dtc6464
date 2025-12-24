@@ -1,4 +1,5 @@
 import 'package:dtc6464/features/auth/views/screens/sign_in_screen.dart';
+import 'package:dtc6464/features/learning_roadmap/views/screens/learning_roadmap_screen.dart';
 import 'package:dtc6464/features/nav_screens/profile/history/views/screens/history_screen.dart';
 import 'package:dtc6464/features/nav_screens/profile/notifications/views/screens/notifications_screen.dart';
 import 'package:dtc6464/features/nav_screens/profile/statistics/views/screens/statistics_screen.dart';
@@ -36,6 +37,7 @@ class AppRoute {
   static String notificationsScreen = "/notificationsScreen";
   static String historyScreen = "/historyScreen";
   static String proTipsScreen = "/proTipsScreen";
+  static String learningRoadmapScreen = "/learningRoadmapScreen";
 
   static String getSplashScreen() => splashScreen;
   static String getOnboardingScreen1() => onboardingScreen1;
@@ -54,6 +56,7 @@ class AppRoute {
   static String getNotificationsScreen() => notificationsScreen;
   static String getHistoryScreen() => historyScreen;
   static String getProTipsScreen() => proTipsScreen;
+  static String getLearningRoadmapScreen() => learningRoadmapScreen;
 
   static List<GetPage> routes = [
     GetPage(name: splashScreen, page: () => const SplashScreen()),
@@ -73,5 +76,6 @@ class AppRoute {
     GetPage(name: notificationsScreen, page: () => NotificationsScreen()),
     GetPage(name: historyScreen, page: () => HistoryScreen()),
     GetPage(name: proTipsScreen, page: () => ProTipsScreen()),
+    GetPage(name: learningRoadmapScreen, page: () => LearningRoadmapScreen()),
   ];
 }
