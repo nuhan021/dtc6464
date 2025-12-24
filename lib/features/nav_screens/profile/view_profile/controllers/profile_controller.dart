@@ -1,3 +1,4 @@
+import 'package:dtc6464/routes/app_routes.dart';
 import 'package:get/get.dart';
 
 class ProfileController extends GetxController {
@@ -5,20 +6,19 @@ class ProfileController extends GetxController {
   Rx<String> userAvatar = 'https://placehold.co/61x61'.obs;
 
   void logout() {
-    // TODO: Implement actual logout logic
     Get.snackbar('Logout', 'Logging out...');
   }
 
   void navigateToStatistics() {
-    Get.snackbar('Statistics', 'Navigating to statistics...');
+    Get.toNamed(AppRoute.statisticsScreen);
   }
 
   void navigateToNotifications() {
-    Get.snackbar('Notifications', 'Navigating to notifications...');
+    Get.toNamed(AppRoute.notificationsScreen);
   }
 
   void navigateToHistory() {
-    Get.snackbar('History', 'Navigating to history...');
+    Get.toNamed(AppRoute.historyScreen);
   }
 
   void navigateToEditProfile() {

@@ -1,4 +1,7 @@
 import 'package:dtc6464/features/auth/views/screens/sign_in_screen.dart';
+import 'package:dtc6464/features/nav_screens/profile/history/views/screens/history_screen.dart';
+import 'package:dtc6464/features/nav_screens/profile/notifications/views/screens/notifications_screen.dart';
+import 'package:dtc6464/features/nav_screens/profile/statistics/views/screens/statistics_screen.dart';
 import 'package:dtc6464/features/nav_screens/profile/view_profile/views/screens/profile_screen.dart';
 import 'package:dtc6464/features/onboarding/views/screens/avatar_selection_screen.dart';
 import 'package:dtc6464/features/onboarding/views/screens/enter_name_screen.dart';
@@ -28,6 +31,9 @@ class AppRoute {
   static String avatarSelectionScreen = "/avatarSelectionScreen";
   static String bottomNavBar = "/bottomNavBar";
   static String profileScreen = "/profileScreen";
+  static String statisticsScreen = "/statisticsScreen";
+  static String notificationsScreen = "/notificationsScreen";
+  static String historyScreen = "/historyScreen";
 
   static String getSplashScreen() => splashScreen;
   static String getOnboardingScreen1() => onboardingScreen1;
@@ -42,6 +48,9 @@ class AppRoute {
   static String getAvatarSelectionScreen() => avatarSelectionScreen;
   static String getBottomNavBar() => bottomNavBar;
   static String getProfileScreen() => profileScreen;
+  static String getStatisticsScreen() => statisticsScreen;
+  static String getNotificationsScreen() => notificationsScreen;
+  static String getHistoryScreen() => historyScreen;
 
   static List<GetPage> routes = [
     GetPage(name: splashScreen, page: () => const SplashScreen()),
@@ -57,5 +66,8 @@ class AppRoute {
     GetPage(name: avatarSelectionScreen, page: () => AvatarSelectionScreen()),
     GetPage(name: bottomNavBar, page: () => BottomNavBarScreen()),
     GetPage(name: profileScreen, page: () => ProfileScreen()),
+    GetPage(name: statisticsScreen, page: () => StatisticsScreen()),
+    GetPage(name: notificationsScreen, page: () => NotificationsScreen()),
+    GetPage(name: historyScreen, page: () => HistoryScreen()),
   ];
 }
