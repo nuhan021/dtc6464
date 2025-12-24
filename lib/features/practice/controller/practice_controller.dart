@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
+import 'package:flutter/services.dart';
 
 class PracticeController extends GetxController {
   late AudioRecorder audioRecorder;
@@ -18,6 +19,7 @@ class PracticeController extends GetxController {
   var isPlaying = false.obs;
   var position = Duration.zero.obs;
   var duration = Duration.zero.obs;
+  RxString inputType = 'voice'.obs;
 
   StreamSubscription<Amplitude>? _amplitudeSubscription;
   StreamSubscription<Duration>? _posSub;
@@ -48,6 +50,7 @@ class PracticeController extends GetxController {
   void selectTopic(String topic) => selectedTopic.value = topic;
 
   Future<void> startRecording() async {
+    await HapticFeedback.mediumImpact();
     try {
       if (!await audioRecorder.hasPermission()) return;
 
