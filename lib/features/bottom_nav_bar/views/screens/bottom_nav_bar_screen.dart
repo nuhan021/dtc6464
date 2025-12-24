@@ -25,11 +25,25 @@ class BottomNavBarScreen extends StatelessWidget {
     ];
   }
 
+  Widget _buildIcon(String iconPath, int tabIndex) {
+    return Obx(
+      () => ColorFiltered(
+        colorFilter: ColorFilter.mode(
+          controller.currentIndex.value == tabIndex
+              ? AppColors.softPurpleNormal
+              : AppColors.lightGreyNormal,
+          BlendMode.srcIn,
+        ),
+        child: Image.asset(iconPath, width: 20.w),
+      ),
+    );
+  }
+
   List<PersistentTabConfig> _tabs() => [
     PersistentTabConfig(
       screen: _buildScreens()[0],
       item: ItemConfig(
-        icon: Image.asset(IconPath.home, width: 20.w), // Obx রিমোভ করা হয়েছে
+        icon: _buildIcon(IconPath.home, 0),
         title: "Home",
         textStyle: getTextStyle(fontSize: 10.sp, fontWeight: FontWeight.w500),
         activeForegroundColor: AppColors.softPurpleNormal,
@@ -40,7 +54,7 @@ class BottomNavBarScreen extends StatelessWidget {
     PersistentTabConfig(
       screen: _buildScreens()[1],
       item: ItemConfig(
-        icon: Image.asset(IconPath.calender, width: 20.w),
+        icon: _buildIcon(IconPath.calender, 1),
         title: "Planer",
         textStyle: getTextStyle(fontSize: 10.sp, fontWeight: FontWeight.w500),
         activeForegroundColor: AppColors.softPurpleNormal,
@@ -51,7 +65,7 @@ class BottomNavBarScreen extends StatelessWidget {
     PersistentTabConfig(
       screen: _buildScreens()[2],
       item: ItemConfig(
-        icon: Image.asset(IconPath.microphone, width: 20.w),
+        icon: _buildIcon(IconPath.microphone, 2),
         title: "Practice",
         textStyle: getTextStyle(fontSize: 10.sp, fontWeight: FontWeight.w500),
         activeForegroundColor: AppColors.softPurpleNormal,
@@ -62,7 +76,7 @@ class BottomNavBarScreen extends StatelessWidget {
     PersistentTabConfig(
       screen: _buildScreens()[3],
       item: ItemConfig(
-        icon: Image.asset(IconPath.location, width: 20.w),
+        icon: _buildIcon(IconPath.location, 3),
         title: "Roadmap",
         textStyle: getTextStyle(fontSize: 10.sp, fontWeight: FontWeight.w500),
         activeForegroundColor: AppColors.softPurpleNormal,
@@ -73,7 +87,7 @@ class BottomNavBarScreen extends StatelessWidget {
     PersistentTabConfig(
       screen: _buildScreens()[4],
       item: ItemConfig(
-        icon: Image.asset(IconPath.profile, width: 20.w),
+        icon: _buildIcon(IconPath.profile, 4),
         title: "Profile",
         textStyle: getTextStyle(fontSize: 10.sp, fontWeight: FontWeight.w500),
         activeForegroundColor: AppColors.softPurpleNormal,
