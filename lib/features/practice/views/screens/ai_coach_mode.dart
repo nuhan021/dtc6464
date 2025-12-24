@@ -25,7 +25,7 @@ class AiCoachMode extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
-          centerTitle: false,
+          centerTitle: true,
           title: Text(
             'Al Coach Mode',
             style: getTextStyle(
@@ -35,15 +35,15 @@ class AiCoachMode extends StatelessWidget {
             ),
           ),
 
-          actions: [
-            InkWell(
-              onTap: () {},
-              child: Image.asset(
-                IconPath.bell,
-                height: 30.h,
-              ).paddingOnly(right: 15.w),
-            ),
-          ],
+          // actions: [
+          //   InkWell(
+          //     onTap: () {},
+          //     child: Image.asset(
+          //       IconPath.bell,
+          //       height: 30.h,
+          //     ).paddingOnly(right: 15.w),
+          //   ),
+          // ],
         ),
 
         body: SingleChildScrollView(
@@ -421,6 +421,16 @@ class VoiceNote extends StatelessWidget {
                         ],
                       ),
                     ),
+                  ],
+                );
+              }),
+
+              20.verticalSpace,
+
+              CustomFilledButton(
+                text: 'End Practice',
+                onPressed: () {},
+              ).paddingSymmetric(horizontal: 35.w),
 
                     20.verticalSpace,
 
@@ -438,6 +448,19 @@ class VoiceNote extends StatelessWidget {
                     ).paddingSymmetric(horizontal: 35.w),
                   ],
                 ),
+              TextButton(
+                onPressed: () {},
+                child: Text(
+                  'Prefer typing instead?',
+                  style: getTextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.softPurpleNormalActive,
+                  ),
+                ),
+              ),
+
+              30.verticalSpace,
             ],
           );
         }),

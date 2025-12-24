@@ -4,7 +4,6 @@ import 'package:dtc6464/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -14,7 +13,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -39,13 +37,12 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
             // logo
-            Image.asset(ImagePath.logo, width: 120.w,),
+            Image.asset(ImagePath.logo, width: 120.w),
 
             30.verticalSpace,
             // text logo
-            Image.asset(ImagePath.textLogo, width: 191.w,),
+            Image.asset(ImagePath.textLogo, width: 191.w),
           ],
         ),
       ),

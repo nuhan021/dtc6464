@@ -1,6 +1,8 @@
 import 'package:dtc6464/features/bottom_nav_bar/controller/bottom_nav_bar_conroller.dart';
 import 'package:dtc6464/features/home/views/screens/home_screen.dart';
 import 'package:dtc6464/features/practice/views/screens/select_interview.dart';
+import 'package:dtc6464/features/interview_planner/views/screens/interview_planner_screen.dart';
+import 'package:dtc6464/features/learning_roadmap/views/screens/learning_roadmap_screen.dart';
 import 'package:dtc6464/features/nav_screens/profile/view_profile/views/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,9 +21,9 @@ class BottomNavBarScreen extends StatelessWidget {
   List<Widget> _buildScreens() {
     return [
       const HomeScreen(),
-      const Placeholder(),
+      const InterviewPlannerScreen(),
       SelectInterview(),
-      const Placeholder(),
+      const LearningRoadmapScreen(),
       const ProfileScreen(),
     ];
   }

@@ -1,7 +1,11 @@
 import 'package:dtc6464/core/common/styles/global_text_style.dart';
 import 'package:dtc6464/core/utils/constants/icon_path.dart';
+import 'package:dtc6464/features/practice/views/screens/select_interview.dart';
+import 'package:dtc6464/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 
 class QuickAction extends StatelessWidget {
   const QuickAction({super.key});
@@ -25,15 +29,18 @@ class QuickAction extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: ActionCard(
-                icon: IconPath.micColor,
-                title: "Start Practice",
-                subtitle: "AI-powered Q&A",
-                subTitleColor: const Color(0xFF2D97C6),
-                gradient: const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Color(0xFFD0F1FF), Color(0xFFB3E8FF)],
+              child: GestureDetector(
+                onTap: () => Get.to(SelectInterview()),
+                child: ActionCard(
+                  icon: IconPath.micColor,
+                  title: "Start Practice",
+                  subtitle: "AI-powered Q&A",
+                  subTitleColor: const Color(0xFF2D97C6),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Color(0xFFD0F1FF), Color(0xFFB3E8FF)],
+                  ),
                 ),
               ),
             ),
@@ -41,18 +48,18 @@ class QuickAction extends StatelessWidget {
             8.horizontalSpace,
 
             Expanded(
-              child: ActionCard(
-                icon: IconPath.bulb,
-                title: "Pro Tips",
-                subtitle: "Expert advice",
-                subTitleColor: const Color(0xFFF97316),
-                gradient: const LinearGradient(
-                  begin: Alignment.topCenter,    // 0%
-                  end: Alignment.bottomCenter, // 100%
-                  colors: [
-                    Color(0xFFFFDDC8),
-                    Color(0xFFFFECC3),
-                  ],
+              child: GestureDetector(
+                onTap: () => Get.toNamed(AppRoute.proTipsScreen),
+                child: ActionCard(
+                  icon: IconPath.bulb,
+                  title: "Pro Tips",
+                  subtitle: "Expert advice",
+                  subTitleColor: const Color(0xFFF97316),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topCenter, // 0%
+                    end: Alignment.bottomCenter, // 100%
+                    colors: [Color(0xFFFFDDC8), Color(0xFFFFECC3)],
+                  ),
                 ),
               ),
             ),
@@ -62,18 +69,18 @@ class QuickAction extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: ActionCard(
-                icon: IconPath.micColor,
-                title: "Learning Roadmap",
-                subtitle: "Skill development",
-                subTitleColor: const Color(0xFFEC4899),
-                gradient: const LinearGradient(
-                  begin: Alignment.topCenter,    // 0%
-                  end: Alignment.bottomCenter, // 100%
-                  colors: [
-                    Color(0xFFFFD4D9),
-                    Color(0xFFFFC8E3),
-                  ],
+              child: GestureDetector(
+                onTap: () => Get.toNamed(AppRoute.learningRoadmapScreen),
+                child: ActionCard(
+                  icon: IconPath.micColor,
+                  title: "Learning Roadmap",
+                  subtitle: "Skill development",
+                  subTitleColor: const Color(0xFFEC4899),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topCenter, // 0%
+                    end: Alignment.bottomCenter, // 100%
+                    colors: [Color(0xFFFFD4D9), Color(0xFFFFC8E3)],
+                  ),
                 ),
               ),
             ),
@@ -81,18 +88,18 @@ class QuickAction extends StatelessWidget {
             8.horizontalSpace,
 
             Expanded(
-              child: ActionCard(
-                icon: IconPath.micColor,
-                title: "Interview Planner",
-                subtitle: "Schedule & track",
-                subTitleColor: const Color(0xFF8A5CF6),
-                gradient: const LinearGradient(
-                  begin: Alignment.topCenter,    // 0%
-                  end: Alignment.bottomCenter, // 100%
-                  colors: [
-                    Color(0xFFDFD3FD),
-                    Color(0xFFCED3FF),
-                  ],
+              child: GestureDetector(
+                onTap: () => Get.toNamed(AppRoute.interviewPlannerScreen),
+                child: ActionCard(
+                  icon: IconPath.micColor,
+                  title: "Interview Planner",
+                  subtitle: "Schedule & track",
+                  subTitleColor: const Color(0xFF8A5CF6),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topCenter, // 0%
+                    end: Alignment.bottomCenter, // 100%
+                    colors: [Color(0xFFDFD3FD), Color(0xFFCED3FF)],
+                  ),
                 ),
               ),
             ),
@@ -109,7 +116,8 @@ class ActionCard extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.subtitle,
-    required this.gradient, required this.subTitleColor,
+    required this.gradient,
+    required this.subTitleColor,
   });
 
   final String icon;
