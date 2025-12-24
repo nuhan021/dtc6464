@@ -1,5 +1,6 @@
 import 'package:dtc6464/core/common/styles/global_text_style.dart';
 import 'package:dtc6464/core/utils/constants/icon_path.dart';
+import 'package:dtc6464/features/practice/views/screens/select_interview.dart';
 import 'package:dtc6464/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -29,7 +30,7 @@ class QuickAction extends StatelessWidget {
           children: [
             Expanded(
               child: GestureDetector(
-                onTap: () => {},
+                onTap: () => Get.to(SelectInterview()),
                 child: ActionCard(
                   icon: IconPath.micColor,
                   title: "Start Practice",
