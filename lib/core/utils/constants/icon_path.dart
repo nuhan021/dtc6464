@@ -43,4 +43,15 @@ class IconPath {
   static const String bell = 'assets/icon/bell.png';
   static const String arrows = 'assets/icon/arrows.png';
   static const String users = 'assets/icon/users.png';
+  static const String profileEditIcon = 'assets/icon/profile_edit_icon.png';
+  static const String statisticsIcon = 'assets/icon/statistics_icon.png';
+  static const String notificationsIcon = 'assets/icon/notifications_icon.png';
+  static const String historyIcon = 'assets/icon/history_icon.png';
+  static const String practiceReminderIcon =
+      'assets/icon/practice_reminder_icon.png';
+  static const String interviewReminderIcon =
+      'assets/icon/interview_reminder_icon.png';
+  static const String weeklyProgressIcon =
+      'assets/icon/weekly_progress_icon.png';
+  static const String tipsIcon = 'assets/icon/tips_icon.png';
 }

@@ -16,27 +16,21 @@ class ControllerBinder extends Bindings {
     );
 
     Get.lazyPut<CollectInfoController>(
-          () => CollectInfoController(),
+      () => CollectInfoController(),
       // fenix: true,
     );
 
-    Get.lazyPut<SignInController>(
-          () => SignInController(),
-      fenix: true,
-    );
+    Get.lazyPut<SignInController>(() => SignInController(), fenix: true);
 
-    Get.lazyPut<SignUpController>(
-          () => SignUpController(),
-      fenix: true,
-    );
+    Get.lazyPut<SignUpController>(() => SignUpController(), fenix: true);
 
     Get.lazyPut<ResetPasswordController>(
-          () => ResetPasswordController(),
+      () => ResetPasswordController(),
       fenix: true,
     );
 
     Get.lazyPut<HomeScreenController>(
-          () => HomeScreenController(),
+      () => HomeScreenController(),
       fenix: true,
     );
 
