@@ -30,7 +30,7 @@ class QuickAction extends StatelessWidget {
           children: [
             Expanded(
               child: GestureDetector(
-                onTap: () => Get.to(SelectInterview()),
+                onTap: () => Get.to(() => SelectInterview()),
                 child: ActionCard(
                   icon: IconPath.micColor,
                   title: "Start Practice",
