@@ -53,9 +53,15 @@ class InterviewCardActionButtons extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  begin: Alignment(0.00, 0.50),
-                  end: Alignment(1.00, 0.50),
-                  colors: [Color(0xFFA78BFA), Color(0xFF5734C0)],
+                  // begin and end points approximate the 114-degree angle
+                  begin: Alignment(-0.7, -0.8),
+                  end: Alignment(0.7, 0.8),
+                  colors: [
+                    Color(0xFFA78BFA), // #A78BFA at 15.41%
+                    Color(0xFF5835C0), // #5835C0 at 84.59%
+                  ],
+                  // stops define the exact percentages for the color transition
+                  stops: [0.1541, 0.8459],
                 ),
                 borderRadius: BorderRadius.circular(8.r),
               ),

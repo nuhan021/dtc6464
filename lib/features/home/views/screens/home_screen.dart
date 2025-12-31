@@ -325,7 +325,15 @@ class Practice extends StatelessWidget {
             width: double.maxFinite,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.r),
-              color: AppColors.softPurpleNormal,
+              gradient: const LinearGradient(
+                begin: Alignment(-0.7, -0.8), // Approx 114 degrees
+                end: Alignment(0.7, 0.8),
+                colors: [
+                  Color(0xFFA78BFA), // #A78BFA (15.41%)
+                  Color(0xFF5835C0), // #5835C0 (84.59%)
+                ],
+                stops: [0.1541, 0.8459],
+              ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
