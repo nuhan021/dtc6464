@@ -117,20 +117,24 @@ class PracticeSummary extends StatelessWidget {
                 width: 140.h,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(1000.r),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0xFFFFDDC8), // #FFDDC8 at 0%
+                      Color(0xFFFFECC3), // #FFECC3 at 100%
+                    ],
+                  ),
+
+                  // 3. Box Shadow: 0 4px 20px 0 #FFD2B3
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF38BDF8).withOpacity(0.40),
-                      offset: const Offset(0, 4),
-                      blurRadius: 20,
-                      spreadRadius: 0,
+                      color: const Color(0xFFFFD2B3), // Shadow color
+                      offset: const Offset(0, 4),    // x: 0, y: 4
+                      blurRadius: 20,                // blur: 20
+                      spreadRadius: 0,               // spread: 0
                     ),
                   ],
-                  gradient: const LinearGradient(
-                    begin: Alignment(-0.81, -0.59),
-                    end: Alignment(0.81, 0.59),
-                    stops: [-0.1206, 0.8995],
-                    colors: [Color(0xFF72D3FF), Color(0xFF00A3EA)],
-                  ),
                 ),
                 alignment: Alignment.center,
                 child: Text(
@@ -138,7 +142,7 @@ class PracticeSummary extends StatelessWidget {
                   style: getTextStyle(
                     fontSize: 28.sp,
                     fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                    color: const Color(0xFFF97316),
                   ),
                 ),
               ),
@@ -150,7 +154,7 @@ class PracticeSummary extends StatelessWidget {
                 style: getTextStyle(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w500,
-                  color: AppColors.softPurpleNormal
+                  color:  const Color(0xFFF97316)
                 ),
               ),
 
@@ -315,11 +319,14 @@ class PracticeSummary extends StatelessWidget {
               CustomFilledButton(
                 text: 'View Detailed Feedback',
                 gradient: const LinearGradient(
-                  begin: Alignment(-0.81, -0.59),
-                  end: Alignment(0.81, 0.59),
-                  stops: [-0.1206, 0.8995],
-                  colors: [Color(0xFF72D3FF), Color(0xFF00A3EA)],
+                  begin: Alignment.topCenter,    // 0% - #FFDDC8
+                  end: Alignment.bottomCenter, // 100% - #FFECC3
+                  colors: [
+                    Color(0xFFFFDDC8),
+                    Color(0xFFFFECC3),
+                  ],
                 ),
+                textColor: const Color(0xFFF97316),
                 onPressed: () {
                   AppHelperFunctions.navigateToScreen(context, ViewDetailedFeedbackScreen());
                 },

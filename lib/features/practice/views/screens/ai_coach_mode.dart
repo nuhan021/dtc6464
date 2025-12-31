@@ -96,6 +96,57 @@ class AiCoachMode extends StatelessWidget {
                         color: AppColors.softPurpleDark,
                       ),
                     ),
+
+                    12.verticalSpace,
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h), // Adjust padding as needed
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.r),
+                            color: const Color(0xFFE4DBFD),
+                          ),
+                          child: Row(
+                            children: [
+                              Image.asset(IconPath.microphone, height: 18.h, color: const Color(0xFF866FC8),),
+                              5.horizontalSpace,
+                              Text(
+                                'Play Audio',
+                                style: getTextStyle(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: const Color(0xFF2D333B)
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        10.horizontalSpace,
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h), // Adjust padding as needed
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.r),
+                            color: const Color(0xFFFFEDE2),
+                          ),
+                          child: Row(
+                            children: [
+                              Image.asset(IconPath.bulb, height: 18.h, color: const Color(0xFFF97316),),
+                              5.horizontalSpace,
+                              Text(
+                                'Details',
+                                style: getTextStyle(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: const Color(0xFF2D333B)
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -146,11 +197,14 @@ class AiCoachMode extends StatelessWidget {
                       CustomFilledButton(
                         text: 'Submit Answer',
                         gradient: const LinearGradient(
-                          begin: Alignment(-0.81, -0.59),
-                          end: Alignment(0.81, 0.59),
-                          stops: [-0.1206, 0.8995],
-                          colors: [Color(0xFF72D3FF), Color(0xFF00A3EA)],
+                          begin: Alignment.topCenter,    // 0% - #FFDDC8
+                          end: Alignment.bottomCenter, // 100% - #FFECC3
+                          colors: [
+                            Color(0xFFFFDDC8),
+                            Color(0xFFFFECC3),
+                          ],
                         ),
+                        textColor: const Color(0xFFF97316),
                         onPressed: () {
                           AppHelperFunctions.navigateToScreen(
                             context,
@@ -312,7 +366,7 @@ class VoiceNote extends StatelessWidget {
             ),
             10.verticalSpace,
 
-            // রেকর্ডিং শেষ হলে প্লেয়ার দেখাবে
+
             if (hasRecording) _buildAudioPlayer(),
           ] else ...[
             // --- TYPING MODE UI ---
@@ -322,16 +376,18 @@ class VoiceNote extends StatelessWidget {
           30.verticalSpace,
 
           // --- SUBMIT BUTTON LOGIC ---
-          // ভয়েস মোডে থাকলে রেকর্ডিং শেষ হলে দেখাবে, টাইপিং মোডে সবসময় দেখাবে
           if (!isVoice || hasRecording)
             CustomFilledButton(
               text: 'Submit Answer',
               gradient: const LinearGradient(
-                begin: Alignment(-0.81, -0.59),
-                end: Alignment(0.81, 0.59),
-                stops: [-0.1206, 0.8995],
-                colors: [Color(0xFF72D3FF), Color(0xFF00A3EA)],
+                begin: Alignment.topCenter,    // 0% - #FFDDC8
+                end: Alignment.bottomCenter, // 100% - #FFECC3
+                colors: [
+                  Color(0xFFFFDDC8),
+                  Color(0xFFFFECC3),
+                ],
               ),
+              textColor: const Color(0xFFF97316),
               onPressed: () {
                 AppHelperFunctions.navigateToScreen(context, PracticeSummary());
               },

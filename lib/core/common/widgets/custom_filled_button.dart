@@ -13,6 +13,8 @@ class CustomFilledButton extends StatelessWidget {
     this.isIcon = false,
     this.icon = IconPath.arrowRightFilled,
     this.gradient,
+    this.color,
+    this.textColor,
   });
 
   final String text;
@@ -20,15 +22,17 @@ class CustomFilledButton extends StatelessWidget {
   final bool? isIcon;
   final String icon;
   final Gradient? gradient;
+  final Color? color;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
     final effectiveGradient = gradient ?? const LinearGradient(
-      begin: Alignment(-0.7, -0.6),
-      end: Alignment(0.7, 0.6),
+      begin: Alignment(-0.7, -0.8), // Approx 114 degrees
+      end: Alignment(0.7, 0.8),
       colors: [
-        Color(0xFFA78BFA),
-        Color(0xFF5835C0),
+        Color(0xFFA78BFA), // #A78BFA (15.41%)
+        Color(0xFF5835C0), // #5835C0 (84.59%)
       ],
       stops: [0.1541, 0.8459],
     );
@@ -37,16 +41,17 @@ class CustomFilledButton extends StatelessWidget {
       child: Container(
         height: 52.h,
         decoration: BoxDecoration(
+          color: color,
           borderRadius: BorderRadius.circular(60.r),
-          gradient: effectiveGradient,
+          gradient: color != null ? null : effectiveGradient,
           // 2. The Box Shadow
           boxShadow: [
-            BoxShadow(
-              color: const Color(0xFFA896E6).withOpacity(0.12),
-              offset: const Offset(0, 10),
-              blurRadius: 20,
-              spreadRadius: 0,
-            ),
+            // BoxShadow(
+            //   color: const Color(0xFFA896E6).withOpacity(0.12),
+            //   offset: const Offset(0, 10),
+            //   blurRadius: 20,
+            //   spreadRadius: 0,
+            // ),
           ],
         ),
         child: Row(
@@ -59,7 +64,7 @@ class CustomFilledButton extends StatelessWidget {
               style: getTextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w700,
-                color: AppColors.whiteLight,
+                color: textColor ?? AppColors.whiteLight,
               ),
             ),
 

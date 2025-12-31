@@ -2,6 +2,7 @@ import 'package:dtc6464/core/common/styles/global_text_style.dart';
 import 'package:dtc6464/core/utils/constants/icon_path.dart';
 import 'package:dtc6464/core/utils/helpers/app_helper.dart';
 import 'package:dtc6464/features/bottom_nav_bar/controller/bottom_nav_bar_conroller.dart';
+import 'package:dtc6464/features/home/views/screens/practice_mode_screen.dart';
 import 'package:dtc6464/features/practice/views/screens/select_interview.dart';
 import 'package:dtc6464/features/pro_tips/views/screens/pro_tips_screen.dart';
 import 'package:dtc6464/routes/app_routes.dart';
@@ -36,7 +37,7 @@ class QuickAction extends StatelessWidget {
           children: [
             Expanded(
               child: GestureDetector(
-                onTap: () => controller.jumpToScreen(2),
+                onTap: () => AppHelperFunctions.navigateToScreen(context, PracticeModeScreen()),
                 child: ActionCard(
                   icon: IconPath.micColor,
                   title: "Start Practice",

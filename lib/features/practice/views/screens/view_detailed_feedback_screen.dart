@@ -145,7 +145,7 @@ class ViewDetailedFeedbackScreen extends StatelessWidget {
                     style: getTextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w400,
-                      color: AppColors.softBlueNormal
+                      color: Colors.black
                     ),
                   )
                 ],
@@ -182,21 +182,29 @@ class ViewDetailedFeedbackScreen extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(20.w),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(
+                  color: const Color(0xFFFFCBA9),
+                  width: 1,
+                ),
+
+                // 3. Background: linear-gradient(180deg, rgba(255, 221, 200, 0.50) 0%, rgba(255, 236, 195, 0.50) 100%)
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                   colors: [
-                    Color(0xFFC7EEFF),
-                    Color(0xFFDFF5FF),
+                    const Color(0xFFFFDDC8).withOpacity(0.50), // rgba(255, 221, 200, 0.50)
+                    const Color(0xFFFFECC3).withOpacity(0.50), // rgba(255, 236, 195, 0.50)
                   ],
                 ),
-                borderRadius: BorderRadius.circular(12.r),
+
+                // 4. Box Shadow: 0 8px 16px 0 rgba(200, 180, 220, 0.12)
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF8A5CF6).withOpacity(0.20),
-                    offset: const Offset(0, 0),
-                    blurRadius: 12,
-                    spreadRadius: 0,
+                    color: const Color(0xFFC8B4DC).withOpacity(0.12), // rgba(200, 180, 220, 0.12)
+                    offset: const Offset(0, 8),  // x: 0, y: 8
+                    blurRadius: 16,             // blur: 16
+                    spreadRadius: 0,            // spread: 0
                   ),
                 ],
               ),
@@ -212,13 +220,13 @@ class ViewDetailedFeedbackScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(37170400.r),
                           color: Colors.white,
                         ),
-                        child: Image.asset(IconPath.bulbUpdated, color: AppColors.softBlueNormalHover,),
+                        child: Image.asset(IconPath.bulb, color: const Color(0xFFF97316),),
                       ),
 
                       12.horizontalSpace,
 
                       Text(
-                        'Your Response',
+                        'Suggestions',
                         style: getTextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w500,

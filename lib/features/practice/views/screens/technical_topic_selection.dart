@@ -16,82 +16,137 @@ class TechnicalTopicSelection extends StatelessWidget {
 
   final PracticeController controller = Get.find<PracticeController>();
 
-  final List<String> topics = [
-    "Coding Round",
-    "System Design",
-    "DSA",
-    "Technical Screening",
+  final List<Map<String, dynamic>> categories = [
+    {
+      "title": "Technical Questions",
+      "subtitle": "Concepts, algorithms, data structures",
+      "icon": Icons.code,
+      "bgColor": const Color(0xFFE0E7FF), // Soft Blue
+      "iconColor": const Color(0xFF818CF8),
+    },
+    {
+      "title": "Behavioral",
+      "subtitle": "Past experiences in technical roles",
+      "icon": Icons.groups_rounded,
+      "bgColor": const Color(0xFFEDE9FE), // Soft Purple
+      "iconColor": const Color(0xFFA78BFA),
+    },
+    {
+      "title": "Case Study",
+      "subtitle": "Hypothetical problem-solving scenario",
+      "icon": Icons.description,
+      "bgColor": const Color(0xFFFCE7F3), // Soft Pink
+      "iconColor": const Color(0xFFF472B6),
+    },
+    {
+      "title": "System Design",
+      "subtitle": "Architecture and scalability",
+      "icon": Icons.memory,
+      "bgColor": const Color(0xFFFEF3C7), // Soft Amber
+      "iconColor": const Color(0xFFFBBF24),
+    },
+    {
+      "title": "Hiring Manager",
+      "subtitle": "Timed rapid-fire practice",
+      "icon": Icons.timer,
+      "bgColor": const Color(0xFFDCFCE7), // Soft Green
+      "iconColor": const Color(0xFF4ADE80),
+    },
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Background(
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: Text('Select Topic', style: getTextStyle(fontSize: 20.sp, fontWeight: FontWeight.w700)),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF333333)),
+          onPressed: () => Navigator.pop(context),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: Column(
-              children: [
-                20.verticalSpace,
-                Obx(() => Column(
-                  children: topics.map((topic) => buildTopicCard(topic)).toList(),
-                )),
-                80.verticalSpace,
-                CustomFilledButton(text: "Start Practice", onPressed: () {
-                  AppHelperFunctions.navigateToScreen(context, AiCoachMode());
-                }),
-              ],
+        title: Text(
+            'Select Topic',
+            style: getTextStyle(fontSize: 20.sp, fontWeight: FontWeight.w700, color: const Color(0xFF333333))
+        ),
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        child: Column(
+          children: [
+            20.verticalSpace,
+
+            Text(
+              'Choose a category to begin',
+              style: getTextStyle(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w400,
+                color: const Color(0xFF6B6B8A)
+              ),
             ),
-          ),
+            10.verticalSpace,
+            // Loop through the map
+            ...categories.map((data) => buildCategoryCard(data, context)).toList(),
+            40.verticalSpace,
+          ],
         ),
       ),
     );
   }
 
-  Widget buildTopicCard(String topic) {
-    bool isSelected = controller.selectedTopic.value == topic;
-
+  Widget buildCategoryCard(Map<String, dynamic> data, BuildContext context) {
     return GestureDetector(
-      onTap: () => controller.selectTopic(topic),
+      onTap: () {
+        AppHelperFunctions.navigateToScreen(context, AiCoachMode());
+      },
       child: Container(
-        margin: EdgeInsets.only(bottom: 12.h),
-        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+        margin: EdgeInsets.only(bottom: 16.h),
+        padding: EdgeInsets.all(12.w),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFF6F3FF) : Colors.white,
+          color: data['bgColor'],
           borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(
-            color: const Color(0xFFE4DBFD),
-            width: 1,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFFA0A0C8).withOpacity(0.08),
-              offset: const Offset(0, 8),
-              blurRadius: 16,
-              spreadRadius: 0,
-            ),
-          ],
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              topic,
-              style: getTextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
-                color: isSelected ? AppColors.softPurpleNormal : const Color(0xFF333333),
+            // Circular Icon Container
+            Container(
+              height: 60.h,
+              width: 60.h,
+              decoration: BoxDecoration(
+                color: data['iconColor'].withOpacity(0.4),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(data['icon'], color: data['iconColor'], size: 28.sp),
+            ),
+            16.horizontalSpace,
+            // Text Content
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    data['title'],
+                    style: getTextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFF1F2937),
+                    ),
+                  ),
+                  4.verticalSpace,
+                  Text(
+                    data['subtitle'],
+                    style: getTextStyle(
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ],
               ),
             ),
-            Icon(
-              isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
-              color: isSelected ? AppColors.softPurpleNormal : Colors.grey,
-            ),
+            // Right Arrow
+            Icon(Icons.chevron_right, color: Colors.black26, size: 24.sp),
+            8.horizontalSpace,
           ],
         ),
       ),
