@@ -1,16 +1,22 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'package:dtc6464/routes/app_routes.dart';
+import 'package:get/get.dart' hide Response, MultipartFile;
+import 'package:get/get_core/src/get_main.dart';
 import 'package:http/http.dart';
 
 import '../models/response_data.dart';
 import '../services/storage_service.dart';
+import '../utils/constants/api_constants.dart';
 
 class NetworkCaller {
-  final int timeoutDuration = 10;
+  final int timeoutDuration = 40;
   static bool _isRefreshing = false;
+  static int _retryCount = 0;
+  static const int _maxRetries = 3;
 
-  // GET method
+  /// GET method
   Future<ResponseData> getRequest(String url, {String? token}) async {
     log('GET Request: $url');
     log('GET Token: $token');
@@ -18,7 +24,7 @@ class NetworkCaller {
       final Response response = await get(
         Uri.parse(url),
         headers: {
-          'Authorization': token.toString(),
+          'Authorization': 'Bearer ${token.toString()}',
           'Content-type': 'application/json',
         },
       ).timeout(
@@ -28,19 +34,21 @@ class NetworkCaller {
       // Handle 401 - Unauthorized
       if (response.statusCode == 401) {
         return await _handleUnauthorized(
-              () => getRequest(url, token: StorageService.accessToken),
+              (newToken) => getRequest(url, token: newToken),
         );
       }
 
+      // Reset retry count on successful request
+      _retryCount = 0;
       return _handleResponse(response);
     } catch (e) {
       return _handleError(e);
     }
   }
 
-  // POST method
+  /// POST method
   Future<ResponseData> postRequest(String url,
-      {Map<String, String>? body, String? token}) async {
+      {Map<String, dynamic>? body, String? token}) async {
     log('POST Request: $url');
     log('Request Body: ${jsonEncode(body)}');
 
@@ -48,7 +56,7 @@ class NetworkCaller {
       final Response response = await post(
         Uri.parse(url),
         headers: {
-          'Authorization': token.toString(),
+          'Authorization': 'Bearer ${token.toString()}',
           'Content-type': 'application/json',
         },
         body: jsonEncode(body),
@@ -57,160 +65,316 @@ class NetworkCaller {
       // Handle 401 - Unauthorized
       if (response.statusCode == 401) {
         return await _handleUnauthorized(
-              () => postRequest(url, body: body, token: StorageService.accessToken),
+              (newToken) => postRequest(url, body: body, token: newToken),
         );
       }
 
+      // Reset retry count on successful request
+      _retryCount = 0;
       return _handleResponse(response);
     } catch (e) {
       return _handleError(e);
     }
   }
 
-  // Handle 401 Unauthorized - Refresh token and retry
+  /// PATCH method (fixed typo from pathcRequest to patchRequest)
+  Future<ResponseData> patchRequest(String url,
+      {Map<String, String>? body, String? token}) async {
+    log('PATCH Request: $url');
+    log('Request Body: ${jsonEncode(body)}');
+
+    try {
+      final Response response = await patch(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer ${token.toString()}',
+          'Content-type': 'application/json',
+        },
+        body: jsonEncode(body),
+      ).timeout(Duration(seconds: timeoutDuration));
+
+      // Handle 401 - Unauthorized
+      if (response.statusCode == 401) {
+        return await _handleUnauthorized(
+              (newToken) => patchRequest(url, body: body, token: newToken),
+        );
+      }
+
+      // Reset retry count on successful request
+      _retryCount = 0;
+      return _handleResponse(response);
+    } catch (e) {
+      return _handleError(e);
+    }
+  }
+
+  /// DELETE method
+  Future<ResponseData> deleteRequest(String url, {String? token}) async {
+    log('DELETE Request: $url');
+    log('DELETE Token: $token');
+    try {
+      final Response response = await delete(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer ${token.toString()}',
+          'Content-type': 'application/json',
+        },
+      ).timeout(
+        Duration(seconds: timeoutDuration),
+      );
+
+      // Handle 401 - Unauthorized
+      if (response.statusCode == 401) {
+        return await _handleUnauthorized(
+              (newToken) => deleteRequest(url, token: newToken),
+        );
+      }
+
+      // Reset retry count on successful request
+      _retryCount = 0;
+      return _handleResponse(response);
+    } catch (e) {
+      return _handleError(e);
+    }
+  }
+
+  /// POST Multipart Request (for file uploads)
+  Future<ResponseData> postMultipartRequest(
+      String url, {
+        required Map<String, String> fields,
+        required List<String> filePaths,
+        String? token,
+        String fileFieldName = 'resume',
+      }) async {
+    log('POST Multipart Request: $url');
+    log('Fields: $fields');
+    log('File Paths: $filePaths');
+
+    try {
+      var request = MultipartRequest('POST', Uri.parse(url));
+
+      request.headers.addAll({
+        'Authorization': 'Bearer ${token ?? ''}',
+        'Content-type': 'multipart/form-data',
+      });
+
+      request.fields.addAll(fields);
+
+      for (String path in filePaths) {
+        request.files.add(await MultipartFile.fromPath(fileFieldName, path));
+      }
+
+      StreamedResponse streamedResponse = await request.send();
+      final response = await Response.fromStream(streamedResponse);
+
+      // Handle 401 - Unauthorized
+      if (response.statusCode == 401) {
+        return await _handleUnauthorized(
+              (newToken) => postMultipartRequest(
+            url,
+            fields: fields,
+            filePaths: filePaths,
+            token: newToken,
+            fileFieldName: fileFieldName,
+          ),
+        );
+      }
+
+      // Reset retry count on successful request
+      _retryCount = 0;
+      return _handleResponse(response);
+    } catch (e) {
+      return _handleError(e);
+    }
+  }
+
+  /// Handle 401 Unauthorized - Refresh token and retry
   Future<ResponseData> _handleUnauthorized(
-      Future<ResponseData> Function() retryRequest) async {
-    // Prevent multiple simultaneous refresh attempts
+      Future<ResponseData> Function(String newToken) retryRequest,
+      ) async {
+    // Check if max retries exceeded
+    if (_retryCount >= _maxRetries) {
+      log('Max retry attempts ($_maxRetries) reached. Redirecting to login.');
+      _retryCount = 0;
+      _isRefreshing = false;
+      await _navigateToLogin();
+      return _sessionExpiredResponse();
+    }
+
+    _retryCount++;
+    log('Token refresh attempt: $_retryCount/$_maxRetries');
+
+    // If already refreshing, wait and retry with the updated token
     if (_isRefreshing) {
-      await Future.delayed(Duration(milliseconds: 500));
-      return await retryRequest();
+      log('Token refresh already in progress. Waiting...');
+      await Future.delayed(const Duration(seconds: 2));
+
+      final currentToken = StorageService.accessToken;
+      if (currentToken != null && currentToken.isNotEmpty) {
+        return await retryRequest(currentToken);
+      } else {
+        await _navigateToLogin();
+        return _sessionExpiredResponse();
+      }
     }
 
     _isRefreshing = true;
 
     try {
-      final refreshToken = StorageService.refreshToken;
+      final String? currentRefreshToken = StorageService.refreshToken;
 
-      if (refreshToken == null || refreshToken.isEmpty) {
-        log('No refresh token available');
+      // If no refresh token exists, redirect to login immediately
+      if (currentRefreshToken == null || currentRefreshToken.isEmpty) {
+        log('Refresh token missing. Redirecting to login.');
         await _navigateToLogin();
-        return ResponseData(
-          isSuccess: false,
-          statusCode: 401,
-          responseData: '',
-          errorMessage: 'Session expired. Please login again.',
-        );
+        return _sessionExpiredResponse();
       }
 
-      // TODO: Replace with your actual refresh token endpoint
-      final refreshResponse = await post(
-        Uri.parse('YOUR_REFRESH_TOKEN_API_ENDPOINT'),
+      // Combine baseUrl and token path
+      final String refreshUrl = ApiConstant.baseUrl + ApiConstant.token;
+      log('Attempting token refresh at: $refreshUrl');
+
+      final response = await post(
+        Uri.parse(refreshUrl),
         headers: {'Content-type': 'application/json'},
-        body: jsonEncode({'refreshToken': refreshToken}),
+        body: jsonEncode({'refreshToken': currentRefreshToken}),
       ).timeout(Duration(seconds: timeoutDuration));
 
-      log('Refresh Token Response: ${refreshResponse.statusCode}');
+      log('Refresh Response Status: ${response.statusCode}');
+      log('Refresh Response Body: ${response.body}');
 
-      if (refreshResponse.statusCode == 200) {
-        final decodedResponse = jsonDecode(refreshResponse.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final decodedBody = jsonDecode(response.body);
 
-        // Extract new tokens - adjust keys based on your API response
-        final newAccessToken = decodedResponse['data']?['accessToken'];
-        final newRefreshToken = decodedResponse['data']?['refreshToken'];
+        // Extract tokens from response
+        final String? newAccess = decodedBody['data']?['accessToken'];
+        final String? newRefresh = decodedBody['data']?['refreshToken'];
 
-        if (newAccessToken != null) {
+        if (newAccess != null && newAccess.isNotEmpty) {
           // Save new tokens
           await StorageService.saveTokens(
-            accessToken: newAccessToken,
-            refreshToken: newRefreshToken ?? refreshToken,
+            accessToken: newAccess,
+            refreshToken: newRefresh ?? currentRefreshToken,
             userId: StorageService.userId ?? '',
           );
 
-          log('Token refreshed successfully');
+          log('✅ Token refreshed successfully. Retrying original request...');
+
+          // Reset refresh flag before retry
           _isRefreshing = false;
 
-          // Retry the original request with new token
-          return await retryRequest();
+          // Retry with the new token
+          return await retryRequest(newAccess);
+        } else {
+          log('❌ New access token is null or empty');
+          await _navigateToLogin();
+          return _sessionExpiredResponse();
         }
-      } else if (refreshResponse.statusCode == 401) {
-        // Refresh token is also invalid
-        log('Refresh token expired');
-        await _navigateToLogin();
-        return ResponseData(
-          isSuccess: false,
-          statusCode: 401,
-          responseData: '',
-          errorMessage: 'Session expired. Please login again.',
-        );
       }
 
-      // If refresh failed for other reasons
-      _isRefreshing = false;
-      return ResponseData(
-        isSuccess: false,
-        statusCode: refreshResponse.statusCode,
-        responseData: '',
-        errorMessage: 'Failed to refresh session. Please login again.',
-      );
-    } catch (e) {
-      log('Refresh token error: $e');
-      _isRefreshing = false;
+      // If response is not 200/201, the refresh token is invalid
+      log('❌ Refresh token is invalid or expired (Status: ${response.statusCode})');
+      await _navigateToLogin();
+      return _sessionExpiredResponse();
+    } on TimeoutException {
+      log('❌ Token refresh timeout');
       await _navigateToLogin();
       return ResponseData(
         isSuccess: false,
-        statusCode: 401,
+        statusCode: 408,
         responseData: '',
-        errorMessage: 'Session expired. Please login again.',
+        errorMessage: 'Token refresh timeout. Please login again.',
       );
+    } catch (e) {
+      log('❌ Error during token refresh: $e');
+      await _navigateToLogin();
+      return _sessionExpiredResponse();
+    } finally {
+      _isRefreshing = false;
     }
   }
 
-  // Navigate to login screen
+  /// Navigate to login screen and clear data
   Future<void> _navigateToLogin() async {
-    await StorageService.logoutUser();
-    // TODO: Add your navigation logic here
-    // Example: Get.offAllNamed('/login');
+    try {
+      await StorageService.logoutUser(); // Clear tokens from storage
+      // Use GetX to clear the stack and go to login/onboarding
+      Get.offAllNamed(AppRoute.getOnboardingScreen2());
+    } catch (e) {
+      log('Error during navigation to login: $e');
+    }
   }
 
-  // Handle response
+  /// Session expired response
+  ResponseData _sessionExpiredResponse() {
+    return ResponseData(
+      isSuccess: false,
+      statusCode: 401,
+      responseData: '',
+      errorMessage: 'Session expired. Please login again.',
+    );
+  }
+
+  /// Handle response
   ResponseData _handleResponse(Response response) {
     log('Response Status: ${response.statusCode}');
     log('Response Body: ${response.body}');
 
-    final decodedResponse = jsonDecode(response.body);
+    try {
+      final decodedResponse = jsonDecode(response.body);
 
-    if (response.statusCode == 200) {
-      if (decodedResponse['success'] == true) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (decodedResponse['success'] == true) {
+          return ResponseData(
+            isSuccess: true,
+            statusCode: response.statusCode,
+            responseData: decodedResponse,
+            errorMessage: '',
+          );
+        } else {
+          return ResponseData(
+            isSuccess: false,
+            statusCode: response.statusCode,
+            responseData: decodedResponse,
+            errorMessage: decodedResponse['message'] ?? 'Unknown error occurred',
+          );
+        }
+      } else if (response.statusCode == 400) {
         return ResponseData(
-          isSuccess: true,
+          isSuccess: false,
           statusCode: response.statusCode,
           responseData: decodedResponse,
-          errorMessage: '',
+          errorMessage: _extractErrorMessages(decodedResponse['errorSources']),
+        );
+      } else if (response.statusCode == 500) {
+        return ResponseData(
+          isSuccess: false,
+          statusCode: response.statusCode,
+          responseData: '',
+          errorMessage:
+          decodedResponse['message'] ?? 'An unexpected error occurred!',
         );
       } else {
         return ResponseData(
           isSuccess: false,
           statusCode: response.statusCode,
           responseData: decodedResponse,
-          errorMessage: decodedResponse['message'] ?? 'Unknown error occurred',
+          errorMessage:
+          decodedResponse['message'] ?? 'An unknown error occurred',
         );
       }
-    } else if (response.statusCode == 400) {
-      return ResponseData(
-        isSuccess: false,
-        statusCode: response.statusCode,
-        responseData: decodedResponse,
-        errorMessage: _extractErrorMessages(decodedResponse['errorSources']),
-      );
-    } else if (response.statusCode == 500) {
+    } catch (e) {
+      log('Error parsing response: $e');
       return ResponseData(
         isSuccess: false,
         statusCode: response.statusCode,
         responseData: '',
-        errorMessage:
-        decodedResponse['message'] ?? 'An unexpected error occurred!',
-      );
-    } else {
-      return ResponseData(
-        isSuccess: false,
-        statusCode: response.statusCode,
-        responseData: decodedResponse,
-        errorMessage: decodedResponse['message'] ?? 'An unknown error occurred',
+        errorMessage: 'Error parsing server response',
       );
     }
   }
 
-  // Extract error messages for status 400
+  /// Extract error messages for status 400
   String _extractErrorMessages(dynamic errorSources) {
     if (errorSources is List) {
       return errorSources
@@ -220,7 +384,7 @@ class NetworkCaller {
     return 'Validation error';
   }
 
-  // Handle errors
+  /// Handle errors
   ResponseData _handleError(dynamic error) {
     log('Request Error: $error');
 
@@ -243,7 +407,7 @@ class NetworkCaller {
         isSuccess: false,
         statusCode: 500,
         responseData: '',
-        errorMessage: 'Unexpected error occurred.',
+        errorMessage: 'Unexpected error: ${error.toString()}',
       );
     }
   }

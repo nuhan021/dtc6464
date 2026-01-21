@@ -2,6 +2,7 @@ import 'package:dtc6464/core/common/styles/global_text_style.dart';
 import 'package:dtc6464/core/utils/constants/icon_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 import '../../../../core/utils/constants/colors.dart';
 
@@ -31,7 +32,7 @@ class QuestionCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.asset(IconPath.question, width: 18.w,),
+          Image.asset(IconPath.question, width: 18.w,).paddingOnly(top: 5.h),
           10.horizontalSpace,
           Expanded(
             child: Text(

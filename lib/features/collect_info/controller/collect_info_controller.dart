@@ -1,14 +1,23 @@
+import 'dart:convert';
+
 import 'package:dtc6464/core/utils/constants/colors.dart';
 import 'package:dtc6464/core/utils/constants/icon_path.dart';
+import 'package:dtc6464/core/utils/logging/logger.dart';
+import 'package:dtc6464/features/collect_info/model/ai_brief_model.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../core/services/network_caller.dart';
+import '../../../core/services/storage_service.dart';
+import '../../../core/utils/constants/api_constants.dart';
+import '../../../core/utils/constants/snackbar_constant.dart';
 import '../../../routes/app_routes.dart';
 
 class CollectInfoController extends GetxController {
+  final NetworkCaller _networkCaller = Get.find<NetworkCaller>();
   RxInt currentPageIndex = 0.obs;
   // text controllers
   final TextEditingController roleController = TextEditingController();
@@ -17,6 +26,9 @@ class CollectInfoController extends GetxController {
       TextEditingController();
   final TextEditingController jobDescriptionController =
       TextEditingController();
+
+  // upload loading
+  RxBool isUploading = false.obs;
 
   // The list of companies
   final List<String> companies = [
@@ -44,6 +56,9 @@ class CollectInfoController extends GetxController {
 
   // List of levels
   final List<String> levels = ['Beginner', 'Intermediate', 'Advanced'];
+
+  // ai breaf data
+  Rx<AiBriefModel?> aiBriefData = Rx<AiBriefModel?>(null);
 
   // Reactive variable for the selected level (initially Beginner)
   RxString selectedLevel = 'Beginner'.obs;
@@ -214,16 +229,87 @@ class CollectInfoController extends GetxController {
       );
     } else {
       pageController.nextPage(
-        duration: const Duration(milliseconds: 400),
+        duration: Duration(milliseconds: 400),
         curve: Curves.easeInOut,
       );
     }
   }
 
 
-  void profileAnalize() {
-    Get.offNamed(AppRoute.getProfileAnalyzingScreen());
+  Future<void> analyzeProfile() async {
+    try {
+      isUploading.value = true;
+
+      final Map<String, String> body = {
+        'currentRole': roleController.text.trim(),
+        'targetRole': rolePreparingController.text.trim(),
+        'experienceLevel': selectedLevel.value,
+        'jobDescription': jobDescriptionController.text.trim(),
+        'targetCompany': jsonEncode(selectedCompanies),
+        'careerGoals': jsonEncode(selectedGoals),
+        'weakAreas': jsonEncode(selectedAreas),
+        'strengths': jsonEncode([]),
+      };
+
+      List<String> resumePaths = resumes.values
+          .where((resume) => resume != null)
+          .map((resume) => resume!.path)
+          .toList();
+
+      final response = await _networkCaller.postMultipartRequest(
+        ApiConstant.baseUrl + ApiConstant.analyze,
+        fields: body,
+        filePaths: resumePaths,
+      );
+
+      if (response.isSuccess) {
+        aiBriefData.value = AiBriefModel.fromJson(response.responseData);
+        await StorageService.saveUserProfileId(aiBriefData.value!.data.userProfileId);
+        SnackBarConstant.success(title: "Success", message: "Profile analyzed successfully!");
+        Get.offAllNamed(AppRoute.getAiBriefScreen());
+      } else {
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
+          SnackBar(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Error', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                Text(response.errorMessage, style: const TextStyle(color: Colors.white)),
+              ],
+            ),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(15),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+        Get.back();
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
+        SnackBar(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Error', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+              Text(e.toString(), style: const TextStyle(color: Colors.white)),
+            ],
+          ),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(15),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+      Get.back();
+    } finally {
+      isUploading.value = false;
+    }
   }
+
+
 }
 
 class ResumeModel {

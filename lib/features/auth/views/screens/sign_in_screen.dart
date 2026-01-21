@@ -73,12 +73,15 @@ class SignInScreen extends StatelessWidget {
               20.verticalSpace,
 
               // submit
-              CustomFilledButton(
-                text: 'Sign In',
-                onPressed: () {
-                  Get.toNamed(AppRoute.getEnterNameScreen());
-                },
-              ),
+              Obx(() {
+                return CustomFilledButton(
+                  text: 'Sign In',
+                  isLoading: controller.isLoading.value,
+                  onPressed: () {
+                    controller.login();
+                  },
+                );
+              }),
 
               10.verticalSpace,
 

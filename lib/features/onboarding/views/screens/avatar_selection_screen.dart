@@ -1,4 +1,6 @@
+import 'package:dtc6464/core/common/widgets/custom_filled_button.dart';
 import 'package:dtc6464/core/utils/constants/image_path.dart';
+import 'package:dtc6464/core/utils/constants/snackbar_constant.dart';
 import 'package:dtc6464/features/background/views/widgets/background.dart';
 import 'package:dtc6464/features/onboarding/controllers/avatar_selection_controller.dart';
 import 'package:dtc6464/features/onboarding/widgets/avatar_grid_widget.dart';
@@ -17,24 +19,21 @@ class AvatarSelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(AvatarSelectionController());
-    final avatars = [
-      ImagePath.avatar_1,
-      ImagePath.avatar_2,
-      ImagePath.avatar_3,
-      ImagePath.avatar_4,
-      ImagePath.avatar_5,
-      ImagePath.avatar_6,
-      ImagePath.avatar_7,
-      ImagePath.avatar_8,
-    ];
 
     return Scaffold(
       body: Background(
         child: SafeArea(
           bottom: false,
           child: SingleChildScrollView(
-            child: Obx(
-              () => Column(
+            child: Obx(() {
+              if (controller.controller.isAvatarLoading.value) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (controller.controller.avatarsData.value == null) {
+                return const Center(child: Text("No avatars found"));
+              }
+              return Column(
                 children: [
                   60.verticalSpace,
                   43.horizontalSpace,
@@ -45,29 +44,30 @@ class AvatarSelectionScreen extends StatelessWidget {
                   const TitleWidget(title: 'Choose your avatar'),
                   20.verticalSpace,
                   AvatarGridWidget(
-                    avatars: avatars,
+                    avatars: controller.controller.avatarsData.value!.data,
                     selectedIndex: controller.selectedAvatarIndex.value,
                     onSelect: controller.selectAvatar,
                   ),
                   12.verticalSpace,
-                  StartInterviewButton(
+                  CustomFilledButton(
+                    text: 'Start Interview',
+                    isLoading: controller.isUpdateLoading.value,
                     onPressed: () {
                       if (!controller.isAvatarSelected()) {
-                        Get.snackbar(
-                          'Select avatar',
-                          'Please choose an avatar to continue',
-                          snackPosition: SnackPosition.BOTTOM,
+                        SnackBarConstant.error(
+                          title: "Select avatar",
+                          message: "Please choose an avatar to continue",
                         );
                         return;
                       }
                       // Route to bottom navigation (clear previous stack)
-                      Get.offAllNamed(AppRoute.getBottomNavBar());
+                      controller.updateProfile();
                     },
                   ),
                   40.verticalSpace,
                 ],
-              ).paddingSymmetric(horizontal: 20.w),
-            ),
+              ).paddingSymmetric(horizontal: 20.w);
+            }),
           ),
         ),
       ),

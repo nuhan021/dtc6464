@@ -1,7 +1,9 @@
 import 'package:dtc6464/core/common/styles/global_text_style.dart';
 import 'package:dtc6464/core/common/widgets/custom_filled_button.dart';
 import 'package:dtc6464/core/utils/constants/image_path.dart';
+import 'package:dtc6464/core/utils/helpers/app_helper.dart';
 import 'package:dtc6464/features/background/views/widgets/background.dart';
+import 'package:dtc6464/features/collect_info/controller/collect_info_controller.dart';
 import 'package:dtc6464/features/collect_info/views/widgets/focus_area_card.dart';
 import 'package:dtc6464/features/collect_info/views/widgets/question_card.dart';
 import 'package:dtc6464/features/collect_info/views/widgets/roadmap_card.dart';
@@ -14,10 +16,13 @@ import 'package:http/http.dart';
 import '../../../../core/utils/constants/colors.dart';
 
 class AiBrief extends StatelessWidget {
-  const AiBrief({super.key});
+  AiBrief({super.key});
+
+  final CollectInfoController controller = Get.find<CollectInfoController>();
 
   @override
   Widget build(BuildContext context) {
+    final data = controller.aiBriefData.value!.data.aiData;
     return Scaffold(
       body: Background(
         child: SingleChildScrollView(
@@ -34,7 +39,7 @@ class AiBrief extends StatelessWidget {
                 children: [
                   // title
                   Text(
-                    'Your 4-Week Roadmap',
+                    'Your ${data.roadmap.duration.value}-${AppHelperFunctions.capitalize(data.roadmap.duration.unit)} Roadmap',
                     style: getTextStyle(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w500,
@@ -44,7 +49,7 @@ class AiBrief extends StatelessWidget {
 
                   20.verticalSpace,
 
-                // road nap
+                  // road nap
                   Container(
                     padding: const EdgeInsets.all(20), // Padding: 20
                     decoration: BoxDecoration(
@@ -64,23 +69,11 @@ class AiBrief extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        for (int i = 0; i < 4; i++)
+                        for (int i = 0; i < data.roadmap.plan.length; i++)
                           RoadmapCard(
                             index: i + 1,
-                            title: i == 0
-                                ? 'Behavioral Foundations'
-                                : i == 1
-                                ? "Technical practice"
-                                : i == 2
-                                ? "Company Research"
-                                : "Mock Interviews",
-                            subTitle: i == 0
-                                ? 'Master STAR Foundations'
-                                : i == 1
-                                ? "System design and coding"
-                                : i == 2
-                                ? "Culture fit and values"
-                                : "Full simulation practice",
+                            title: data.roadmap.plan[i].focus,
+                            subTitle: '',
                           ),
                       ],
                     ),
@@ -100,18 +93,14 @@ class AiBrief extends StatelessWidget {
 
                   16.verticalSpace,
 
-                  FocusAreaCard(title: 'Behavioral Question', prepared: 20,),
-
-                  10.verticalSpace,
-
-                  FocusAreaCard(title: 'STAR Method Mastery', prepared: 80,),
-
-                  10.verticalSpace,
-
-                  FocusAreaCard(title: 'system Design Basics', prepared: 50,),
+                  for (int i = 0; i < data.keyFocusAreas.length; i++)
+                    FocusAreaCard(
+                      title:
+                          "${data.keyFocusAreas[i].area.replaceAll('_', ' ')[0].toUpperCase()}${data.keyFocusAreas[i].area.replaceAll('_', ' ').substring(1).toLowerCase()}",
+                      prepared: (data.keyFocusAreas[i].progress * 100).toInt(),
+                    ).paddingOnly(bottom: 10.h),
 
                   20.verticalSpace,
-
 
                   // Sample Question for you
                   Text(
@@ -125,34 +114,43 @@ class AiBrief extends StatelessWidget {
 
                   16.verticalSpace,
 
-                  QuestionCard(question: 'Tell me about a time you led a team through a challenge'),
+                  for(int i = 0; i < data.sampleQuestions.length; i++)
+                    QuestionCard(
+                      question:
+                      data.sampleQuestions[i].text,
+                    ).paddingOnly(bottom: 10.h),
 
-                  10.verticalSpace,
 
-                  QuestionCard(question: 'Tell me about a time you led a team through a challenge'),
-
-                  10.verticalSpace,
-
-                  QuestionCard(question: 'Tell me about a time you led a team through a challenge'),
 
                   20.verticalSpace,
-
 
                   // benchmark
                   Container(
                     width: double.maxFinite,
-                    padding: EdgeInsets.symmetric(horizontal: 45.w, vertical: 20.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 45.w,
+                      vertical: 20.h,
+                    ),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14), // border-radius: 14px
+                      borderRadius: BorderRadius.circular(
+                        14,
+                      ), // border-radius: 14px
                       gradient: const LinearGradient(
-                        begin: Alignment(-1.0, -0.2), // Approximating 95 degrees
+                        begin: Alignment(
+                          -1.0,
+                          -0.2,
+                        ), // Approximating 95 degrees
                         end: Alignment(1.0, 0.2),
                         colors: [
                           Color(0xFF5A6BFF), // #5A6BFF at 0.5%
                           Color(0xFF7A85FF), // #7A85FF at 45.26%
                           Color(0xFF8A5CF6), // #8A5CF6 at 94.54%
                         ],
-                        stops: [0.005, 0.4526, 0.9454], // Mapping percentages to 0.0 - 1.0
+                        stops: [
+                          0.005,
+                          0.4526,
+                          0.9454,
+                        ], // Mapping percentages to 0.0 - 1.0
                       ),
                     ),
                     child: Column(
@@ -175,7 +173,7 @@ class AiBrief extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  '7.2',
+                                  data.benchmarkScore.current.toString(),
                                   style: getTextStyle(
                                     fontSize: 50.sp,
                                     fontWeight: FontWeight.w700,
@@ -189,7 +187,7 @@ class AiBrief extends StatelessWidget {
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.w400,
                                     color: AppColors.whiteLight,
-                                    lineHeight: 0.8
+                                    lineHeight: 0.8,
                                   ),
                                 ),
                               ],
@@ -205,7 +203,7 @@ class AiBrief extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  '8.2',
+                                  data.benchmarkScore.target.toString(),
                                   style: getTextStyle(
                                     fontSize: 50.sp,
                                     fontWeight: FontWeight.w700,
@@ -216,29 +214,31 @@ class AiBrief extends StatelessWidget {
                                 Text(
                                   'Target Score',
                                   style: getTextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w400,
-                                      color: AppColors.whiteLight,
-                                      lineHeight: 0.8
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color: AppColors.whiteLight,
+                                    lineHeight: 0.8,
                                   ),
                                 ),
                               ],
                             ),
-
                           ],
-                        )
+                        ),
                       ],
                     ),
                   ),
-                  
-                  20.verticalSpace,
-                  
-                  CustomFilledButton(text: 'Save My Plan', isIcon: true, onPressed: (){
-                    Get.offAllNamed(AppRoute.getSignUpScreen());
-                  }),
 
                   20.verticalSpace,
 
+                  CustomFilledButton(
+                    text: 'Save My Plan',
+                    isIcon: true,
+                    onPressed: () {
+                      Get.offAllNamed(AppRoute.getSignUpScreen());
+                    },
+                  ),
+
+                  20.verticalSpace,
                 ],
               ).paddingSymmetric(horizontal: 16.w),
             ],

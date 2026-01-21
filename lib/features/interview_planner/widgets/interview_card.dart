@@ -1,3 +1,4 @@
+import 'package:dtc6464/features/interview_planner/model/interviews_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../controllers/interview_planner_controller.dart';
@@ -7,7 +8,7 @@ import './interview_card_info_section.dart';
 import './interview_card_progress_section.dart';
 
 class InterviewCard extends StatelessWidget {
-  final Interview interview;
+  final Datum interview;
 
   const InterviewCard({super.key, required this.interview});
 
@@ -16,10 +17,10 @@ class InterviewCard extends StatelessWidget {
     final controller = InterviewPlannerController();
     final initials = controller.getAvatarInitials(interview.companyName);
     final statusBgColor = Color(
-      int.parse(controller.getStatusColor(interview.status)),
+      int.parse(controller.getStatusColor("SCHEDULED")),
     );
     final statusTextColor = Color(
-      int.parse(controller.getStatusTextColor(interview.status)),
+      int.parse(controller.getStatusTextColor("SCHEDULED")),
     );
 
     return Container(
@@ -46,22 +47,21 @@ class InterviewCard extends StatelessWidget {
           // Header with avatar, company info, and status
           InterviewCardHeader(
             companyName: interview.companyName,
-            role: interview.role,
+            role: interview.jobTitle,
             initials: initials,
-            status: interview.status,
+            status: 'panding',
             statusBgColor: statusBgColor,
             statusTextColor: statusTextColor,
           ),
           // Date, Round, Reminder info
           InterviewCardInfoSection(
             interviewDate: interview.interviewDate,
-            round: interview.round,
-            reminder: interview.reminder,
+            round: interview.interviewPhase,
+            reminderBeforeOneDay: interview.oneDayBeforeReminder,
+            reminderBeforeOneHour: interview.oneHourBeforeReminder,
           ),
           // Progress section
-          InterviewCardProgressSection(
-            preparationProgress: interview.preparationProgress,
-          ),
+          InterviewCardProgressSection(preparationProgress: 0.4),
           // Action buttons
           InterviewCardActionButtons(
             onChangeStatus: () {},

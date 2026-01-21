@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/common/styles/global_text_style.dart';
+import '../../../../core/utils/constants/colors.dart';
 import '../../controllers/interview_planner_controller.dart';
 import '../../widgets/add_interview_action_buttons.dart';
 import '../../widgets/add_interview_date_time_section.dart';
@@ -94,52 +95,34 @@ class _AddInterviewScreenState extends State<AddInterviewScreen> {
               SizedBox(height: 12.h),
 
               // Action buttons
-              AddInterviewActionButtons(
-                controller: controller,
-                onAddToCalendar: () {
-                  Get.snackbar('Success', 'Added to calendar');
-                },
-                onSaveInterview: () {
-                  // Save interview
-                  if (controller.companyNameController.text.isEmpty ||
-                      controller.roleController.text.isEmpty ||
-                      controller.selectedDate.value == null ||
-                      controller.selectedTime.value == null) {
-                    Get.snackbar('Error', 'Please fill all required fields');
-                    return;
-                  }
-
-                  final newInterview = Interview(
-                    id: DateTime.now().millisecondsSinceEpoch.toString(),
-                    companyName: controller.companyNameController.text,
-                    role: controller.roleController.text,
-                    status: 'SCHEDULED',
-                    interviewDate: DateTime(
-                      controller.selectedDate.value!.year,
-                      controller.selectedDate.value!.month,
-                      controller.selectedDate.value!.day,
-                      controller.selectedTime.value!.hour,
-                      controller.selectedTime.value!.minute,
-                    ),
-                    round: controller.selectedPhase.value ?? '1st Round',
-                    reminder:
-                        '${controller.oneDayReminderEnabled.value ? '1 day before' : ''} ${controller.oneHourReminderEnabled.value ? '1 hour before' : ''}'
-                            .trim(),
-                    preparationProgress: 0.0,
-                  );
-
-                  controller.addInterview(newInterview);
-                  Get.back();
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Interview added for ${newInterview.companyName}',
-                      ),
+              Obx(() {
+                if(controller.isAddInterviewLoading.value) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.softPurpleNormal,
+                      strokeWidth: 3,
                     ),
                   );
-                },
-              ),
+                }
+                return AddInterviewActionButtons(
+                  controller: controller,
+                  onAddToCalendar: () {
+                    Get.snackbar('Success', 'Added to calendar');
+                  },
+                  onSaveInterview: () {
+                    // Save interview
+                    if (controller.companyNameController.text.isEmpty ||
+                        controller.roleController.text.isEmpty ||
+                        controller.selectedDate.value == null ||
+                        controller.selectedTime.value == null) {
+                      Get.snackbar('Error', 'Please fill all required fields');
+                      return;
+                    }
+
+                    controller.addInterview();
+                  },
+                );
+              }),
             ],
           ),
         ),

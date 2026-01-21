@@ -1,41 +1,22 @@
+import 'package:dtc6464/core/services/network_caller.dart';
+import 'package:dtc6464/features/interview_planner/model/interviews_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class Interview {
-  final String id;
-  final String companyName;
-  final String role;
-  final String status; // SCHEDULED, COMPLETED, CANCELLED
-  final DateTime interviewDate;
-  final String round;
-  final String reminder;
-  final double preparationProgress;
+import '../../../core/services/storage_service.dart';
+import '../../../core/utils/constants/api_constants.dart';
+import '../../../core/utils/constants/snackbar_constant.dart';
 
-  Interview({
-    required this.id,
-    required this.companyName,
-    required this.role,
-    required this.status,
-    required this.interviewDate,
-    required this.round,
-    required this.reminder,
-    required this.preparationProgress,
-  });
-}
 
 class InterviewPlannerController extends GetxController {
-  final interviews = <Interview>[
-    Interview(
-      id: '1',
-      companyName: 'Google',
-      role: 'Software Engineer',
-      status: 'SCHEDULED',
-      interviewDate: DateTime(2025, 12, 13, 12, 25),
-      round: '1st Round',
-      reminder: '1 day before',
-      preparationProgress: 0.2,
-    ),
-  ].obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    getInterviews();
+  }
+
+  final NetworkCaller _networkCaller = Get.find<NetworkCaller>();
 
   final companyNameController = TextEditingController();
   final roleController = TextEditingController();
@@ -48,6 +29,11 @@ class InterviewPlannerController extends GetxController {
 
   final oneDayReminderEnabled = true.obs;
   final oneHourReminderEnabled = false.obs;
+  final isAddInterviewLoading = false.obs;
+  RxBool isInterviewPlansLoading = false.obs;
+  RxBool isInterviewPlansError = false.obs;
+
+  Rx<InterviewsModel?> interviews = Rx<InterviewsModel?>(null);
 
   final interviewPhases = [
     '1st Round',
@@ -58,8 +44,78 @@ class InterviewPlannerController extends GetxController {
     'Final Round',
   ];
 
-  void addInterview(Interview interview) {
-    interviews.add(interview);
+  late final DateTime combinedDateTime = DateTime(
+    selectedDate.value!.year,
+    selectedDate.value!.month,
+    selectedDate.value!.day,
+    selectedTime.value!.hour,
+    selectedTime.value!.minute,
+  );
+
+  Future<void> addInterview() async {
+    try {
+      isAddInterviewLoading.value = true;
+      final token = StorageService.accessToken;
+
+      final response = await _networkCaller.postRequest(
+        ApiConstant.baseUrl + ApiConstant.addInterview,
+        body: {
+          "companyName": companyNameController.text,
+          "jobTitle": roleController.text,
+          "jobDescription": jobDescriptionController.text,
+          "interviewDate": selectedDate.value!.toIso8601String(),
+          "interviewTime": combinedDateTime.toUtc().toIso8601String(),
+          "interviewPhase": selectedPhase.value ?? '',
+          "note": noteController.text,
+          "oneDayBeforeReminder": oneDayReminderEnabled.value,
+          "oneHourBeforeReminder": oneHourReminderEnabled.value,
+        }
+      );
+
+      if (!response.isSuccess) {
+        isAddInterviewLoading.value = false;
+        SnackBarConstant.error(title: 'Failed', message: response.errorMessage);
+        return;
+      }
+
+      isAddInterviewLoading.value = false;
+      Get.back();
+      getInterviews();
+    } catch (e) {
+      isAddInterviewLoading.value = false;
+      SnackBarConstant.error(title: 'Failed', message: e.toString());
+    } finally {
+      isAddInterviewLoading.value = false;
+    }
+  }
+
+  Future<void> getInterviews() async {
+    try {
+      isInterviewPlansLoading.value = true;
+      final token = StorageService.accessToken;
+      final response = await _networkCaller.getRequest(
+        ApiConstant.baseUrl + ApiConstant.interviewsPlans,
+        token: token,
+      );
+
+      if(!response.isSuccess) {
+        isInterviewPlansLoading.value = false;
+        isInterviewPlansError.value = true;
+        SnackBarConstant.error(title: 'Failed', message: response.errorMessage);
+        return;
+      }
+
+      interviews.value = InterviewsModel.fromJson(response.responseData);
+
+      isInterviewPlansLoading.value = false;
+      isInterviewPlansError.value = false;
+    } catch (e) {
+      isInterviewPlansLoading.value = false;
+      isInterviewPlansError.value = true;
+      SnackBarConstant.error(title: 'Failed', message: e.toString());
+    } finally {
+      isInterviewPlansLoading.value = false;
+    }
   }
 
   void clearForm() {

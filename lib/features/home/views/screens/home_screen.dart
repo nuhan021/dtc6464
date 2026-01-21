@@ -2,16 +2,17 @@ import 'package:dtc6464/core/common/styles/global_text_style.dart';
 import 'package:dtc6464/core/utils/constants/colors.dart';
 import 'package:dtc6464/core/utils/constants/icon_path.dart';
 import 'package:dtc6464/features/background/views/widgets/background.dart';
-import 'package:dtc6464/features/bottom_nav_bar/controller/bottom_nav_bar_conroller.dart';
 import 'package:dtc6464/features/home/views/widgets/quick_action.dart';
 import 'package:dtc6464/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../controller/home_screen_controller.dart';
+
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
-
+  final HomeScreenController controller = Get.find<HomeScreenController>();
   @override
   Widget build(BuildContext context) {
     return Background(
@@ -142,83 +143,111 @@ class HomeScreen extends StatelessWidget {
 
               20.verticalSpace,
 
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(24.w),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFFC8B4DC).withOpacity(0.12),
-                      offset: const Offset(0, 8),
-                      blurRadius: 16,
-                      spreadRadius: 0,
+              Obx(() {
+                if (controller.isTodayTipsLoading.value) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.softPurpleNormal,
+                      strokeWidth: 3,
                     ),
-                  ],
-                  gradient: const LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [Color(0xFFC7EEFF), Color(0xFFDFF5FF)],
-                  ),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: 48.h,
-                      width: 48.w,
-                      padding: EdgeInsets.all(10.w),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      alignment: Alignment.center,
-                      child: Image.asset(
-                        IconPath.bulb,
-                        color: AppColors.softBlueNormal,
-                      ),
-                    ),
-                    10.horizontalSpace,
-                    Expanded(
+                  );
+                }
+
+                if(controller.isTodayTipsError.value) {
+                  return Center(
+                    child: InkWell(
+                      onTap: () => controller.getTodayTips(),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "Today's Tip",
-                            style: getTextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w600,
-                              color: const Color(0xFF4A4A6A),
-                            ),
-                          ),
-
-                          5.verticalSpace,
-
-                          Text(
-                            "Use measurable results in your STAR answers.",
-                            style: getTextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w400,
-                              color: const Color(0xFF4A4A6A),
-                            ),
-                          ),
-
-                          8.verticalSpace,
-
-                          Text(
-                            "Example: Reduced processing time by 40%...",
-                            style: getTextStyle(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w400,
-                              color: const Color(0xFF6B6B8A),
-                            ),
-                          ),
+                          Icon(Icons.refresh),
+                          10.verticalSpace,
+                          Text('Try Again', style: getTextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                          ),)
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
+                  );
+                }
+                return Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(24.w),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFFC8B4DC).withOpacity(0.12),
+                        offset: const Offset(0, 8),
+                        blurRadius: 16,
+                        spreadRadius: 0,
+                      ),
+                    ],
+                    gradient: const LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [Color(0xFFC7EEFF), Color(0xFFDFF5FF)],
+                    ),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        height: 48.h,
+                        width: 48.w,
+                        padding: EdgeInsets.all(10.w),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        alignment: Alignment.center,
+                        child: Image.asset(
+                          IconPath.bulb,
+                          color: AppColors.softBlueNormal,
+                        ),
+                      ),
+                      10.horizontalSpace,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Today's Tip",
+                              style: getTextStyle(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF4A4A6A),
+                              ),
+                            ),
+
+                            5.verticalSpace,
+
+                            Text(
+                              controller.todayTipsData.value!.data.topic,
+                              style: getTextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                                color: const Color(0xFF4A4A6A),
+                              ),
+                            ),
+
+                            8.verticalSpace,
+
+                            Text(
+                              controller.todayTipsData.value!.data.tip,
+                              style: getTextStyle(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w400,
+                                color: const Color(0xFF6B6B8A),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
 
               60.verticalSpace,
             ],
@@ -230,8 +259,7 @@ class HomeScreen extends StatelessWidget {
 }
 
 class Practice extends StatelessWidget {
-  const Practice({super.key,});
-
+  const Practice({super.key});
   @override
   Widget build(BuildContext context) {
     return Container(

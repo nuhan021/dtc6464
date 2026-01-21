@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../../core/common/widgets/custom_filled_button.dart';
+import '../../../../routes/app_routes.dart';
 import '../../controller/collect_info_controller.dart';
 import '../page/page_2.dart';
 import '../page/page_3.dart';
@@ -111,9 +112,10 @@ class CollectInfoScreen extends StatelessWidget {
                 text: _controller.currentPageIndex.value == 7
                     ? 'Finis Setup'
                     : 'Continue',
+                isLoading: _controller.isUploading.value,
                 onPressed: () {
                   if(_controller.currentPageIndex.value == 7) {
-                    _controller.profileAnalize();
+                    Get.toNamed(AppRoute.getProfileAnalyzingScreen());
                   } else {
                     _controller.validateAndNext(_pageController);
                   }

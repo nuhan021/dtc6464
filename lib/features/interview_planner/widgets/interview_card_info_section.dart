@@ -7,13 +7,15 @@ import '../../../../core/common/styles/global_text_style.dart';
 class InterviewCardInfoSection extends StatelessWidget {
   final DateTime interviewDate;
   final String round;
-  final String reminder;
+  final bool reminderBeforeOneDay;
+  final bool reminderBeforeOneHour;
 
   const InterviewCardInfoSection({
     super.key,
     required this.interviewDate,
     required this.round,
-    required this.reminder,
+    required this.reminderBeforeOneDay,
+    required this.reminderBeforeOneHour,
   });
 
   @override
@@ -81,7 +83,31 @@ class InterviewCardInfoSection extends StatelessWidget {
             ),
             Flexible(
               child: Text(
-                'Reminder: $reminder',
+                'Reminder before one day: $reminderBeforeOneDay',
+                overflow: TextOverflow.ellipsis,
+                style: getTextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w500,
+                  color: const Color(0xFF929294),
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: 6.w,
+          children: [
+            Icon(
+              Icons.calendar_today,
+              size: 12.w,
+              color: const Color(0xFF929294),
+            ),
+            Flexible(
+              child: Text(
+                'Reminder before one hour: $reminderBeforeOneHour',
                 overflow: TextOverflow.ellipsis,
                 style: getTextStyle(
                   fontSize: 12.sp,

@@ -1,3 +1,4 @@
+import 'package:dtc6464/core/services/storage_service.dart';
 import 'package:dtc6464/core/utils/constants/image_path.dart';
 import 'package:dtc6464/features/background/views/widgets/background.dart';
 import 'package:dtc6464/routes/app_routes.dart';
@@ -16,17 +17,20 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Start the timer when the widget is first created
     _navigateToNextScreen();
   }
 
   void _navigateToNextScreen() async {
-    // Wait for 2 seconds
     await Future.delayed(const Duration(seconds: 2));
 
-    // Ensure the widget is still in the tree before navigating
-    if (mounted) {
+    if (!mounted) return;
+
+    if (StorageService.isFirstTimer == null || StorageService.isFirstTimer == false) {
       Get.offAllNamed(AppRoute.getOnboardingScreen1());
+    } else if (StorageService.hasToken()) {
+      Get.offAllNamed(AppRoute.getBottomNavBar());
+    } else {
+      Get.offAllNamed(AppRoute.getOnboardingScreen2());
     }
   }
 
