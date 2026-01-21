@@ -3,6 +3,7 @@ import 'package:dtc6464/core/utils/constants/colors.dart';
 import 'package:dtc6464/core/utils/constants/icon_path.dart';
 import 'package:dtc6464/core/utils/constants/image_path.dart';
 import 'package:dtc6464/features/background/views/widgets/background.dart';
+import 'package:dtc6464/features/collect_info/controller/collect_info_controller.dart';
 import 'package:dtc6464/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,13 +18,13 @@ class ProfileAnalyzing extends StatefulWidget {
 }
 
 class _ProfileAnalyzingState extends State<ProfileAnalyzing> {
+  final CollectInfoController controller = Get.find<CollectInfoController>();
+
   @override
   void initState() {
     super.initState();
-
-    Future.delayed(const Duration(seconds: 3), () {
-      if (!mounted) return;
-      Get.offAllNamed(AppRoute.getAiBriefScreen());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.analyzeProfile();
     });
   }
 

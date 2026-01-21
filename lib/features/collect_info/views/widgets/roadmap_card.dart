@@ -58,30 +58,32 @@ class RoadmapCard extends StatelessWidget {
 
           12.horizontalSpace,
 
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                overflow: TextOverflow.ellipsis,
-                style: getTextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.softPurpleDarker,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  overflow: TextOverflow.visible,
+                  style: getTextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.softPurpleDarker,
+                  ),
                 ),
-              ),
 
 
-              Text(
-                subTitle,
-                overflow: TextOverflow.ellipsis,
-                style: getTextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xFF999EA7),
-                ),
-              )
-            ],
+                // Text(
+                //   subTitle,
+                //   overflow: TextOverflow.ellipsis,
+                //   style: getTextStyle(
+                //     fontSize: 12.sp,
+                //     fontWeight: FontWeight.w400,
+                //     color: Color(0xFF999EA7),
+                //   ),
+                // )
+              ],
+            ),
           )
         ],
       ),

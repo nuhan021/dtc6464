@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/common/styles/global_text_style.dart';
+import '../../../../core/utils/constants/colors.dart';
+
 class ProTipsScreen extends StatelessWidget {
   const ProTipsScreen({super.key});
 
@@ -37,19 +40,50 @@ class ProTipsScreen extends StatelessWidget {
             const ProTipsInfoCard(),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                spacing: 14.h,
-                children: List.generate(
-                  controller.items.length,
-                  (index) => ProTipsDropdownItem(
-                    item: controller.items[index],
-                    index: index,
+              child: Obx(() {
+                if (controller.isProTipsLoading.value) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.softPurpleNormal,
+                      strokeWidth: 3,
+                    ),
+                  );
+                }
+
+                if (controller.isProTipsError.value) {
+                  return Center(
+                    child: InkWell(
+                      onTap: () => controller.getProTips(),
+                      child: Column(
+                        children: [
+                          Icon(Icons.refresh),
+                          10.verticalSpace,
+                          Text(
+                            'Try Again',
+                            style: getTextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  spacing: 14.h,
+                  children: List.generate(
+                    controller.items.length,
+                    (index) => ProTipsDropdownItem(
+                      item: controller.items[index],
+                      index: index,
+                    ),
                   ),
-                ),
-              ),
+                );
+              }),
             ),
             SizedBox(height: 30.h),
           ],

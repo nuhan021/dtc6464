@@ -2,9 +2,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class StorageService {
   // Constants for preference keys
+  static const String _isFirstTimer = 'isFirstTimer';
   static const String _accessTokenKey = 'accessToken';
   static const String _refreshTokenKey = 'refreshToken';
   static const String _idKey = 'userId';
+  static const String _userProfileId = 'userProfileId';
 
   // Singleton instance for SharedPreferences
   static SharedPreferences? _preferences;
@@ -18,6 +20,16 @@ class StorageService {
   static bool hasToken() {
     final accessToken = _preferences?.getString(_accessTokenKey);
     return accessToken != null;
+  }
+
+  // Save is First timer
+  static Future<void> saveIsFirstTimer() async {
+    await _preferences?.setBool(_isFirstTimer, true);
+  }
+
+  // save userProfileId
+  static Future<void> saveUserProfileId(String userProfileId) async {
+    await _preferences?.setString(_userProfileId, userProfileId);
   }
 
   // Save both access token and refresh token to local storage
@@ -39,6 +51,12 @@ class StorageService {
     // Navigate to the login screen
     // Get.offAllNamed('/login');
   }
+
+  // getter for isFirstTimer
+  static bool? get isFirstTimer => _preferences?.getBool(_isFirstTimer);
+
+  // getter userProfileId
+  static String? get userProfileId => _preferences?.getString(_userProfileId);
 
   // Getter for user ID
   static String? get userId => _preferences?.getString(_idKey);

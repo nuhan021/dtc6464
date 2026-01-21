@@ -34,12 +34,12 @@ class AddInterviewDateTimeSection extends StatelessWidget {
             Obx(() {
               return GestureDetector(
                 onTap: () async {
+                  final DateTime now = DateTime.now();
                   final pickedDate = await showDatePicker(
                     context: context,
-                    initialDate:
-                        controller.selectedDate.value ?? DateTime.now(),
-                    firstDate: DateTime(2024),
-                    lastDate: DateTime(2026),
+                    initialDate: controller.selectedDate.value ?? now,
+                    firstDate: now.isBefore(DateTime(2024)) ? DateTime(2024) : now,
+                    lastDate: DateTime(2030),
                   );
                   if (pickedDate != null) {
                     controller.selectedDate.value = pickedDate;

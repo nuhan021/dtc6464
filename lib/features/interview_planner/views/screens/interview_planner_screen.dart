@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/common/styles/global_text_style.dart';
+import '../../../../core/utils/constants/colors.dart';
 import '../../controllers/interview_planner_controller.dart';
 import '../../widgets/interview_card.dart';
 
@@ -76,7 +77,33 @@ class InterviewPlannerScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: Obx(() {
-          if (controller.interviews.isEmpty) {
+          if(controller.isInterviewPlansLoading.value) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: AppColors.softPurpleNormal,
+                strokeWidth: 3,
+              ),
+            );
+          }
+
+          if(controller.isInterviewPlansError.value) {
+            return Center(
+              child: InkWell(
+                onTap: () => controller.getInterviews(),
+                child: Column(
+                  children: [
+                    Icon(Icons.refresh),
+                    10.verticalSpace,
+                    Text('Try Again', style: getTextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                    ),)
+                  ],
+                ),
+              ),
+            );
+          }
+          if (controller.interviews.value == null) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -108,9 +135,9 @@ class InterviewPlannerScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 12.h,
               children: List.generate(
-                controller.interviews.length,
+                controller.interviews.value!.data.length,
                 (index) =>
-                    InterviewCard(interview: controller.interviews[index]),
+                    InterviewCard(interview: controller.interviews.value!.data[index]),
               ),
             ),
           );

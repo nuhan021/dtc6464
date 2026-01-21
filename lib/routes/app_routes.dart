@@ -73,7 +73,7 @@ class AppRoute {
     GetPage(name: onboardingScreen2, page: () => Onboarding2()),
     GetPage(name: collectInfoScreen, page: () => CollectInfoScreen()),
     GetPage(name: profileAnalyzingScreen, page: () => ProfileAnalyzing()),
-    GetPage(name: aiBriefScreen, page: () => const AiBrief()),
+    GetPage(name: aiBriefScreen, page: () => AiBrief()),
     GetPage(name: signUpScreen, page: () => SignUpScreen()),
     GetPage(name: signInScreen, page: () => SignInScreen()),
     GetPage(name: resetPasswordScreen, page: () => ResetPasswordScreen()),

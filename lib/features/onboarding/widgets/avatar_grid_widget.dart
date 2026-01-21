@@ -1,9 +1,11 @@
+import 'package:dtc6464/core/utils/constants/api_constants.dart';
 import 'package:dtc6464/core/utils/constants/colors.dart';
+import 'package:dtc6464/features/onboarding/model/avatars_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AvatarGridWidget extends StatelessWidget {
-  final List<String> avatars;
+  final List<Datum> avatars;
   final int? selectedIndex;
   final ValueChanged<int> onSelect;
 
@@ -57,7 +59,7 @@ class AvatarGridWidget extends StatelessWidget {
                     : [],
               ),
               child: Center(
-                child: Image.asset(avatars[index], fit: BoxFit.contain),
+                child: Image.network('${ApiConstant.imgBaseUrl}${avatars[index].fileUrl}', fit: BoxFit.contain),
               ),
             ),
           );
