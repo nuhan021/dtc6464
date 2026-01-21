@@ -7,6 +7,7 @@ import 'package:dtc6464/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../controller/home_screen_controller.dart';
 
@@ -144,114 +145,94 @@ class HomeScreen extends StatelessWidget {
               20.verticalSpace,
 
               Obx(() {
-                if (controller.isTodayTipsLoading.value) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.softPurpleNormal,
-                      strokeWidth: 3,
-                    ),
-                  );
+                final bool isLoading = controller.isTodayTipsLoading.value;
+                final bool isError = controller.isTodayTipsError.value;
+                final bool hasData = controller.todayTipsData.value != null;
+
+                if (isLoading) {
+                  return _buildSkeletonContent(true);
                 }
 
-                if(controller.isTodayTipsError.value) {
-                  return Center(
-                    child: InkWell(
-                      onTap: () => controller.getTodayTips(),
-                      child: Column(
-                        children: [
-                          Icon(Icons.refresh),
-                          10.verticalSpace,
-                          Text('Try Again', style: getTextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500,
-                          ),)
-                        ],
-                      ),
-                    ),
-                  );
+                if (isError && !hasData) {
+                  return _buildErrorWidget();
                 }
-                return Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.all(24.w),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(24.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFFC8B4DC).withOpacity(0.12),
-                        offset: const Offset(0, 8),
-                        blurRadius: 16,
-                        spreadRadius: 0,
-                      ),
-                    ],
-                    gradient: const LinearGradient(
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                      colors: [Color(0xFFC7EEFF), Color(0xFFDFF5FF)],
-                    ),
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: 48.h,
-                        width: 48.w,
-                        padding: EdgeInsets.all(10.w),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        alignment: Alignment.center,
-                        child: Image.asset(
-                          IconPath.bulb,
-                          color: AppColors.softBlueNormal,
-                        ),
-                      ),
-                      10.horizontalSpace,
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Today's Tip",
-                              style: getTextStyle(
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.w600,
-                                color: const Color(0xFF4A4A6A),
-                              ),
-                            ),
 
-                            5.verticalSpace,
-
-                            Text(
-                              controller.todayTipsData.value!.data.topic,
-                              style: getTextStyle(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w400,
-                                color: const Color(0xFF4A4A6A),
-                              ),
-                            ),
-
-                            8.verticalSpace,
-
-                            Text(
-                              controller.todayTipsData.value!.data.tip,
-                              style: getTextStyle(
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w400,
-                                color: const Color(0xFF6B6B8A),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                );
+                return _buildSkeletonContent(false);
               }),
 
               60.verticalSpace,
             ],
           ).paddingSymmetric(horizontal: 16.w),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSkeletonContent(bool enabled) {
+    return Skeletonizer(
+      enabled: enabled,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(24.w),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24.r),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFFC8B4DC).withOpacity(0.12),
+              offset: const Offset(0, 8),
+              blurRadius: 16,
+            ),
+          ],
+          gradient: const LinearGradient(
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+            colors: [Color(0xFFC7EEFF), Color(0xFFDFF5FF)],
+          ),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 48.h, width: 48.w,
+              padding: EdgeInsets.all(10.w),
+              decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+              child: Image.asset(IconPath.bulb, color: AppColors.softBlueNormal),
+            ),
+            10.horizontalSpace,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Today's Tip", style: getTextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600, color: const Color(0xFF4A4A6A))),
+                  5.verticalSpace,
+                  Text(
+                    enabled ? "Loading Topic Name..." : controller.todayTipsData.value!.data.topic,
+                    style: getTextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: const Color(0xFF4A4A6A)),
+                  ),
+                  8.verticalSpace,
+                  Text(
+                    enabled ? "This is a placeholder for the tip content which will load shortly from the server." : controller.todayTipsData.value!.data.tip,
+                    style: getTextStyle(fontSize: 12.sp, fontWeight: FontWeight.w400, color: const Color(0xFF6B6B8A)),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorWidget() {
+    return Center(
+      child: InkWell(
+        onTap: () => controller.getTodayTips(),
+        child: Column(
+          children: [
+            const Icon(Icons.refresh, color: Colors.grey),
+            10.verticalSpace,
+            Text('Try Again', style: getTextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500)),
+          ],
         ),
       ),
     );

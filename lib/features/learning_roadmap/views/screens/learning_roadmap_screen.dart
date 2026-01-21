@@ -4,6 +4,10 @@ import 'package:dtc6464/features/learning_roadmap/widgets/your_progress_section.
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+
+import '../../../../core/common/styles/global_text_style.dart';
+import '../../model/roadmap_model.dart';
 
 class LearningRoadmapScreen extends StatelessWidget {
   const LearningRoadmapScreen({super.key});
@@ -17,59 +21,68 @@ class LearningRoadmapScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'Learning Roadmap',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 24.sp,
-            fontWeight: FontWeight.w700,
-          ),
+          style: getTextStyle(fontSize: 24.sp, fontWeight: FontWeight.w700),
         ),
-        automaticallyImplyLeading: true,
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          spacing: 14.h,
-          children: [
-            SizedBox(height: 2.h),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: const YourProgressSection(),
-            ),
-            SizedBox(height: 10.h),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
+      body: Obx(() {
+        final bool isLoading = controller.isRoadMapLoading.value;
+        final bool isError = controller.isRoadMapError.value;
+        final bool hasNoData = controller.roadmap.value == null;
+
+        if (isError && hasNoData) {
+          return _buildErrorWidget(controller);
+        }
+
+        final List<LearningArea> displayList = isLoading || hasNoData
+            ? List.generate(5, (index) => controller.getPlaceholderArea())
+            : controller.roadmap.value!.data.learningAreas;
+
+        return Skeletonizer(
+          enabled: isLoading,
+          child: RefreshIndicator(
+            onRefresh: () => controller.getRoadMap(),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 14.h,
                 children: [
+                  const YourProgressSection(),
+                  24.verticalSpace,
                   Text(
-                    '4-Week Interview Prep Plan',
-                    style: TextStyle(
-                      color: const Color(0xFF333333),
+                    'Interview Prep Plan',
+                    style: getTextStyle(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w600,
-                      height: 1.4,
+                      color: const Color(0xFF333333),
                     ),
                   ),
+                  14.verticalSpace,
                   Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    spacing: 14.h,
-                    children: List.generate(
-                      controller.weekPlans.length,
-                      (index) => WeekCard(week: controller.weekPlans[index]),
-                    ),
+                    children: displayList.map((item) => Padding(
+                      padding: EdgeInsets.only(bottom: 14.h),
+                      child: WeekCard(item: item),
+                    )).toList(),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 30.h),
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _buildErrorWidget(LearningRoadmapController controller) {
+    return Center(
+      child: InkWell(
+        onTap: () => controller.getRoadMap(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.refresh, color: Colors.grey, size: 40),
+            10.verticalSpace,
+            const Text('Failed to load roadmap. Tap to retry.'),
           ],
         ),
       ),

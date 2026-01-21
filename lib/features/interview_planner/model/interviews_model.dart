@@ -41,6 +41,8 @@ class Datum {
   DateTime interviewTime;
   String interviewPhase;
   String note;
+  String status;
+  int preparationProgress;
   bool oneDayBeforeReminder;
   bool oneHourBeforeReminder;
   String userId;
@@ -54,6 +56,8 @@ class Datum {
     required this.interviewTime,
     required this.interviewPhase,
     required this.note,
+    required this.status,
+    required this.preparationProgress,
     required this.oneDayBeforeReminder,
     required this.oneHourBeforeReminder,
     required this.userId,
@@ -68,6 +72,8 @@ class Datum {
     interviewTime: DateTime.parse(json["interviewTime"]),
     interviewPhase: json["interviewPhase"],
     note: json["note"],
+    status: json["status"],
+    preparationProgress: json["preparationProgress"],
     oneDayBeforeReminder: json["oneDayBeforeReminder"],
     oneHourBeforeReminder: json["oneHourBeforeReminder"],
     userId: json["userId"],
@@ -82,6 +88,8 @@ class Datum {
     "interviewTime": interviewTime.toIso8601String(),
     "interviewPhase": interviewPhase,
     "note": note,
+    "status": status,
+    "preparationProgress": preparationProgress,
     "oneDayBeforeReminder": oneDayBeforeReminder,
     "oneHourBeforeReminder": oneHourBeforeReminder,
     "userId": userId,

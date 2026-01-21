@@ -21,7 +21,7 @@ class BottomNavBarScreen extends StatelessWidget {
   List<Widget> _buildScreens() {
     return [
       HomeScreen(),
-      const InterviewPlannerScreen(),
+      InterviewPlannerScreen(),
       SelectInterview(),
       const LearningRoadmapScreen(),
       const ProfileScreen(),

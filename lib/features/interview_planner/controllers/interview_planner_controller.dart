@@ -6,10 +6,9 @@ import 'package:get/get.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/utils/constants/api_constants.dart';
 import '../../../core/utils/constants/snackbar_constant.dart';
-
+import '../../../core/utils/logging/logger.dart';
 
 class InterviewPlannerController extends GetxController {
-
   @override
   void onInit() {
     super.onInit();
@@ -26,14 +25,21 @@ class InterviewPlannerController extends GetxController {
   final selectedDate = Rx<DateTime?>(null);
   final selectedTime = Rx<TimeOfDay?>(null);
   final selectedPhase = Rx<String?>('1st Round');
+  var selectedStatus = 'Scheduled'.obs;
 
   final oneDayReminderEnabled = true.obs;
   final oneHourReminderEnabled = false.obs;
   final isAddInterviewLoading = false.obs;
   RxBool isInterviewPlansLoading = false.obs;
   RxBool isInterviewPlansError = false.obs;
+  RxBool isChangeInterviewStatusLoading = false.obs;
 
   Rx<InterviewsModel?> interviews = Rx<InterviewsModel?>(null);
+
+  void changeStatus(String status, String id) {
+    selectedStatus.value = status;
+    changeInterviewStatus(status, id);
+  }
 
   final interviewPhases = [
     '1st Round',
@@ -69,7 +75,7 @@ class InterviewPlannerController extends GetxController {
           "note": noteController.text,
           "oneDayBeforeReminder": oneDayReminderEnabled.value,
           "oneHourBeforeReminder": oneHourReminderEnabled.value,
-        }
+        },
       );
 
       if (!response.isSuccess) {
@@ -93,12 +99,13 @@ class InterviewPlannerController extends GetxController {
     try {
       isInterviewPlansLoading.value = true;
       final token = StorageService.accessToken;
+      interviews.value = null;
       final response = await _networkCaller.getRequest(
         ApiConstant.baseUrl + ApiConstant.interviewsPlans,
         token: token,
       );
 
-      if(!response.isSuccess) {
+      if (!response.isSuccess) {
         isInterviewPlansLoading.value = false;
         isInterviewPlansError.value = true;
         SnackBarConstant.error(title: 'Failed', message: response.errorMessage);
@@ -106,6 +113,9 @@ class InterviewPlannerController extends GetxController {
       }
 
       interviews.value = InterviewsModel.fromJson(response.responseData);
+
+      AppLoggerHelper.debug('the item is comming');
+      interviews.refresh();
 
       isInterviewPlansLoading.value = false;
       isInterviewPlansError.value = false;
@@ -116,6 +126,51 @@ class InterviewPlannerController extends GetxController {
     } finally {
       isInterviewPlansLoading.value = false;
     }
+  }
+
+  Future<void> changeInterviewStatus(String status, String id) async {
+    try {
+      AppLoggerHelper.debug('This is working');
+      isChangeInterviewStatusLoading.value = true;
+      final token = StorageService.accessToken;
+      final response = await _networkCaller.patchRequest(
+        "${ApiConstant.baseUrl}/interview/plan/$id/status",
+        body: {"status": status.toUpperCase()},
+        token: token,
+      );
+
+      if (!response.isSuccess) {
+        isChangeInterviewStatusLoading.value = false;
+        SnackBarConstant.error(title: 'Failed', message: response.errorMessage);
+        return;
+      }
+
+      isChangeInterviewStatusLoading.value = false;
+      await getInterviews();
+    } catch (e) {
+      isChangeInterviewStatusLoading.value = false;
+      SnackBarConstant.error(title: 'Failed', message: e.toString());
+    } finally {
+      isChangeInterviewStatusLoading.value = false;
+    }
+  }
+
+  Datum getPlaceholderInterview() {
+    return Datum(
+      id: "0",
+      companyName: "Loading Company",
+      jobTitle: "Software Engineer",
+      jobDescription: "",
+      interviewDate: DateTime.now(),
+      interviewTime: DateTime.now(),
+      interviewPhase: "1st Round",
+      note: "",
+      status: "SCHEDULED",
+      preparationProgress: 0,
+      oneDayBeforeReminder: true,
+      oneHourBeforeReminder: false,
+      userId: "",
+    );
   }
 
   void clearForm() {

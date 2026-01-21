@@ -25,4 +25,10 @@ class ApiConstant {
   // interview
   static const String addInterview = '/interview/plan';
   static const String interviewsPlans = '/interview/plans';
+
+  // roadmap
+  static const String roadMap = "/roadmap";
+
+  // interview
+  static const String startInterview = '/practice/start';
 }

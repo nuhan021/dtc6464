@@ -11,6 +11,7 @@ class InterviewCardHeader extends StatelessWidget {
   final Color statusBgColor;
   final Color statusTextColor;
 
+
   const InterviewCardHeader({
     super.key,
     required this.companyName,
