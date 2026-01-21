@@ -1,3 +1,4 @@
+import 'package:dtc6464/features/learning_roadmap/model/roadmap_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -5,9 +6,10 @@ import '../../../../core/common/styles/global_text_style.dart';
 import '../controllers/learning_roadmap_controller.dart';
 
 class WeekCard extends StatelessWidget {
-  final WeekPlan week;
 
-  const WeekCard({super.key, required this.week});
+  final LearningArea item;
+
+  const WeekCard({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -45,21 +47,21 @@ class WeekCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 spacing: 12.w,
                 children: [
-                  Container(
-                    width: 46.w,
-                    height: 46.w,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFE0E3FF),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Icon(
-                        _getIconForWeek(week.weekNumber),
-                        color: const Color(0xFF8A5CF6),
-                        size: 24.w,
-                      ),
-                    ),
-                  ),
+                  // Container(
+                  //   width: 46.w,
+                  //   height: 46.w,
+                  //   decoration: BoxDecoration(
+                  //     color: const Color(0xFFE0E3FF),
+                  //     shape: BoxShape.circle,
+                  //   ),
+                  //   child: Center(
+                  //     child: Icon(
+                  //       _getIconForWeek(week.weekNumber),
+                  //       color: const Color(0xFF8A5CF6),
+                  //       size: 24.w,
+                  //     ),
+                  //   ),
+                  // ),
                   Expanded(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -67,16 +69,18 @@ class WeekCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 4.h,
                       children: [
+                        // Text(
+                        //   week.weekLabel,
+                        //   style: getTextStyle(
+                        //     fontSize: 14.sp,
+                        //     fontWeight: FontWeight.w500,
+                        //     color: const Color(0xFF2D97C6),
+                        //   ),
+                        // ),
                         Text(
-                          week.weekLabel,
-                          style: getTextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF2D97C6),
-                          ),
-                        ),
-                        Text(
-                          week.title,
+                          item.area.split('_')
+                              .map((word) => word[0].toUpperCase() + word.substring(1).toLowerCase())
+                              .join(' '),
                           style: getTextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
@@ -99,7 +103,7 @@ class WeekCard extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(999.r),
                       child: LinearProgressIndicator(
-                        value: week.progress,
+                        value: item.progress / 100,
                         minHeight: 4.h,
                         backgroundColor: const Color(0xFFD9D9D9),
                         valueColor: const AlwaysStoppedAnimation<Color>(
@@ -117,7 +121,7 @@ class WeekCard extends StatelessWidget {
                     ),
                     child: Center(
                       child: Text(
-                        '${week.progressPercent}%',
+                        '${item.progressPercentage}%',
                         style: getTextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
@@ -134,7 +138,7 @@ class WeekCard extends StatelessWidget {
           Wrap(
             spacing: 6.w,
             runSpacing: 6.h,
-            children: week.tags
+            children: item.topics
                 .map(
                   (tag) => Container(
                     padding: EdgeInsets.symmetric(

@@ -1,12 +1,19 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:dtc6464/core/services/network_caller.dart';
+import 'package:dtc6464/core/services/storage_service.dart';
+import 'package:dtc6464/core/utils/constants/api_constants.dart';
+import 'package:dtc6464/core/utils/logging/logger.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 import 'package:flutter/services.dart';
 
+import '../../../core/utils/constants/snackbar_constant.dart';
+
 class PracticeController extends GetxController {
+  final NetworkCaller _networkCaller = Get.find<NetworkCaller>();
   late AudioRecorder audioRecorder;
   late AudioPlayer audioPlayer;
 
@@ -20,11 +27,17 @@ class PracticeController extends GetxController {
   var position = Duration.zero.obs;
   var duration = Duration.zero.obs;
   RxString inputType = 'voice'.obs;
+  RxBool isStartPracticeLoading = false.obs;
 
   StreamSubscription<Amplitude>? _amplitudeSubscription;
   StreamSubscription<Duration>? _posSub;
   StreamSubscription<Duration>? _durSub;
   StreamSubscription<PlayerState>? _stateSub;
+
+  List<String> interviewType = [
+    "Technical",
+    "Non-Technical"
+  ];
 
   @override
   void onInit() {
@@ -47,7 +60,6 @@ class PracticeController extends GetxController {
   }
 
   void selectType(int index) => selectedIndex.value = index;
-  void selectTopic(String topic) => selectedTopic.value = topic;
 
   Future<void> startRecording() async {
     await HapticFeedback.mediumImpact();
@@ -93,6 +105,32 @@ class PracticeController extends GetxController {
 
   Future<void> seek(double ms) async {
     await audioPlayer.seek(Duration(milliseconds: ms.toInt()));
+  }
+
+
+  Future<void> startInterview() async {
+    try {
+      isStartPracticeLoading.value = true;
+      final token = StorageService.accessToken;
+      final response = await _networkCaller.postRequest(
+        ApiConstant.baseUrl + ApiConstant.startInterview,
+        body:  {
+          "type": interviewType[selectedIndex.value],
+          "category": selectedTopic.value
+        }
+      );
+
+      if(!response.isSuccess) {
+        isStartPracticeLoading.value = false;
+        SnackBarConstant.error(title: 'Failed', message: response.errorMessage);
+        return;
+      }
+    } catch (e) {
+      isStartPracticeLoading.value = false;
+      SnackBarConstant.error(title: 'Failed', message: e.toString());
+    } finally {
+      isStartPracticeLoading.value = false;
+    }
   }
 
   @override

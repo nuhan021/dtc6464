@@ -39,6 +39,7 @@ class ProTipsController extends GetxController {
   Future<void> getProTips() async {
     try {
       isProTipsLoading.value = true;
+      isProTipsError.value = false;
       final token = StorageService.accessToken;
       final response = await _networkCaller.getRequest(
         ApiConstant.baseUrl + ApiConstant.proTips,
@@ -88,6 +89,15 @@ class ProTipsController extends GetxController {
     });
 
     items.assignAll(tempItems);
+  }
+
+  ProTipsItem getPlaceholderItem() {
+    return ProTipsItem(
+      title: 'Loading Pro Tip Title',
+      iconColor: '0xFFE5E7EB',
+      tips: ['This is a loading tip placeholder', 'Another placeholder tip'],
+      isExpanded: false.obs,
+    );
   }
 
   void toggleExpanded(int index) {

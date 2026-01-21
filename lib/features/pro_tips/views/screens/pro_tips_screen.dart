@@ -4,6 +4,7 @@ import 'package:dtc6464/features/pro_tips/widgets/pro_tips_info_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/common/styles/global_text_style.dart';
 import '../../../../core/utils/constants/colors.dart';
@@ -41,22 +42,21 @@ class ProTipsScreen extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               child: Obx(() {
-                if (controller.isProTipsLoading.value) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.softPurpleNormal,
-                      strokeWidth: 3,
-                    ),
-                  );
+                final bool isLoading = controller.isProTipsLoading.value;
+                final bool isError = controller.isProTipsError.value;
+
+                if (isLoading) {
+                  final displayItems = List.generate(6, (index) => controller.getPlaceholderItem());
+                  return _buildProTipsList(displayItems, true);
                 }
 
-                if (controller.isProTipsError.value) {
+                if (isError) {
                   return Center(
                     child: InkWell(
                       onTap: () => controller.getProTips(),
                       child: Column(
                         children: [
-                          Icon(Icons.refresh),
+                          const Icon(Icons.refresh),
                           10.verticalSpace,
                           Text(
                             'Try Again',
@@ -70,24 +70,31 @@ class ProTipsScreen extends StatelessWidget {
                     ),
                   );
                 }
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  spacing: 14.h,
-                  children: List.generate(
-                    controller.items.length,
-                    (index) => ProTipsDropdownItem(
-                      item: controller.items[index],
-                      index: index,
-                    ),
-                  ),
-                );
-              }),
+
+                return _buildProTipsList(controller.items, false);
+              })
             ),
             SizedBox(height: 30.h),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildProTipsList(List<ProTipsItem> displayItems, bool enabled) {
+    return Skeletonizer(
+      enabled: enabled,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 14.h,
+        children: displayItems.map((item) {
+          return ProTipsDropdownItem(
+            item: item,
+            index: displayItems.indexOf(item),
+          );
+        }).toList(),
       ),
     );
   }

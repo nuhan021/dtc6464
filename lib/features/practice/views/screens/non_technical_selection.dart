@@ -17,35 +17,35 @@ class NonTechnicalTopicSelection extends StatelessWidget {
 
   final List<Map<String, dynamic>> categories = [
     {
-      "title": "Behavioral",
+      "title": "non_technical_behavioral",
       "subtitle": "Past experiences and situations",
       "icon": Icons.chat_bubble_rounded, // Matches the speech bubble icon
       "bgColor": const Color(0xFFDDE4FF), // Soft Blue-Periwinkle
       "iconColor": const Color(0xFF7C8BFF),
     },
     {
-      "title": "Situational",
+      "title": "non_technical_situational",
       "subtitle": "Hypothetical workplace scenarios",
       "icon": Icons.help_center_rounded, // Matches the question bubble icon
       "bgColor": const Color(0xFFEBE5FF), // Soft Light Purple
       "iconColor": const Color(0xFF9F85FF),
     },
     {
-      "title": "Leadership / Culture Fit",
+      "title": "non_technical_leadership",
       "subtitle": "Management and team dynamics",
       "icon": Icons.workspace_premium_rounded, // Matches the crown icon
       "bgColor": const Color(0xFFFFE2F0), // Soft Pink
       "iconColor": const Color(0xFFFF69B4),
     },
     {
-      "title": "Case-Style",
+      "title": "non_technical_case_style",
       "subtitle": "Business problem solving",
       "icon": Icons.business_center_rounded, // Matches the briefcase icon
       "bgColor": const Color(0xFFFFF1DC), // Soft Orange/Peach
       "iconColor": const Color(0xFFFFB347),
     },
     {
-      "title": "Hiring Manager",
+      "title": "non_technical_hiring_manager",
       "subtitle": "Comprehensive practice session",
       "icon": Icons.alarm_on_rounded, // Matches the timer icon
       "bgColor": const Color(0xFFE0FFEF), // Soft Mint Green
@@ -96,7 +96,9 @@ class NonTechnicalTopicSelection extends StatelessWidget {
   Widget buildCategoryCard(Map<String, dynamic> data, BuildContext context) {
     return GestureDetector(
       onTap: () {
-        AppHelperFunctions.navigateToScreen(context, AiCoachMode());
+        controller.selectedTopic.value = data['title'];
+        controller.startInterview();
+        // AppHelperFunctions.navigateToScreen(context, AiCoachMode());
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 16.h),
@@ -124,7 +126,9 @@ class NonTechnicalTopicSelection extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    data['title'],
+                    data['title'].split('_')
+                        .map((word) => word[0].toUpperCase() + word.substring(1).toLowerCase())
+                        .join(' '),
                     style: getTextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w700,

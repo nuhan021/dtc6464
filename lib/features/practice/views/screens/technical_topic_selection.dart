@@ -1,4 +1,5 @@
 import 'package:dtc6464/core/utils/helpers/app_helper.dart';
+import 'package:dtc6464/core/utils/logging/logger.dart';
 import 'package:dtc6464/features/practice/views/screens/ai_coach_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,35 +19,35 @@ class TechnicalTopicSelection extends StatelessWidget {
 
   final List<Map<String, dynamic>> categories = [
     {
-      "title": "Technical Questions",
+      "title": "technical_questions",
       "subtitle": "Concepts, algorithms, data structures",
       "icon": Icons.code,
       "bgColor": const Color(0xFFE0E7FF), // Soft Blue
       "iconColor": const Color(0xFF818CF8),
     },
     {
-      "title": "Behavioral",
+      "title": "technical_behavioral",
       "subtitle": "Past experiences in technical roles",
       "icon": Icons.groups_rounded,
       "bgColor": const Color(0xFFEDE9FE), // Soft Purple
       "iconColor": const Color(0xFFA78BFA),
     },
     {
-      "title": "Case Study",
+      "title": "technical_case_study",
       "subtitle": "Hypothetical problem-solving scenario",
       "icon": Icons.description,
       "bgColor": const Color(0xFFFCE7F3), // Soft Pink
       "iconColor": const Color(0xFFF472B6),
     },
     {
-      "title": "System Design",
+      "title": "technical_system_design",
       "subtitle": "Architecture and scalability",
       "icon": Icons.memory,
       "bgColor": const Color(0xFFFEF3C7), // Soft Amber
       "iconColor": const Color(0xFFFBBF24),
     },
     {
-      "title": "Hiring Manager",
+      "title": "technical_hiring_manager",
       "subtitle": "Timed rapid-fire practice",
       "icon": Icons.timer,
       "bgColor": const Color(0xFFDCFCE7), // Soft Green
@@ -97,7 +98,9 @@ class TechnicalTopicSelection extends StatelessWidget {
   Widget buildCategoryCard(Map<String, dynamic> data, BuildContext context) {
     return GestureDetector(
       onTap: () {
-        AppHelperFunctions.navigateToScreen(context, AiCoachMode());
+        controller.selectedTopic.value = data['title'];
+        controller.startInterview();
+        // AppHelperFunctions.navigateToScreen(context, AiCoachMode());
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 16.h),
@@ -125,7 +128,9 @@ class TechnicalTopicSelection extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    data['title'],
+                    data['title'].split('_')
+                        .map((word) => word[0].toUpperCase() + word.substring(1).toLowerCase())
+                        .join(' '),
                     style: getTextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w700,
