@@ -5,14 +5,18 @@ import 'package:dtc6464/features/practice/views/screens/view_detailed_feedback_s
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/common/styles/global_text_style.dart';
 import '../../../../core/common/widgets/custom_filled_button.dart';
 import '../../../../core/utils/constants/icon_path.dart';
 import '../../../../core/utils/helpers/app_helper.dart';
+import '../../controller/practice_controller.dart';
 
 class PracticeSummary extends StatelessWidget {
-  const PracticeSummary({super.key});
+  PracticeSummary({super.key});
+
+  final PracticeController controller = Get.find<PracticeController>();
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +35,6 @@ class PracticeSummary extends StatelessWidget {
               color: const Color(0xFF333333),
             ),
           ),
-
           actions: [
             InkWell(
               onTap: () {},
@@ -42,326 +45,238 @@ class PracticeSummary extends StatelessWidget {
             ),
           ],
         ),
+        body: Obx(() {
+          final bool isLoading = controller.isSubmitAnswerLoading.value;
+          final overall = controller.analizeData.value?.data.aiData.overallPerformance;
 
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              20.verticalSpace,
-
-              // identifier
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+          return Skeletonizer(
+            enabled: isLoading,
+            child: SingleChildScrollView(
+              child: Column(
                 children: [
+                  20.verticalSpace,
+
+                  // Identifier (Tags)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildTag(controller.selectedIndex.value == 1 ? "Non-Technical" : "Technical Interview", isGradient: true),
+                      // 10.horizontalSpace,
+                      // _buildTag(controller.selectedTopic.value, isGradient: false),
+                    ],
+                  ),
+
+                  40.verticalSpace,
+
+                  // Dynamic Score
                   Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 14.w,
-                      vertical: 6.h,
-                    ),
+                    height: 140.h,
+                    width: 140.h,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.r),
-                      border: Border.all(
-                        color: const Color(0xFFA896E6).withOpacity(0.30),
-                        width: 1.108,
+                      borderRadius: BorderRadius.circular(1000.r),
+                      gradient: const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Color(0xFFFFDDC8), Color(0xFFFFECC3)],
                       ),
-                      gradient: LinearGradient(
-                        begin: Alignment.centerLeft, // 90deg
-                        end: Alignment.centerRight,
-                        colors: [
-                          const Color(0xFFA896E6).withOpacity(0.20),
-                          const Color(0xFFB8D4F1).withOpacity(0.20),
-                        ],
-                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFFFFD2B3),
+                          offset: const Offset(0, 4),
+                          blurRadius: 20,
+                        ),
+                      ],
                     ),
+                    alignment: Alignment.center,
                     child: Text(
-                      "Technical Interview",
+                      '${overall?.rating ?? 0}/10',
                       style: getTextStyle(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w400,
-                        color: const Color(0xFF4A4A6A),
+                        fontSize: 28.sp,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFFF97316),
                       ),
                     ),
                   ),
 
-                  10.horizontalSpace,
+                  20.verticalSpace,
 
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 14.w,
-                      vertical: 6.h,
+                  Text(
+                    'Overall Performance',
+                    style: getTextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFFF97316)),
+                  ),
+
+                  40.verticalSpace,
+
+                  // Strengths Section
+                  if (overall?.strengths != null)
+                    _buildFeedbackCard(
+                      title: 'Strengths',
+                      icon: IconPath.strength,
+                      iconBgColor: const Color(0xFFE4DBFD),
+                      items: overall!.strengths,
                     ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.r),
-                      border: Border.all(
-                        color: const Color(0xFFA896E6).withOpacity(0.30),
-                        width: 1.108,
-                      ),
-                      color: Colors.white,
+
+                  10.verticalSpace,
+
+                  // Areas to Improve Section
+                  if (overall?.areasToImprove != null)
+                    _buildFeedbackCard(
+                      title: 'Areas to Improve',
+                      icon: IconPath.bulbUpdated,
+                      iconBgColor: const Color(0xFFC1EBFD),
+                      items: overall!.areasToImprove,
                     ),
+
+                  40.verticalSpace,
+
+                  CustomFilledButton(
+                    text: 'View Detailed Feedback',
+                    gradient: const LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Color(0xFFFFDDC8), Color(0xFFFFECC3)],
+                    ),
+                    textColor: const Color(0xFFF97316),
+                    onPressed: () {
+                      AppHelperFunctions.navigateToScreen(context, ViewDetailedFeedbackScreen());
+                    },
+                  ).paddingSymmetric(horizontal: 35.w),
+
+                  20.verticalSpace,
+
+                  CustomFilledButton(
+                    text: 'Practice Next Question',
+                    onPressed: () {
+                      controller.nextQuestion();
+                      Navigator.pop(context);
+                    },
+                  ).paddingSymmetric(horizontal: 35.w),
+
+                  10.verticalSpace,
+
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => SelectInterview()),
+                            (route) => false,
+                      );
+                    },
                     child: Text(
-                      "Coding Round",
+                      'Back To Home',
                       style: getTextStyle(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w400,
-                        color: const Color(0xFF4A4A6A),
-                      ),
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w400,
+                          color: AppColors.softPurpleNormalActive),
                     ),
                   ),
+
+                  60.verticalSpace,
                 ],
-              ),
+              ).paddingSymmetric(horizontal: 16.w),
+            ),
+          );
+        }),
+      ),
+    );
+  }
 
-              40.verticalSpace,
 
-              // score
+  Widget _buildTag(String text, {required bool isGradient}) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: const Color(0xFFA896E6).withOpacity(0.30)),
+        gradient: isGradient
+            ? LinearGradient(
+          colors: [
+            const Color(0xFFA896E6).withOpacity(0.20),
+            const Color(0xFFB8D4F1).withOpacity(0.20),
+          ],
+        )
+            : null,
+        color: isGradient ? null : Colors.white,
+      ),
+      child: Text(
+        text,
+        style: getTextStyle(fontSize: 12.sp, color: const Color(0xFF4A4A6A)),
+      ),
+    );
+  }
+
+  Widget _buildFeedbackCard({
+    required String title,
+    required String icon,
+    required Color iconBgColor,
+    required List<String> items,
+  }) {
+    return Container(
+      padding: EdgeInsets.all(20.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.r),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF8A5CF6).withOpacity(0.20),
+            blurRadius: 12,
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
               Container(
-                height: 140.h,
-                width: 140.h,
+                height: 32.h, width: 32.w,
+                padding: EdgeInsets.all(5.w),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(1000.r),
-                  gradient: const LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Color(0xFFFFDDC8), // #FFDDC8 at 0%
-                      Color(0xFFFFECC3), // #FFECC3 at 100%
-                    ],
-                  ),
-
-                  // 3. Box Shadow: 0 4px 20px 0 #FFD2B3
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFFFFD2B3), // Shadow color
-                      offset: const Offset(0, 4),    // x: 0, y: 4
-                      blurRadius: 20,                // blur: 20
-                      spreadRadius: 0,               // spread: 0
-                    ),
-                  ],
+                  shape: BoxShape.circle,
+                  color: iconBgColor,
                 ),
-                alignment: Alignment.center,
-                child: Text(
-                  '8.5/10',
-                  style: getTextStyle(
-                    fontSize: 28.sp,
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0xFFF97316),
-                  ),
-                ),
+                child: Image.asset(icon),
               ),
-
-              20.verticalSpace,
-
+              12.horizontalSpace,
               Text(
-                'Overall Performance',
+                title,
                 style: getTextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w500,
-                  color:  const Color(0xFFF97316)
-                ),
-              ),
-
-              110.verticalSpace,
-
-              // strength
-              Container(
-                  padding: EdgeInsets.all(20.w),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFFFFF),
-                    borderRadius: BorderRadius.circular(12.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF8A5CF6).withOpacity(0.20),
-                        offset: const Offset(0, 0),
-                        blurRadius: 12,
-                        spreadRadius: 0,
-                      ),
-                    ],
-                  ),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          height: 32.h,
-                          width: 32.w,
-                          padding: EdgeInsets.all(5.w),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(37170400.r),
-                            color: const Color(0xFFE4DBFD),
-                          ),
-                          child: Image.asset(IconPath.strength,),
-                        ),
-
-                        12.horizontalSpace,
-
-                        Text(
-                          'Strengths',
-                          style: getTextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.softPurpleNormalHover
-                          ),
-                        )
-                      ],
-                    ),
-
-                    15.verticalSpace,
-
-                    for(int i = 0; i < 3; i++)
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 7.h,
-                          width: 7.w,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: const Color(0xFF8A5CF6),
-                          ),
-                        ).paddingOnly(top: 7.h),
-
-                        15.horizontalSpace,
-
-                        Expanded(
-                          child: Text(
-                            'Clear and structured responses with good examples.',
-                            style: getTextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w400,
-                              color: AppColors.softPurpleNormalHover
-                            ),
-                          ),
-                        )
-                      ],
-                    ).paddingOnly(left: 10.w).paddingOnly(bottom: 10.h)
-                  ],
-                ),
-              ),
-
-              10.verticalSpace,
-
-              // improve
-              Container(
-                padding: EdgeInsets.all(20.w),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFFFFF),
-                  borderRadius: BorderRadius.circular(12.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF8A5CF6).withOpacity(0.20),
-                      offset: const Offset(0, 0),
-                      blurRadius: 12,
-                      spreadRadius: 0,
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          height: 32.h,
-                          width: 32.w,
-                          padding: EdgeInsets.all(5.w),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(37170400.r),
-                            color: const Color(0xFFC1EBFD),
-                          ),
-                          child: Image.asset(IconPath.bulbUpdated,),
-                        ),
-
-                        12.horizontalSpace,
-
-                        Text(
-                          'Strengths',
-                          style: getTextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.softPurpleNormalHover
-                          ),
-                        )
-                      ],
-                    ),
-
-                    15.verticalSpace,
-
-                    for(int i = 0; i < 3; i++)
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            height: 7.h,
-                            width: 7.w,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: const Color(0xFF8A5CF6),
-                            ),
-                          ).paddingOnly(top: 7.h),
-
-                          15.horizontalSpace,
-
-                          Expanded(
-                            child: Text(
-                              'Clear and structured responses with good examples.',
-                              style: getTextStyle(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w400,
-                                  color: AppColors.softPurpleNormalHover
-                              ),
-                            ),
-                          )
-                        ],
-                      ).paddingOnly(left: 10.w).paddingOnly(bottom: 10.h)
-                  ],
-                ),
-              ),
-
-              110.verticalSpace,
-
-              CustomFilledButton(
-                text: 'View Detailed Feedback',
-                gradient: const LinearGradient(
-                  begin: Alignment.topCenter,    // 0% - #FFDDC8
-                  end: Alignment.bottomCenter, // 100% - #FFECC3
-                  colors: [
-                    Color(0xFFFFDDC8),
-                    Color(0xFFFFECC3),
-                  ],
-                ),
-                textColor: const Color(0xFFF97316),
-                onPressed: () {
-                  AppHelperFunctions.navigateToScreen(context, ViewDetailedFeedbackScreen());
-                },
-              ).paddingSymmetric(horizontal: 35.w),
-
-              20.verticalSpace,
-
-              CustomFilledButton(
-                text: 'Practice Again',
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ).paddingSymmetric(horizontal: 35.w),
-
-              10.verticalSpace,
-
-              TextButton(onPressed: (){
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => SelectInterview()),
-                      (route) => false,
-                );
-              }, child: Text(
-                'Back To Home',
-                style: getTextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.softPurpleNormalActive
-                ),
-              )),
-
-              60.verticalSpace,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.softPurpleNormalHover),
+              )
             ],
-          ).paddingSymmetric(horizontal: 16.w),
-        ),
+          ),
+          15.verticalSpace,
+          ...items.map((text) => Padding(
+            padding: EdgeInsets.only(left: 10.w, bottom: 10.h),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 7.h, width: 7.w,
+                  margin: EdgeInsets.only(top: 7.h),
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0xFF8A5CF6),
+                  ),
+                ),
+                15.horizontalSpace,
+                Expanded(
+                  child: Text(
+                    text,
+                    style: getTextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.softPurpleNormalHover),
+                  ),
+                )
+              ],
+            ),
+          )),
+        ],
       ),
     );
   }
