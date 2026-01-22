@@ -80,7 +80,7 @@ class InterviewPlannerController extends GetxController {
 
       if (!response.isSuccess) {
         isAddInterviewLoading.value = false;
-        SnackBarConstant.error(title: 'Failed', message: response.errorMessage);
+        SnackBarConstant.errorThin(title: 'Failed', message: response.errorMessage);
         return;
       }
 
@@ -89,7 +89,7 @@ class InterviewPlannerController extends GetxController {
       getInterviews();
     } catch (e) {
       isAddInterviewLoading.value = false;
-      SnackBarConstant.error(title: 'Failed', message: e.toString());
+      SnackBarConstant.errorThin(title: 'Failed', message: e.toString());
     } finally {
       isAddInterviewLoading.value = false;
     }
@@ -108,13 +108,12 @@ class InterviewPlannerController extends GetxController {
       if (!response.isSuccess) {
         isInterviewPlansLoading.value = false;
         isInterviewPlansError.value = true;
-        SnackBarConstant.error(title: 'Failed', message: response.errorMessage);
+        SnackBarConstant.errorThin(title: 'Failed', message: response.errorMessage);
         return;
       }
 
       interviews.value = InterviewsModel.fromJson(response.responseData);
 
-      AppLoggerHelper.debug('the item is comming');
       interviews.refresh();
 
       isInterviewPlansLoading.value = false;
@@ -122,7 +121,7 @@ class InterviewPlannerController extends GetxController {
     } catch (e) {
       isInterviewPlansLoading.value = false;
       isInterviewPlansError.value = true;
-      SnackBarConstant.error(title: 'Failed', message: e.toString());
+      SnackBarConstant.errorThin(title: 'Failed', message: e.toString());
     } finally {
       isInterviewPlansLoading.value = false;
     }
@@ -141,7 +140,7 @@ class InterviewPlannerController extends GetxController {
 
       if (!response.isSuccess) {
         isChangeInterviewStatusLoading.value = false;
-        SnackBarConstant.error(title: 'Failed', message: response.errorMessage);
+        SnackBarConstant.errorThin(title: 'Failed', message: response.errorMessage);
         return;
       }
 
@@ -149,7 +148,7 @@ class InterviewPlannerController extends GetxController {
       await getInterviews();
     } catch (e) {
       isChangeInterviewStatusLoading.value = false;
-      SnackBarConstant.error(title: 'Failed', message: e.toString());
+      SnackBarConstant.errorThin(title: 'Failed', message: e.toString());
     } finally {
       isChangeInterviewStatusLoading.value = false;
     }

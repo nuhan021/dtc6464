@@ -190,11 +190,11 @@ class PracticeController extends GetxController {
       if (response.isSuccess) {
         questions.value = QuestionsModel.fromJson(response.responseData);
       } else {
-        SnackBarConstant.error(title: 'Failed', message: response.errorMessage);
+        SnackBarConstant.errorThin(title: 'Failed', message: response.errorMessage);
         Navigator.pop(context);
       }
     } catch (e) {
-      SnackBarConstant.error(title: 'Error', message: e.toString());
+      SnackBarConstant.errorThin(title: 'Error', message: e.toString());
       Navigator.pop(context);
     } finally {
       isStartPracticeLoading.value = false;
@@ -217,7 +217,7 @@ class PracticeController extends GetxController {
 
       if(!response.isSuccess) {
         isSubmitAnswerLoading.value = false;
-        SnackBarConstant.error(title: 'Failed', message: response.errorMessage);
+        SnackBarConstant.errorThin(title: 'Failed', message: response.errorMessage);
         Navigator.pop(context);
         return;
       }
@@ -227,7 +227,7 @@ class PracticeController extends GetxController {
     } catch (e) {
       isSubmitAnswerLoading.value = false;
       Navigator.pop(context);
-      SnackBarConstant.error(title: 'Error', message: e.toString());
+      SnackBarConstant.errorThin(title: 'Error', message: e.toString());
     } finally {
       isSubmitAnswerLoading.value = false;
     }

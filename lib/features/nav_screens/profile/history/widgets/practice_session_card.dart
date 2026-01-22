@@ -18,22 +18,39 @@ class PracticeSessionCard extends StatelessWidget {
   });
 
   Color _getScoreBgColor() {
-    if (!isScore) return const Color(0xFFCBEFE9); // Completed - green
+    // Check for "In Progress" status first
+    if (!isScore && scoreOrStatus == "In Progress") {
+      return const Color(0xFFE3F2FD); // Light blue background
+    }
+
+    // Completed status (green)
+    if (!isScore) return const Color(0xFFCBEFE9);
+
+    // Score based colors
     final scoreStr = scoreOrStatus
         .replaceAll('Score: ', '')
         .replaceAll('%', '');
     final score = int.tryParse(scoreStr) ?? 0;
-    if (score >= 90) return const Color(0xFFE1EAED); // 92% - teal
-    if (score >= 80) return const Color(0xFFE1F5FE); // 85% - blue
-    return const Color(0xFFFEF2F9); // 78% - pink
+
+    if (score >= 90) return const Color(0xFFE1EAED); // teal
+    if (score >= 80) return const Color(0xFFE1F5FE); // blue
+    return const Color(0xFFFEF2F9); // pink
   }
 
   Color _getScoreTextColor() {
-    if (!isScore) return const Color(0xFF34C759); // Completed - green
+    // Check for "In Progress" status first
+    if (!isScore && scoreOrStatus == "In Progress") {
+      return const Color(0xFF1976D2); // Deeper blue text
+    }
+
+    // Completed status (green)
+    if (!isScore) return const Color(0xFF34C759);
+
     final scoreStr = scoreOrStatus
         .replaceAll('Score: ', '')
         .replaceAll('%', '');
     final score = int.tryParse(scoreStr) ?? 0;
+
     if (score >= 90) return const Color(0xFF295866); // teal
     if (score >= 80) return const Color(0xFF2A8EBA); // blue
     return const Color(0xFFBB7E9F); // pink
@@ -41,6 +58,9 @@ class PracticeSessionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Hide "View Feedback" if the session is still in progress
+    bool showFeedbackButton = scoreOrStatus != "In Progress";
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(20.w),
@@ -99,26 +119,30 @@ class PracticeSessionCard extends StatelessWidget {
                   style: TextStyle(
                     color: _getScoreTextColor(),
                     fontSize: 12.sp,
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w500, // Slightly bolder for readability
                     height: 1.75,
                   ),
                 ),
               ),
             ],
           ),
-          6.verticalSpace,
-          GestureDetector(
-            onTap: onViewFeedback,
-            child: Text(
-              'View Feedback',
-              style: TextStyle(
-                color: const Color(0xFF967DE1),
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w400,
-                height: 1.75,
+
+          // Logic to show "View Feedback" only when not in progress
+          if (showFeedbackButton) ...[
+            6.verticalSpace,
+            GestureDetector(
+              onTap: onViewFeedback,
+              child: Text(
+                'View Feedback',
+                style: TextStyle(
+                  color: const Color(0xFF967DE1),
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w400,
+                  height: 1.75,
+                ),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );

@@ -5,12 +5,14 @@ import 'package:dtc6464/features/nav_screens/profile/statistics/widgets/statisti
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class StatisticsScreen extends StatelessWidget {
   const StatisticsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Use Get.put if it's not already initialized elsewhere
     final controller = Get.put(StatisticsController());
 
     return Background(
@@ -28,106 +30,110 @@ class StatisticsScreen extends StatelessWidget {
           backgroundColor: Colors.transparent,
           automaticallyImplyLeading: true,
           elevation: 0,
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: const IconThemeData(color: Colors.black),
         ),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Column(
               children: [
                 28.verticalSpace,
-                StatisticsCard(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Your Progress',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: const Color(0xFF4A4A6A),
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w600,
-                          height: 1.5,
-                        ),
-                      ),
-                      20.verticalSpace,
-                      ProgressBarItem(
-                        label: 'Overall Progress',
-                        value: '${controller.overallProgress.value.toInt()}%',
-                        progress: controller.overallProgress.value / 100,
-                      ),
-                      20.verticalSpace,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Obx(() {
+                  final isLoading = controller.isStatisticsLoading.value;
+                  final data = controller.statsData;
+
+                  return Skeletonizer(
+                    enabled: isLoading,
+                    child: StatisticsCard(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Practice Sessions Completed',
+                            'Your Progress',
                             style: TextStyle(
-                              color: const Color(0xFF333333),
-                              fontSize: 14.sp,
+                              color: const Color(0xFF4A4A6A),
+                              fontSize: 20.sp,
                               fontWeight: FontWeight.w600,
-                              height: 1.75,
+                              height: 1.5,
                             ),
                           ),
-                          Text(
-                            '${controller.practiceSessionsCompleted.value}',
-                            textAlign: TextAlign.right,
-                            style: TextStyle(
-                              color: const Color(0xFF967DE1),
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                              height: 1.75,
+                          20.verticalSpace,
+
+                          // Overall Progress
+                          ProgressBarItem(
+                            label: 'Overall Progress',
+                            value: '${data?.overallProgress ?? 0}%',
+                            progress: (data?.overallProgress ?? 0) / 100,
+                          ),
+
+                          20.verticalSpace,
+
+                          // Sessions Completed
+                          _buildStatRow(
+                            label: 'Practice Sessions Completed',
+                            value: '${data?.practiceSessionsCount ?? 0}',
+                          ),
+
+                          20.verticalSpace,
+
+                          // Average Score
+                          _buildStatRow(
+                            label: 'Average Score',
+                            value: '${data?.avarageScore?.toStringAsFixed(1) ?? "0.0"}%',
+                          ),
+
+                          20.verticalSpace,
+                          Center(
+                            child: Text(
+                              'Keep improving with regular practice',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: const Color(0xFF2A8EBA),
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500,
+                                height: 1.75,
+                              ),
                             ),
                           ),
                         ],
                       ),
-                      20.verticalSpace,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Average Score',
-                            style: TextStyle(
-                              color: const Color(0xFF333333),
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                              height: 1.75,
-                            ),
-                          ),
-                          Text(
-                            '${controller.averageScore.value}%',
-                            textAlign: TextAlign.right,
-                            style: TextStyle(
-                              color: const Color(0xFF967DE1),
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                              height: 1.75,
-                            ),
-                          ),
-                        ],
-                      ),
-                      20.verticalSpace,
-                      Center(
-                        child: Text(
-                          'Keep improving with regular practice',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: const Color(0xFF2A8EBA),
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w500,
-                            height: 1.75,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                }),
                 80.verticalSpace,
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  // Helper widget to keep the code clean
+  Widget _buildStatRow({required String label, required String value}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            color: const Color(0xFF333333),
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w600,
+            height: 1.75,
+          ),
+        ),
+        Text(
+          value,
+          textAlign: TextAlign.right,
+          style: TextStyle(
+            color: const Color(0xFF967DE1),
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w600,
+            height: 1.75,
+          ),
+        ),
+      ],
     );
   }
 }

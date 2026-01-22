@@ -49,7 +49,7 @@ class ProTipsController extends GetxController {
       if (!response.isSuccess) {
         isProTipsLoading.value = false;
         isProTipsError.value = true;
-        SnackBarConstant.error(title: 'Failed', message: response.errorMessage);
+        SnackBarConstant.errorThin(title: 'Failed', message: response.errorMessage);
         return;
       }
 
@@ -60,7 +60,7 @@ class ProTipsController extends GetxController {
     } catch (e) {
       isProTipsLoading.value = false;
       isProTipsError.value = true;
-      SnackBarConstant.error(title: 'Failed', message: e.toString());
+      SnackBarConstant.errorThin(title: 'Failed', message: e.toString());
     } finally {
       isProTipsLoading.value = false;
     }

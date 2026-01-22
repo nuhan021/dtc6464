@@ -79,6 +79,7 @@ class HomeScreen extends StatelessWidget {
 
                 20.verticalSpace,
 
+                // resumed task
                 Obx(() {
                   final bool isLoading =
                       controller.isResumeInterviewLoading.value;
@@ -87,11 +88,11 @@ class HomeScreen extends StatelessWidget {
                   if (!isLoading &&
                       (resumedModel == null ||
                           resumedModel.data.hasResume == false)) {
-                    return const SizedBox.shrink();
+                    return _buildErrorWidget(onPressed: () => controller.getResumedQuestions(context));
                   }
 
                   if(controller.isResumeInterviewError.value) {
-                    return _buildErrorWidget(onPressed: () => controller.getRecentActivity());
+                    return _buildErrorWidget(onPressed: () => controller.getResumedQuestions(context));
                   }
                   return Skeletonizer(
                     enabled: isLoading,
@@ -105,12 +106,11 @@ class HomeScreen extends StatelessWidget {
 
                 20.verticalSpace,
 
+                // progress 
                 Obx(() {
                   final bool isLoading = controller.isProgressLoading.value;
                   final progress = controller.progress.value;
-                  if (!isLoading && progress == null) {
-                    return const SizedBox.shrink();
-                  }
+                
 
                   if(controller.isProgressError.value) {
                     return _buildErrorWidget(onPressed: () => controller.getProgress());
@@ -120,102 +120,108 @@ class HomeScreen extends StatelessWidget {
 
                 20.verticalSpace,
 
-                Text(
-                  'Recent Activity',
-                  style: getTextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black,
-                  ),
-                ),
 
-                12.verticalSpace,
 
+                // recent activity
                 Obx(() {
-                  final bool isLoading = controller.isRecentActivityLoading.value;
-                  final List<Datum> activities =
-                      controller.recentActivity.value?.data ??
-                      controller.getRecentActivityPlaceholderData();
-
-                  if (!isLoading && activities.isEmpty) {
-                    return const Center(child: Text("No recent activity found"));
-                  }
-
                   if (controller.isRecentActivityError.value) {
                     return _buildErrorWidget(
                       onPressed: () => controller.getRecentActivity(),
                     );
                   }
+
+                  final bool isLoading = controller.isRecentActivityLoading.value;
+
+                  final List<Datum> activities = isLoading
+                      ? controller.getRecentActivityPlaceholderData()
+                      : (controller.recentActivity.value?.data ?? []);
+
                   return Skeletonizer(
                     enabled: isLoading,
                     child: Column(
-                      children: activities.map((e) {
-                        return Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: 12.h,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Recent Activity',
+                          style: getTextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black,
                           ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14.r),
-                            color: Colors.white,
-                          ),
+                        ),
 
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.check_circle,
-                                    color: AppColors.softPurpleNormal,
-                                    size: 18.h,
-                                  ),
-                                  10.horizontalSpace,
-                                  Expanded(
-                                    child: Text(
-                                      e.title,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: getTextStyle(
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.softPurpleNormalHover,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                        12.verticalSpace,
+                        Column(
+                          children: activities.map((e) {
+                            return Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16.w,
+                                vertical: 12.h,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14.r),
+                                color: Colors.white,
                               ),
 
-                              4.verticalSpace,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.check_circle,
+                                        color: AppColors.softPurpleNormal,
+                                        size: 18.h,
+                                      ),
+                                      10.horizontalSpace,
+                                      Expanded(
+                                        child: Text(
+                                          e.title,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: getTextStyle(
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColors.softPurpleNormalHover,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
 
-                              Text(
-                                e.timeAgo,
-                                style: getTextStyle(
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.lightGreyNormal,
-                                ),
-                              ).paddingOnly(left: 27.w),
+                                  4.verticalSpace,
 
-                              7.verticalSpace,
+                                  Text(
+                                    e.timeAgo,
+                                    style: getTextStyle(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.lightGreyNormal,
+                                    ),
+                                  ).paddingOnly(left: 27.w),
 
-                              Text(
-                                'Behavioral Questions - Score:${e.score ?? 0}%',
-                                style: getTextStyle(
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: const Color(0xFF555556),
-                                ),
-                              ).paddingOnly(left: 27.w),
-                            ],
-                          ),
-                        ).paddingOnly(bottom: 10.h);
-                      }).toList(),
+                                  7.verticalSpace,
+
+                                  Text(
+                                    'Behavioral Questions - Score:${e.score ?? 0}%',
+                                    style: getTextStyle(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: const Color(0xFF555556),
+                                    ),
+                                  ).paddingOnly(left: 27.w),
+                                ],
+                              ),
+                            ).paddingOnly(bottom: 10.h);
+                          }).toList(),
+                        ),
+                      ],
                     ),
                   );
                 }),
 
                 20.verticalSpace,
 
+                // today's tips
                 Obx(() {
                   final bool isLoading = controller.isTodayTipsLoading.value;
                   final bool isError = controller.isTodayTipsError.value;
@@ -333,7 +339,7 @@ class HomeScreen extends StatelessWidget {
             const Icon(Icons.refresh, color: Colors.grey),
             10.verticalSpace,
             Text(
-              'Try Again',
+              'Try Again\nOr pull To Refresh',
               style: getTextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),
             ),
           ],

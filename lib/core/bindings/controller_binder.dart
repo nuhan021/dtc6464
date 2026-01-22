@@ -3,6 +3,7 @@ import 'package:dtc6464/features/auth/controller/sign_in_controller.dart';
 import 'package:dtc6464/features/auth/controller/sign_up_controller.dart';
 import 'package:dtc6464/features/collect_info/controller/collect_info_controller.dart';
 import 'package:dtc6464/features/home/controller/home_screen_controller.dart';
+import 'package:dtc6464/features/nav_screens/profile/statistics/controllers/statistics_controller.dart';
 import 'package:dtc6464/features/onboarding/controllers/onboarding_controller.dart';
 import 'package:dtc6464/features/practice/controller/practice_controller.dart';
 import 'package:get/get.dart';
@@ -36,6 +37,11 @@ class ControllerBinder extends Bindings {
 
     Get.lazyPut<PracticeController>(
           () => PracticeController(),
+      fenix: true,
+    );
+
+    Get.lazyPut<StatisticsController>(
+          () => StatisticsController(),
       fenix: true,
     );
   }

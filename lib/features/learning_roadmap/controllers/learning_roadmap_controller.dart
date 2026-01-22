@@ -32,7 +32,7 @@ class LearningRoadmapController extends GetxController {
       if(!response.isSuccess) {
         isRoadMapLoading.value = false;
         isRoadMapError.value = true;
-        SnackBarConstant.error(title: 'Failed', message: response.errorMessage);
+        SnackBarConstant.errorThin(title: 'Failed', message: response.errorMessage);
         return;
       }
       
@@ -42,7 +42,7 @@ class LearningRoadmapController extends GetxController {
     } catch (e) {
       isRoadMapLoading.value = false;
       isRoadMapError.value = true;
-      SnackBarConstant.error(title: 'Failed', message: e.toString());
+      SnackBarConstant.errorThin(title: 'Failed', message: e.toString());
     } finally {
       isRoadMapLoading.value = false;
     }

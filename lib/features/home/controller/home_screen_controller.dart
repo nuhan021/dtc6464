@@ -57,7 +57,7 @@ class HomeScreenController extends GetxController {
       if (!response.isSuccess) {
         isTodayTipsLoading.value = false;
         isTodayTipsError.value = true;
-        SnackBarConstant.error(title: 'Failed', message: response.errorMessage);
+        SnackBarConstant.errorThin(title: 'Failed', message: response.errorMessage);
         return;
       }
 
@@ -67,7 +67,7 @@ class HomeScreenController extends GetxController {
     } catch (e) {
       isTodayTipsLoading.value = false;
       isTodayTipsError.value = true;
-      SnackBarConstant.error(title: 'Failed', message: e.toString());
+      SnackBarConstant.errorThin(title: 'Failed', message: e.toString());
     } finally {
       isTodayTipsLoading.value = false;
     }
@@ -85,7 +85,7 @@ class HomeScreenController extends GetxController {
       if (!response.isSuccess) {
         isProTipsLoading.value = false;
         isProTipsError.value = true;
-        SnackBarConstant.error(title: 'Failed', message: response.errorMessage);
+        SnackBarConstant.errorThin(title: 'Failed', message: response.errorMessage);
         return;
       }
 
@@ -95,7 +95,7 @@ class HomeScreenController extends GetxController {
     } catch (e) {
       isProTipsLoading.value = false;
       isProTipsError.value = true;
-      SnackBarConstant.error(title: 'Failed', message: e.toString());
+      SnackBarConstant.errorThin(title: 'Failed', message: e.toString());
     } finally {
       isProTipsLoading.value = false;
     }
@@ -114,7 +114,7 @@ class HomeScreenController extends GetxController {
       if(!response.isSuccess) {
         isResumeInterviewLoading.value = false;
         isResumeInterviewError.value = true;
-        SnackBarConstant.error(title: 'Failed', message: response.errorMessage);
+        SnackBarConstant.errorThin(title: 'Failed', message: response.errorMessage);
         return;
       }
 
@@ -124,6 +124,7 @@ class HomeScreenController extends GetxController {
     } catch (e) {
       isResumeInterviewLoading.value = false;
       isResumeInterviewError.value = true;
+      SnackBarConstant.errorThin(title: 'Failed', message: e.toString());
     } finally {
       isResumeInterviewLoading.value = false;
     }
@@ -141,11 +142,11 @@ class HomeScreenController extends GetxController {
       if (response.isSuccess) {
         controller.questions.value = QuestionsModel.fromJson(response.responseData);
       } else {
-        SnackBarConstant.error(title: 'Failed', message: response.errorMessage);
+        SnackBarConstant.errorThin(title: 'Failed', message: response.errorMessage);
         Navigator.pop(context);
       }
     } catch (e) {
-      SnackBarConstant.error(title: 'Error', message: e.toString());
+      SnackBarConstant.errorThin(title: 'Error', message: e.toString());
       Navigator.pop(context);
     } finally {
       controller.isStartPracticeLoading.value = false;
@@ -165,7 +166,7 @@ class HomeScreenController extends GetxController {
       if(!response.isSuccess) {
         isRecentActivityLoading.value = false;
         isRecentActivityError.value = true;
-        SnackBarConstant.error(title: 'Failed', message: response.errorMessage);
+        SnackBarConstant.errorThin(title: 'Failed', message: response.errorMessage);
         return;
       }
 
@@ -175,6 +176,7 @@ class HomeScreenController extends GetxController {
     } catch (e) {
       isRecentActivityLoading.value = false;
       isRecentActivityError.value = true;
+      SnackBarConstant.errorThin(title: 'Failed', message: e.toString());
     } finally {
       isRecentActivityLoading.value = false;
     }
@@ -193,7 +195,7 @@ class HomeScreenController extends GetxController {
       if(!response.isSuccess) {
         isProgressLoading.value = false;
         isProgressError.value = true;
-        SnackBarConstant.error(title: 'Failed', message: response.errorMessage);
+        SnackBarConstant.errorThin(title: 'Failed', message: response.errorMessage);
         return;
       }
 
@@ -203,6 +205,7 @@ class HomeScreenController extends GetxController {
     } catch (e) {
       isProgressLoading.value = false;
       isProgressError.value = true;
+      SnackBarConstant.errorThin(title: 'Failed', message: e.toString());
     } finally {
       isProgressLoading.value = false;
     }
