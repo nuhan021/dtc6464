@@ -17,6 +17,7 @@ class ApiConstant {
 
   // user
   static const String profileUpdate = '/user/profile-update';
+  static const String progress = '/user/your-progress';
 
   // tips
   static const String todayTips = '/tips/daily-tips';
@@ -31,4 +32,10 @@ class ApiConstant {
 
   // interview
   static const String startInterview = '/practice/start';
+  static const String submitInterview = '/practice/submit-answers/';
+  static const String resumeInterview = '/practice/resume-status';
+  static const String recentActivity = '/practice/recent-activity';
+  static const String resumedQuestions = '/practice/resume-questions/';
+
+
 }

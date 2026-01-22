@@ -2,6 +2,9 @@ import 'package:dtc6464/core/common/styles/global_text_style.dart';
 import 'package:dtc6464/core/utils/constants/colors.dart';
 import 'package:dtc6464/core/utils/constants/icon_path.dart';
 import 'package:dtc6464/features/background/views/widgets/background.dart';
+import 'package:dtc6464/features/home/model/progress_model.dart';
+import 'package:dtc6464/features/home/model/recent_activity_model.dart';
+import 'package:dtc6464/features/home/model/resumed_questions_model.dart';
 import 'package:dtc6464/features/home/views/widgets/quick_action.dart';
 import 'package:dtc6464/routes/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +12,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../../core/utils/helpers/app_helper.dart';
+import '../../../practice/views/screens/ai_coach_mode.dart';
 import '../../controller/home_screen_controller.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -17,152 +22,222 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Background(
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: PreferredSize(
-          preferredSize: Size(double.maxFinite, 80.h),
-          child: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            centerTitle: false,
-            title: Text(
-              'Welcome back!',
-              style: getTextStyle(
-                fontSize: 24.sp,
-                fontWeight: FontWeight.w700,
-                color: AppColors.softPurpleDarker,
+      child: RefreshIndicator(
+        onRefresh: () async {
+          controller.getTodayTips();
+          controller.getProTips();
+          controller.getResumeInterview();
+          controller.getRecentActivity();
+          controller.getProgress();
+        },
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: PreferredSize(
+            preferredSize: Size(double.maxFinite, 80.h),
+            child: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              centerTitle: false,
+              title: Text(
+                'Welcome back!',
+                style: getTextStyle(
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.softPurpleDarker,
+                ),
               ),
-            ),
-            actions: [
-              InkWell(
-                onTap: () => Get.toNamed(AppRoute.viewNotificationsScreen),
-                child: Image.asset(IconPath.notification),
-              ),
-            ],
-            bottom: PreferredSize(
-              preferredSize: Size(double.maxFinite, 30.h),
-              child: Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: Text(
-                  'Ready to ace your next interview?',
-                  style: getTextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.softPurpleDarkerHover,
-                  ),
-                ).paddingOnly(left: 16.w),
+              actions: [
+                InkWell(
+                  onTap: () => Get.toNamed(AppRoute.viewNotificationsScreen),
+                  child: Image.asset(IconPath.notification),
+                ),
+              ],
+              bottom: PreferredSize(
+                preferredSize: Size(double.maxFinite, 30.h),
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    'Ready to ace your next interview?',
+                    style: getTextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.softPurpleDarkerHover,
+                    ),
+                  ).paddingOnly(left: 16.w),
+                ),
               ),
             ),
           ),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              40.verticalSpace,
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                40.verticalSpace,
 
-              // Quick Actions
-              QuickAction(),
+                // Quick Actions
+                QuickAction(),
 
-              20.verticalSpace,
+                20.verticalSpace,
 
-              Practice(),
+                Obx(() {
+                  final bool isLoading =
+                      controller.isResumeInterviewLoading.value;
+                  final resumedModel = controller.resumedQuestions.value;
 
-              20.verticalSpace,
+                  if (!isLoading &&
+                      (resumedModel == null ||
+                          resumedModel.data.hasResume == false)) {
+                    return const SizedBox.shrink();
+                  }
 
-              Progress(),
-
-              20.verticalSpace,
-
-              Text(
-                'Recent Activity',
-                style: getTextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black,
-                ),
-              ),
-
-              12.verticalSpace,
-
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14.r),
-                  color: Colors.white,
-                ),
-
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.check_circle,
-                          color: AppColors.softPurpleNormal,
-                          size: 18.h,
-                        ),
-                        10.horizontalSpace,
-                        Expanded(
-                          child: Text(
-                            'Practice Session Completed',
-                            overflow: TextOverflow.ellipsis,
-                            style: getTextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.softPurpleNormalHover,
-                            ),
-                          ),
-                        ),
-                      ],
+                  if(controller.isResumeInterviewError.value) {
+                    return _buildErrorWidget(onPressed: () => controller.getRecentActivity());
+                  }
+                  return Skeletonizer(
+                    enabled: isLoading,
+                    child: Practice(
+                      data:
+                          resumedModel?.data ??
+                          controller.getResumedPlaceholderData(),
                     ),
+                  );
+                }),
 
-                    4.verticalSpace,
+                20.verticalSpace,
 
-                    Text(
-                      '2 hours ago',
-                      style: getTextStyle(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.lightGreyNormal,
-                      ),
-                    ).paddingOnly(left: 27.w),
+                Obx(() {
+                  final bool isLoading = controller.isProgressLoading.value;
+                  final progress = controller.progress.value;
+                  if (!isLoading && progress == null) {
+                    return const SizedBox.shrink();
+                  }
 
-                    7.verticalSpace,
+                  if(controller.isProgressError.value) {
+                    return _buildErrorWidget(onPressed: () => controller.getProgress());
+                  }
+                  return Skeletonizer(enabled: isLoading, child: Progress(data: progress ?? controller.getProgressPlaceholderData(),));
+                }),
 
-                    Text(
-                      'Behavioral Questions - Score:85%',
-                      style: getTextStyle(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w500,
-                        color: const Color(0xFF555556),
-                      ),
-                    ).paddingOnly(left: 27.w),
-                  ],
+                20.verticalSpace,
+
+                Text(
+                  'Recent Activity',
+                  style: getTextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                  ),
                 ),
-              ),
 
-              20.verticalSpace,
+                12.verticalSpace,
 
-              Obx(() {
-                final bool isLoading = controller.isTodayTipsLoading.value;
-                final bool isError = controller.isTodayTipsError.value;
-                final bool hasData = controller.todayTipsData.value != null;
+                Obx(() {
+                  final bool isLoading = controller.isRecentActivityLoading.value;
+                  final List<Datum> activities =
+                      controller.recentActivity.value?.data ??
+                      controller.getRecentActivityPlaceholderData();
 
-                if (isLoading) {
-                  return _buildSkeletonContent(true);
-                }
+                  if (!isLoading && activities.isEmpty) {
+                    return const Center(child: Text("No recent activity found"));
+                  }
 
-                if (isError && !hasData) {
-                  return _buildErrorWidget();
-                }
+                  if (controller.isRecentActivityError.value) {
+                    return _buildErrorWidget(
+                      onPressed: () => controller.getRecentActivity(),
+                    );
+                  }
+                  return Skeletonizer(
+                    enabled: isLoading,
+                    child: Column(
+                      children: activities.map((e) {
+                        return Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 12.h,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14.r),
+                            color: Colors.white,
+                          ),
 
-                return _buildSkeletonContent(false);
-              }),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.check_circle,
+                                    color: AppColors.softPurpleNormal,
+                                    size: 18.h,
+                                  ),
+                                  10.horizontalSpace,
+                                  Expanded(
+                                    child: Text(
+                                      e.title,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: getTextStyle(
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.softPurpleNormalHover,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
 
-              60.verticalSpace,
-            ],
-          ).paddingSymmetric(horizontal: 16.w),
+                              4.verticalSpace,
+
+                              Text(
+                                e.timeAgo,
+                                style: getTextStyle(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.lightGreyNormal,
+                                ),
+                              ).paddingOnly(left: 27.w),
+
+                              7.verticalSpace,
+
+                              Text(
+                                'Behavioral Questions - Score:${e.score ?? 0}%',
+                                style: getTextStyle(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: const Color(0xFF555556),
+                                ),
+                              ).paddingOnly(left: 27.w),
+                            ],
+                          ),
+                        ).paddingOnly(bottom: 10.h);
+                      }).toList(),
+                    ),
+                  );
+                }),
+
+                20.verticalSpace,
+
+                Obx(() {
+                  final bool isLoading = controller.isTodayTipsLoading.value;
+                  final bool isError = controller.isTodayTipsError.value;
+                  final bool hasData = controller.todayTipsData.value != null;
+
+                  if (isLoading) {
+                    return _buildSkeletonContent(true);
+                  }
+
+                  if (isError && !hasData) {
+                    return _buildErrorWidget(
+                      onPressed: () => controller.getTodayTips(),
+                    );
+                  }
+
+                  return _buildSkeletonContent(false);
+                }),
+
+                60.verticalSpace,
+              ],
+            ).paddingSymmetric(horizontal: 16.w),
+          ),
         ),
       ),
     );
@@ -193,26 +268,52 @@ class HomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: 48.h, width: 48.w,
+              height: 48.h,
+              width: 48.w,
               padding: EdgeInsets.all(10.w),
-              decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-              child: Image.asset(IconPath.bulb, color: AppColors.softBlueNormal),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+              child: Image.asset(
+                IconPath.bulb,
+                color: AppColors.softBlueNormal,
+              ),
             ),
             10.horizontalSpace,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Today's Tip", style: getTextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600, color: const Color(0xFF4A4A6A))),
+                  Text(
+                    "Today's Tip",
+                    style: getTextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF4A4A6A),
+                    ),
+                  ),
                   5.verticalSpace,
                   Text(
-                    enabled ? "Loading Topic Name..." : controller.todayTipsData.value!.data.topic,
-                    style: getTextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: const Color(0xFF4A4A6A)),
+                    enabled
+                        ? "Loading Topic Name..."
+                        : controller.todayTipsData.value!.data.topic,
+                    style: getTextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w400,
+                      color: const Color(0xFF4A4A6A),
+                    ),
                   ),
                   8.verticalSpace,
                   Text(
-                    enabled ? "This is a placeholder for the tip content which will load shortly from the server." : controller.todayTipsData.value!.data.tip,
-                    style: getTextStyle(fontSize: 12.sp, fontWeight: FontWeight.w400, color: const Color(0xFF6B6B8A)),
+                    enabled
+                        ? "This is a placeholder for the tip content which will load shortly from the server."
+                        : controller.todayTipsData.value!.data.tip,
+                    style: getTextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w400,
+                      color: const Color(0xFF6B6B8A),
+                    ),
                   ),
                 ],
               ),
@@ -223,15 +324,18 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildErrorWidget() {
+  Widget _buildErrorWidget({required VoidCallback onPressed}) {
     return Center(
       child: InkWell(
-        onTap: () => controller.getTodayTips(),
+        onTap: onPressed,
         child: Column(
           children: [
             const Icon(Icons.refresh, color: Colors.grey),
             10.verticalSpace,
-            Text('Try Again', style: getTextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500)),
+            Text(
+              'Try Again',
+              style: getTextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),
+            ),
           ],
         ),
       ),
@@ -240,9 +344,16 @@ class HomeScreen extends StatelessWidget {
 }
 
 class Practice extends StatelessWidget {
-  const Practice({super.key});
+  Practice({super.key, required this.data});
+  final Data data;
+  final controller = Get.find<HomeScreenController>();
   @override
   Widget build(BuildContext context) {
+    double progressPercentage = data.totalQuestions > 0
+        ? (data.answeredCount / data.totalQuestions)
+        : 0.0;
+
+    int percentageText = (progressPercentage * 100).toInt();
     return Container(
       width: double.maxFinite,
       padding: EdgeInsets.all(24.w),
@@ -278,7 +389,7 @@ class Practice extends StatelessWidget {
           7.verticalSpace,
 
           Text(
-            'You left off at: Behavioral Interview - Question 4 of 10',
+            'You left off at: Behavioral Interview - Question ${data.answeredCount} of ${data.totalQuestions}',
             style: getTextStyle(
               fontSize: 13.sp,
               fontWeight: FontWeight.w400,
@@ -301,8 +412,6 @@ class Practice extends StatelessWidget {
 
               LayoutBuilder(
                 builder: (context, constraints) {
-                  double progressPercentage = 0.5;
-
                   return Container(
                     height: 8.h,
                     width: constraints.maxWidth * progressPercentage,
@@ -319,7 +428,7 @@ class Practice extends StatelessWidget {
           12.verticalSpace,
 
           Text(
-            '40% Complete',
+            '$percentageText% Complete',
             style: getTextStyle(
               fontSize: 12.sp,
               fontWeight: FontWeight.w400,
@@ -329,38 +438,44 @@ class Practice extends StatelessWidget {
 
           12.verticalSpace,
 
-          Container(
-            height: 45.h,
-            width: double.maxFinite,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12.r),
-              gradient: const LinearGradient(
-                begin: Alignment(-0.7, -0.8), // Approx 114 degrees
-                end: Alignment(0.7, 0.8),
-                colors: [
-                  Color(0xFFA78BFA), // #A78BFA (15.41%)
-                  Color(0xFF5835C0), // #5835C0 (84.59%)
-                ],
-                stops: [0.1541, 0.8459],
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  'Resume Session',
-                  style: getTextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
+          GestureDetector(
+            onTap: () {
+              controller.getResumedQuestions(context);
+              AppHelperFunctions.navigateToScreen(context, AiCoachMode());
+            },
+            child: Container(
+              height: 45.h,
+              width: double.maxFinite,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12.r),
+                gradient: const LinearGradient(
+                  begin: Alignment(-0.7, -0.8), // Approx 114 degrees
+                  end: Alignment(0.7, 0.8),
+                  colors: [
+                    Color(0xFFA78BFA), // #A78BFA (15.41%)
+                    Color(0xFF5835C0), // #5835C0 (84.59%)
+                  ],
+                  stops: [0.1541, 0.8459],
                 ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'Resume Session',
+                    style: getTextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
 
-                5.horizontalSpace,
+                  5.horizontalSpace,
 
-                Image.asset(IconPath.arrowRightFilled, width: 18.w),
-              ],
+                  Image.asset(IconPath.arrowRightFilled, width: 18.w),
+                ],
+              ),
             ),
           ),
         ],
@@ -370,10 +485,13 @@ class Practice extends StatelessWidget {
 }
 
 class Progress extends StatelessWidget {
-  const Progress({super.key});
+  const Progress({super.key, required this.data});
+
+  final ProgressModel data;
 
   @override
   Widget build(BuildContext context) {
+    final item = data.data;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -408,7 +526,7 @@ class Progress extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      '12',
+                      item.yourScore.toString(),
                       style: getTextStyle(
                         fontSize: 24.sp,
                         fontWeight: FontWeight.w700,
@@ -440,7 +558,7 @@ class Progress extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      '74%',
+                      "${item.avgScore.toStringAsFixed(2)}%",
                       style: getTextStyle(
                         fontSize: 24.sp,
                         fontWeight: FontWeight.w700,
@@ -465,7 +583,7 @@ class Progress extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      '5',
+                      item.streak.toString(),
                       style: getTextStyle(
                         fontSize: 24.sp,
                         fontWeight: FontWeight.w700,

@@ -8,439 +8,290 @@ import 'package:get/get.dart';
 import '../../../../core/common/styles/global_text_style.dart';
 import '../../../../core/utils/constants/colors.dart';
 import '../../../../core/utils/constants/icon_path.dart';
+import '../../controller/practice_controller.dart';
+import '../../model/analize_model.dart';
 
 class ViewDetailedFeedbackScreen extends StatelessWidget {
-  const ViewDetailedFeedbackScreen({super.key});
+  ViewDetailedFeedbackScreen({super.key});
+
+  final PracticeController controller = Get.find<PracticeController>();
 
   @override
   Widget build(BuildContext context) {
-    return Background(child: Scaffold(
-      backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: false,
-        title: Text(
-          'Practice Summary',
-          style: getTextStyle(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.w700,
-            color: const Color(0xFF333333),
+    final feedbacks = controller.analizeData.value?.data.aiData.detailedFeedback ?? [];
+
+    return Background(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          centerTitle: false,
+          title: Text(
+            'Detailed Feedback',
+            style: getTextStyle(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFF333333),
+            ),
+          ),
+          actions: [
+            InkWell(
+              onTap: () {},
+              child: Image.asset(IconPath.bell, height: 30.h).paddingOnly(right: 15.w),
+            ),
+          ],
+        ),
+        body: feedbacks.isEmpty
+            ? const Center(child: Text("No feedback available"))
+            : SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: Column(
+              children: feedbacks.map((item) => _buildFeedbackBlock(context, item)).toList(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFeedbackBlock(BuildContext context, DetailedFeedback feedback) {
+    return Column(
+      children: [
+        20.verticalSpace,
+
+        // 1. Question Card
+        _buildInfoCard(
+          title: 'Question',
+          icon: IconPath.question,
+          content: feedback.question,
+          titleColor: AppColors.softPurpleNormalHover,
+        ),
+
+        20.verticalSpace,
+
+        // 2. Your Response Card
+        _buildInfoCard(
+          title: 'Your Response',
+          icon: IconPath.strength,
+          content: feedback.answer,
+          titleColor: AppColors.softBlueNormal,
+          iconBgColor: AppColors.softBlueActiveLight,
+          iconColor: AppColors.softBlueNormalHover,
+        ),
+
+        20.verticalSpace,
+
+        // 3. Clarity, Structure, Confidence Scores
+        Container(
+          padding: EdgeInsets.all(20.w),
+          decoration: _cardDecoration(),
+          child: Column(
+            children: [
+              ClarityCard(title: 'Clarity', data: feedback.overview.clarity),
+              20.verticalSpace,
+              ClarityCard(title: 'Structure', data: feedback.overview.structure),
+              20.verticalSpace,
+              ClarityCard(title: 'Confidence', data: feedback.overview.confidence),
+            ],
           ),
         ),
 
-        actions: [
-          InkWell(
-            onTap: () {},
-            child: Image.asset(
-              IconPath.bell,
-              height: 30.h,
-            ).paddingOnly(right: 15.w),
+        20.verticalSpace,
+
+        // 4. Suggestions Card
+        _buildSuggestionsCard(feedback.suggestions),
+
+        20.verticalSpace,
+
+        // 5. Sample Improved Answer (STAR Method)
+        _buildSampleAnswerCard(feedback.sampleImprovedAnswer),
+
+        40.verticalSpace,
+
+        CustomFilledButton(
+          text: 'Practice Next Question',
+          onPressed: () {
+            controller.nextQuestion();
+            Navigator.pop(context);
+            Navigator.pop(context);
+          },
+        ).paddingSymmetric(horizontal: 20.w),
+
+        30.verticalSpace,
+        const Divider(),
+      ],
+    );
+  }
+
+  // --- Helper UI Components ---
+
+  BoxDecoration _cardDecoration() {
+    return BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12.r),
+      boxShadow: [
+        BoxShadow(
+          color: const Color(0xFF8A5CF6).withOpacity(0.20),
+          blurRadius: 12,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInfoCard({
+    required String title,
+    required String icon,
+    required String content,
+    required Color titleColor,
+    Color? iconBgColor,
+    Color? iconColor,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(20.w),
+      decoration: _cardDecoration(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                height: 32.h, width: 32.w, padding: EdgeInsets.all(5.w),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.r),
+                  color: iconBgColor ?? Colors.transparent,
+                ),
+                child: Image.asset(icon, color: iconColor, height: 25.h),
+              ),
+              12.horizontalSpace,
+              Text(title, style: getTextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500, color: titleColor)),
+            ],
           ),
+          10.verticalSpace,
+          Text(content, style: getTextStyle(fontSize: 14.sp, color: Colors.black87)),
         ],
       ),
+    );
+  }
 
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            20.verticalSpace,
-
-            // interview question
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(20.w),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFFFFF),
-                borderRadius: BorderRadius.circular(12.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF8A5CF6).withOpacity(0.20),
-                    offset: const Offset(0, 0),
-                    blurRadius: 12,
-                    spreadRadius: 0,
-                  ),
-                ],
-              ),
-
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Image.asset(IconPath.question, height: 25.h),
-                      12.horizontalSpace,
-                      Text(
-                        'Question',
-                        style: getTextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.softPurpleNormalHover,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  10.verticalSpace,
-
-                  Text(
-                    'Describe a challenging project and how you managed it.',
-                    style: getTextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.softPurpleDark,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            20.verticalSpace,
-
-            // Your Response
-            Container(
-              padding: EdgeInsets.all(20.w),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFFFFF),
-                borderRadius: BorderRadius.circular(12.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF8A5CF6).withOpacity(0.20),
-                    offset: const Offset(0, 0),
-                    blurRadius: 12,
-                    spreadRadius: 0,
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        height: 32.h,
-                        width: 32.w,
-                        padding: EdgeInsets.all(5.w),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(37170400.r),
-                          color: AppColors.softBlueActiveLight,
-                        ),
-                        child: Image.asset(IconPath.strength, color: AppColors.softBlueNormalHover,),
-                      ),
-
-                      12.horizontalSpace,
-
-                      Text(
-                        'Your Response',
-                        style: getTextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.softBlueNormal
-                        ),
-                      )
-                    ],
-                  ),
-
-                  15.verticalSpace,
-
-                  Text(
-                    'I worked on a mobile app project with tight deadlines. I organized the team, broke down tasks, and held daily check-ins. We completed it on time and the client was happy with the results.',
-                    style: getTextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.black
-                    ),
-                  )
-                ],
-              ),
-            ),
-
-            20.verticalSpace,
-
-            Container(
-              padding: EdgeInsets.all(20.w),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFFFFF),
-                borderRadius: BorderRadius.circular(12.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF8A5CF6).withOpacity(0.20),
-                    offset: const Offset(0, 0),
-                    blurRadius: 12,
-                    spreadRadius: 0,
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  for(int i = 0; i < 3; i++)
-                   ClarityCard().paddingOnly(bottom: 20.h),
-                ],
-              ),
-            ),
-
-            20.verticalSpace,
-
-            // Your Response
-            Container(
-              padding: EdgeInsets.all(20.w),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.r),
-                border: Border.all(
-                  color: const Color(0xFFFFCBA9),
-                  width: 1,
-                ),
-
-                // 3. Background: linear-gradient(180deg, rgba(255, 221, 200, 0.50) 0%, rgba(255, 236, 195, 0.50) 100%)
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    const Color(0xFFFFDDC8).withOpacity(0.50), // rgba(255, 221, 200, 0.50)
-                    const Color(0xFFFFECC3).withOpacity(0.50), // rgba(255, 236, 195, 0.50)
-                  ],
-                ),
-
-                // 4. Box Shadow: 0 8px 16px 0 rgba(200, 180, 220, 0.12)
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFFC8B4DC).withOpacity(0.12), // rgba(200, 180, 220, 0.12)
-                    offset: const Offset(0, 8),  // x: 0, y: 8
-                    blurRadius: 16,             // blur: 16
-                    spreadRadius: 0,            // spread: 0
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        height: 32.h,
-                        width: 32.w,
-                        padding: EdgeInsets.all(5.w),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(37170400.r),
-                          color: Colors.white,
-                        ),
-                        child: Image.asset(IconPath.bulb, color: const Color(0xFFF97316),),
-                      ),
-
-                      12.horizontalSpace,
-
-                      Text(
-                        'Suggestions',
-                        style: getTextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF4B5563)
-                        ),
-                      )
-                    ],
-                  ),
-
-                  15.verticalSpace,
-
-                  for(int i = 0; i < 3; i++)
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${i+1}.  ',
-                        style: getTextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                            color: const Color(0xFF4B5563)
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          'Add specific metrics: mention team size, timeline, or measurable outcomes (e.g., "20% under budget")',
-                          style: getTextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w400,
-                              color: const Color(0xFF4B5563)
-                          ),
-                        ),
-                      ),
-                    ],
-                  ).paddingOnly(left: 40.w, bottom: 10.h)
-                ],
-              ),
-            ),
-
-            20.verticalSpace,
-
-            // Your Response
-            Container(
-              padding: EdgeInsets.all(20.w),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.bottomCenter, // 0deg
-                  end: Alignment.topCenter,
-                  colors: [
-                    Color(0xFFE6DFFF),
-                    Color(0xFFF0EBFF),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(12.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF8A5CF6).withOpacity(0.20),
-                    offset: const Offset(0, 0),
-                    blurRadius: 12,
-                    spreadRadius: 0,
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        height: 32.h,
-                        width: 32.w,
-                        padding: EdgeInsets.all(5.w),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(37170400.r),
-                          color: const Color(0xFFA896E6).withOpacity(0.3),
-                        ),
-                        child: Image.asset(IconPath.ai2, color: const Color(0xFFA896E6),),
-                      ),
-
-                      12.horizontalSpace,
-
-                      Expanded(
-                        child: Text(
-                          'Sample Improved Answer',
-                          style: getTextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w500,
-                              color: const Color(0xFF4B5563)
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-
-                  15.verticalSpace,
-
-                  for(int i = 0; i < 4; i++)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Situation',
-                        style: getTextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF4A4A6A)
-                        ),
-                      ),
-
-
-                      Text(
-                        'I led a mobile app development project with a 6-week deadline for a major retail client.',
-                        style: getTextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                            color: const Color(0xFF6B6B8A)
-                        ),
-                      )
-                    ],
-                  ).paddingOnly(left: 45.w, bottom: 10.h),
-                ],
-              ),
-            ),
-
-
-            40.verticalSpace,
-            
-            CustomFilledButton(text: 'Practice Next Question', onPressed: (){
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => SelectInterview()),
-                    (route) => false,
-              );
-            }).paddingSymmetric(horizontal: 36.w),
-
-            40.verticalSpace,
-
-          ],
-        ).paddingSymmetric(horizontal: 16.w),
+  Widget _buildSuggestionsCard(List<String> suggestions) {
+    return Container(
+      padding: EdgeInsets.all(20.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: const Color(0xFFFFCBA9)),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter, end: Alignment.bottomCenter,
+          colors: [const Color(0xFFFFDDC8).withOpacity(0.5), const Color(0xFFFFECC3).withOpacity(0.5)],
+        ),
       ),
-    ));
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Image.asset(IconPath.bulb, color: const Color(0xFFF97316), height: 24.h),
+              12.horizontalSpace,
+              Text('Suggestions', style: getTextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600, color: const Color(0xFF4B5563))),
+            ],
+          ),
+          15.verticalSpace,
+          ...suggestions.asMap().entries.map((entry) => Padding(
+            padding: EdgeInsets.only(left: 10.w, bottom: 8.h),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('${entry.key + 1}. ', style: getTextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
+                Expanded(child: Text(entry.value, style: getTextStyle(fontSize: 14.sp, color: const Color(0xFF4B5563)))),
+              ],
+            ),
+          )),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSampleAnswerCard(SampleImprovedAnswer sample) {
+    return Container(
+      padding: EdgeInsets.all(20.w),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(colors: [Color(0xFFE6DFFF), Color(0xFFF0EBFF)]),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Image.asset(IconPath.ai2, color: const Color(0xFFA896E6), height: 24.h),
+              12.horizontalSpace,
+              Text('Sample Improved Answer', style: getTextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600)),
+            ],
+          ),
+          20.verticalSpace,
+          _starSection('Situation', sample.situation),
+          _starSection('Task', sample.task),
+          _starSection('Action', sample.action),
+          _starSection('Result', sample.result),
+        ],
+      ),
+    );
+  }
+
+  Widget _starSection(String label, String content) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 12.h, left: 35.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: getTextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold, color: const Color(0xFF4A4A6A))),
+          Text(content, style: getTextStyle(fontSize: 14.sp, color: const Color(0xFF6B6B8A))),
+        ],
+      ),
+    );
   }
 }
 
-
 class ClarityCard extends StatelessWidget {
-  const ClarityCard({super.key});
+  final String title;
+  final Clarity data;
+  const ClarityCard({super.key, required this.title, required this.data});
 
   @override
   Widget build(BuildContext context) {
+    int rating = int.tryParse(data.rating.split('/').first) ?? 0;
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               children: [
-                Container(
-                  height: 7.h,
-                  width: 7.w,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: const Color(0xFF22262D)
-                  ),
-                ),
-
+                const CircleAvatar(radius: 3.5, backgroundColor: Color(0xFF22262D)),
                 8.horizontalSpace,
-
-                Text(
-                  'Clarity',
-                  style: getTextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w500,
-                      color: const Color(0xFF22262D)
-                  ),
-                ),
+                Text(title, style: getTextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500)),
               ],
             ),
-
             Row(
               children: [
-                for(int i = 0; i < 5; i++)
-                Container(
-                  height: 7.h,
-                  width: 7.w,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(2.r),
-                    color: i == 4 ? const Color(0xFFC7CACF) : const Color(0xFF367588)
+                for (int i = 1; i <= 5; i++)
+                  Container(
+                    height: 7.h, width: 7.w, margin: EdgeInsets.only(right: 5.w),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(2.r),
+                      color: i <= rating ? const Color(0xFF367588) : const Color(0xFFC7CACF),
+                    ),
                   ),
-                ).paddingOnly(right: 5.w),
-
-                Text(
-                  '4/5',
-                  style: getTextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w400,
-                    color: const Color(0xFF367588)
-                  ),
-                )
+                Text(data.rating, style: getTextStyle(fontSize: 14.sp, color: const Color(0xFF367588))),
               ],
             )
           ],
         ),
-
-        10.verticalSpace,
-
-        Text(
-          'Your message was clear and easy to follow. Good use of straightforward language.',
-          style: getTextStyle(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w400,
-            color: const Color(0xFF4B5563)
-          ),
-        )
+        8.verticalSpace,
+        Text(data.explanation, style: getTextStyle(fontSize: 14.sp, color: const Color(0xFF4B5563))),
       ],
     );
   }
