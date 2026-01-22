@@ -99,8 +99,8 @@ class TechnicalTopicSelection extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         controller.selectedTopic.value = data['title'];
-        controller.startInterview();
-        // AppHelperFunctions.navigateToScreen(context, AiCoachMode());
+        controller.startInterview(context);
+        AppHelperFunctions.navigateToScreen(context, AiCoachMode());
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 16.h),
