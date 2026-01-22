@@ -79,7 +79,7 @@ class NetworkCaller {
 
   /// PATCH method (fixed typo from pathcRequest to patchRequest)
   Future<ResponseData> patchRequest(String url,
-      {Map<String, String>? body, String? token}) async {
+      {Map<String, dynamic>? body, String? token}) async {
     log('PATCH Request: $url');
     log('Request Body: ${jsonEncode(body)}');
 
