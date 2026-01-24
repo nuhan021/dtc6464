@@ -7,6 +7,7 @@ class StorageService {
   static const String _refreshTokenKey = 'refreshToken';
   static const String _idKey = 'userId';
   static const String _userProfileId = 'userProfileId';
+  static const String _fcmTokenKey = 'fcm_token';
 
   // Singleton instance for SharedPreferences
   static SharedPreferences? _preferences;
@@ -48,8 +49,18 @@ class StorageService {
     await _preferences?.remove(_accessTokenKey);
     await _preferences?.remove(_refreshTokenKey);
     await _preferences?.remove(_idKey);
+    await _preferences?.remove(_userProfileId);
+    await _preferences?.remove(_fcmTokenKey);
     // Navigate to the login screen
     // Get.offAllNamed('/login');
+  }
+
+  static Future<void> saveFcmToken({required String fcm}) async {
+    await _preferences?.setString(_fcmTokenKey, fcm);
+  }
+
+  static Future<void> clearFcmToken() async {
+    await _preferences?.remove(_fcmTokenKey);
   }
 
   // getter for isFirstTimer
@@ -66,6 +77,9 @@ class StorageService {
 
   // Getter for refresh token
   static String? get refreshToken => _preferences?.getString(_refreshTokenKey);
+
+  // FCM Token
+  static String? get fcmToken => _preferences?.getString(_fcmTokenKey);
 
   // Check if refresh token exists
   static bool hasRefreshToken() {

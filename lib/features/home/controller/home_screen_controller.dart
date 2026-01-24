@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/utils/constants/api_constants.dart';
 import '../../../core/utils/constants/snackbar_constant.dart';
+import '../../../core/utils/logging/logger.dart';
 import '../../practice/model/question_model.dart' hide Data;
 import '../model/pro_tips_model.dart' hide Data;
 
@@ -67,6 +68,7 @@ class HomeScreenController extends GetxController {
     } catch (e) {
       isTodayTipsLoading.value = false;
       isTodayTipsError.value = true;
+      AppLoggerHelper.error(e.toString());
       SnackBarConstant.errorThin(title: 'Failed', message: e.toString());
     } finally {
       isTodayTipsLoading.value = false;
@@ -95,6 +97,7 @@ class HomeScreenController extends GetxController {
     } catch (e) {
       isProTipsLoading.value = false;
       isProTipsError.value = true;
+      AppLoggerHelper.error(e.toString());
       SnackBarConstant.errorThin(title: 'Failed', message: e.toString());
     } finally {
       isProTipsLoading.value = false;
@@ -124,6 +127,7 @@ class HomeScreenController extends GetxController {
     } catch (e) {
       isResumeInterviewLoading.value = false;
       isResumeInterviewError.value = true;
+      AppLoggerHelper.error(e.toString());
       SnackBarConstant.errorThin(title: 'Failed', message: e.toString());
     } finally {
       isResumeInterviewLoading.value = false;
@@ -146,6 +150,8 @@ class HomeScreenController extends GetxController {
         Navigator.pop(context);
       }
     } catch (e) {
+      controller.isStartPracticeLoading.value = false;
+      AppLoggerHelper.error(e.toString());
       SnackBarConstant.errorThin(title: 'Error', message: e.toString());
       Navigator.pop(context);
     } finally {
@@ -176,6 +182,7 @@ class HomeScreenController extends GetxController {
     } catch (e) {
       isRecentActivityLoading.value = false;
       isRecentActivityError.value = true;
+      AppLoggerHelper.error(e.toString());
       SnackBarConstant.errorThin(title: 'Failed', message: e.toString());
     } finally {
       isRecentActivityLoading.value = false;
@@ -205,6 +212,7 @@ class HomeScreenController extends GetxController {
     } catch (e) {
       isProgressLoading.value = false;
       isProgressError.value = true;
+      AppLoggerHelper.error(e.toString());
       SnackBarConstant.errorThin(title: 'Failed', message: e.toString());
     } finally {
       isProgressLoading.value = false;

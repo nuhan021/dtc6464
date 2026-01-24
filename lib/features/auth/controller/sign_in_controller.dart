@@ -6,11 +6,13 @@ import 'package:dtc6464/features/auth/model/login_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/services/fcm_service.dart';
 import '../../../core/utils/constants/api_constants.dart';
 import '../../../routes/app_routes.dart';
 
 class SignInController extends GetxController {
   final NetworkCaller _networkCaller = Get.find<NetworkCaller>();
+  final FCMService _fcmService = Get.find<FCMService>();
 
   // text controllers
   final emailController = TextEditingController();
@@ -39,6 +41,7 @@ class SignInController extends GetxController {
   Future<void> login() async {
     try {
       isLoading.value = true;
+      await _fcmService.removeToken();
       final response = await _networkCaller.postRequest(
         ApiConstant.baseUrl + ApiConstant.login,
         body: {
@@ -63,7 +66,10 @@ class SignInController extends GetxController {
       );
 
       AppLoggerHelper.debug(StorageService.accessToken.toString());
-
+      final fcmToken = _fcmService.currentToken;
+      if (fcmToken != null) {
+        await _fcmService.registerToken(fcmToken);
+      }
       isLoading.value = false;
       SnackBarConstant.success(title: 'Success', message: 'Login successful');
       Get.toNamed(AppRoute.getEnterNameScreen());

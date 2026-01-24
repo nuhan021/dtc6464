@@ -85,6 +85,10 @@ class HomeScreen extends StatelessWidget {
                       controller.isResumeInterviewLoading.value;
                   final resumedModel = controller.resumedQuestions.value;
 
+                  if(controller.resumedQuestions.value == null) {
+                    return Text("Pull to refresh");
+                  }
+
                   if (!isLoading &&
                       (resumedModel == null ||
                           resumedModel.data.hasResume == false)) {
