@@ -109,7 +109,7 @@ class NetworkCaller {
   }
 
   /// DELETE method
-  Future<ResponseData> deleteRequest(String url, {String? token}) async {
+  Future<ResponseData> deleteRequest(String url, {Map<String, dynamic>? body, String? token}) async {
     log('DELETE Request: $url');
     log('DELETE Token: $token');
     try {
@@ -119,6 +119,7 @@ class NetworkCaller {
           'Authorization': 'Bearer ${token.toString()}',
           'Content-type': 'application/json',
         },
+        body: jsonEncode(body),
       ).timeout(
         Duration(seconds: timeoutDuration),
       );

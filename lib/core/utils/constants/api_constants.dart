@@ -47,4 +47,7 @@ class ApiConstant {
   // notification
   static const String notificationSettings = '/notification-settings';
 
+  static const String registerFcmToken = '/user/fcm-token';
+  static const String removeFcmToken = '/user/fcm-token';
+
 }
