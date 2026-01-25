@@ -87,7 +87,11 @@ class HomeScreen extends StatelessWidget {
 
                   // 1. Handle Error State
                   if (isError) {
-                    return _buildErrorWidget(onPressed: () => controller.getResumedQuestions(context));
+                    return _buildErrorWidget(title: 'Resumed task', gradient: const LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Color(0xFFD0F1FF), Color(0xFFB3E8FF)],
+                    ),);
                   }
 
                   // // 2. Handle Loading (If no data yet)
@@ -99,7 +103,11 @@ class HomeScreen extends StatelessWidget {
                   if (resumedModel == null || resumedModel.data.hasResume == false) {
                     // If not loading and no data, show error/empty state
                     if(!isLoading) {
-                      return _buildErrorWidget(onPressed: () => controller.getResumedQuestions(context));
+                      return _buildErrorWidget(title: 'Resumed task', gradient: const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Color(0xFFD0F1FF), Color(0xFFB3E8FF)],
+                      ),);
                     }
                   }
 
@@ -121,7 +129,11 @@ class HomeScreen extends StatelessWidget {
                 
 
                   if(controller.isProgressError.value) {
-                    return _buildErrorWidget(onPressed: () => controller.getProgress());
+                    return _buildErrorWidget(title: 'Progress',  gradient: const LinearGradient(
+                      begin: Alignment.topCenter, // 0%
+                      end: Alignment.bottomCenter, // 100%
+                      colors: [Color(0xFFFFDDC8), Color(0xFFFFECC3)],
+                    ),);
                   }
                   return Skeletonizer(enabled: isLoading, child: Progress(data: progress ?? controller.getProgressPlaceholderData(),));
                 }),
@@ -133,9 +145,11 @@ class HomeScreen extends StatelessWidget {
                 // recent activity
                 Obx(() {
                   if (controller.isRecentActivityError.value) {
-                    return _buildErrorWidget(
-                      onPressed: () => controller.getRecentActivity(),
-                    );
+                    return _buildErrorWidget(title: 'Recent Activity', gradient: const LinearGradient(
+                      begin: Alignment.topCenter, // 0%
+                      end: Alignment.bottomCenter, // 100%
+                      colors: [Color(0xFFFFD4D9), Color(0xFFFFC8E3)],
+                    ),);
                   }
 
                   final bool isLoading = controller.isRecentActivityLoading.value;
@@ -240,9 +254,11 @@ class HomeScreen extends StatelessWidget {
                   }
 
                   if (isError && !hasData) {
-                    return _buildErrorWidget(
-                      onPressed: () => controller.getTodayTips(),
-                    );
+                    return _buildErrorWidget(title: 'Today\'s Tips', gradient: const LinearGradient(
+                      begin: Alignment.topCenter, // 0%
+                      end: Alignment.bottomCenter, // 100%
+                      colors: [Color(0xFFDFD3FD), Color(0xFFCED3FF)],
+                    ),);
                   }
 
                   return _buildSkeletonContent(false);
@@ -338,20 +354,68 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildErrorWidget({required VoidCallback onPressed}) {
-    return Center(
-      child: InkWell(
-        onTap: onPressed,
-        child: Column(
-          children: [
-            const Icon(Icons.refresh, color: Colors.grey),
-            10.verticalSpace,
-            Text(
-              'Try Again\nOr pull To Refresh',
-              style: getTextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),
+  Widget _buildErrorWidget({
+    required String title,
+    required LinearGradient gradient,
+  }) {
+    return Container(
+      width: double.maxFinite,
+      padding: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.r),
+        gradient: gradient,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: getTextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
             ),
-          ],
-        ),
+          ),
+
+          20.verticalSpace,
+
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+
+              children: [
+
+                Icon(
+                  Icons.inventory_2_outlined,
+                  size: 25.sp,
+                  color: Colors.red,
+                ),
+
+                10.verticalSpace,
+
+                Text(
+                  "No data found",
+                  style: getTextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black
+                  ),
+                ),
+                Text(
+                  "Pull to refresh",
+                  style: getTextStyle(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.grey,
+                  ),
+                ),
+
+              ],
+            ),
+          ),
+
+          SizedBox(width: 80.w),
+        ],
       ),
     );
   }
