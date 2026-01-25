@@ -1,4 +1,5 @@
 import 'package:dtc6464/core/utils/helpers/app_helper.dart';
+import 'package:dtc6464/features/auth/controller/forgor_password_controller.dart';
 import 'package:dtc6464/features/auth/controller/reset_password_controller.dart';
 import 'package:dtc6464/features/background/views/widgets/background.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,9 @@ import '../../../collect_info/views/widgets/custom_text_field.dart';
 class ResetPasswordScreen extends StatelessWidget {
   ResetPasswordScreen({super.key});
 
-  final ResetPasswordController controller = Get.find<ResetPasswordController>();
+  final ForgotPasswordController controller = Get.put(
+    ForgotPasswordController(),
+  );
 
   final screenHeight = AppHelperFunctions.screenHeight();
 
@@ -29,7 +32,7 @@ class ResetPasswordScreen extends StatelessWidget {
               80.verticalSpace,
 
               // logo
-              Image.asset(ImagePath.logo, height: 120.h,),
+              Image.asset(ImagePath.logo, height: 120.h),
 
               40.verticalSpace,
 
@@ -48,20 +51,29 @@ class ResetPasswordScreen extends StatelessWidget {
                 'Enter your Email address to receive a verification code.',
                 textAlign: TextAlign.center,
                 style: getTextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w400,
-                    color: const Color(0xFF6B6B8A)
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w400,
+                  color: const Color(0xFF6B6B8A),
                 ),
               ),
 
               20.verticalSpace,
 
               // email
-              CustomTextField(controller: controller.emailController, hintText: "Email"),
+              CustomTextField(
+                controller: controller.emailController,
+                hintText: "Email",
+              ),
 
               20.verticalSpace,
-              
-              CustomFilledButton(text: 'Send Code', onPressed: (){}),
+
+              Obx(
+                () => CustomFilledButton(
+                  text: 'Send Code',
+                  onPressed: () => controller.forgotPassword(),
+                  isLoading: controller.isForgotPasswordLoading.value,
+                ),
+              ),
 
               20.verticalSpace,
 
@@ -109,7 +121,6 @@ class ResetPasswordScreen extends StatelessWidget {
               ),
 
               20.verticalSpace,
-
             ],
           ).paddingSymmetric(horizontal: 26.w),
         ),
