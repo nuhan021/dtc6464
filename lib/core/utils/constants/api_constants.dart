@@ -11,6 +11,8 @@ class ApiConstant {
   // authentication
   static const String token = '/auth/refresh';
   static const String login = '/auth/login';
+  static const String register = '/auth/register';
+  static const String verifyOtp = '/verify-email';
 
   // avatar
   static const String avatar = '/user/all-profile-pictures';
