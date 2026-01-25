@@ -72,7 +72,12 @@ class SignInController extends GetxController {
       }
       isLoading.value = false;
       SnackBarConstant.success(title: 'Success', message: 'Login successful');
-      Get.toNamed(AppRoute.getEnterNameScreen());
+      final isFirstTimer = loginData.value?.data.isFirstTimer ?? true;
+      if(isFirstTimer) {
+        Get.toNamed(AppRoute.getEnterNameScreen());
+      } else {
+        Get.toNamed(AppRoute.getBottomNavBar());
+      }
     } catch (e) {
       AppLoggerHelper.error("Login Error: $e");
       SnackBarConstant.error(

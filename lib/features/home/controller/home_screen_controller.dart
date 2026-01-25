@@ -1,4 +1,5 @@
 import 'package:dtc6464/core/services/network_caller.dart';
+import 'package:dtc6464/features/home/model/notifications_model.dart' hide Datum;
 import 'package:dtc6464/features/home/model/progress_model.dart' hide Data;
 import 'package:dtc6464/features/home/model/recent_activity_model.dart';
 import 'package:dtc6464/features/home/model/resumed_questions_model.dart';
@@ -38,6 +39,8 @@ class HomeScreenController extends GetxController {
   RxBool isRecentActivityError = false.obs;
   RxBool isProgressLoading = false.obs;
   RxBool isProgressError = false.obs;
+  RxBool isNotificationLoading = false.obs;
+  RxBool isNotificationError = false.obs;
 
 
   Rx<TodayTipsModel?> todayTipsData = Rx<TodayTipsModel?>(null);
@@ -45,6 +48,7 @@ class HomeScreenController extends GetxController {
   Rx<ResumedQuestionsModel?> resumedQuestions = Rx<ResumedQuestionsModel?>(null);
   Rx<RecentActivityModel?> recentActivity = Rx<RecentActivityModel?>(null);
   Rx<ProgressModel?> progress = Rx<ProgressModel?>(null);
+  Rx<NotificationsModel?> notifications = Rx<NotificationsModel?>(null);
 
   Future<void> getTodayTips() async {
     try {
@@ -108,27 +112,32 @@ class HomeScreenController extends GetxController {
     try {
       isResumeInterviewLoading.value = true;
       isResumeInterviewError.value = false;
+
       final token = StorageService.accessToken;
+      // Check if token is null early
+      if (token == null || token.isEmpty) {
+        throw Exception("Access token is missing");
+      }
+
       final response = await _networkCaller.getRequest(
-        ApiConstant.baseUrl + ApiConstant.resumeInterview,
+        "${ApiConstant.baseUrl}${ApiConstant.resumeInterview}",
         token: token,
       );
 
-      if(!response.isSuccess) {
-        isResumeInterviewLoading.value = false;
+      if (!response.isSuccess || response.responseData == null) {
         isResumeInterviewError.value = true;
-        SnackBarConstant.errorThin(title: 'Failed', message: response.errorMessage);
+        SnackBarConstant.errorThin(
+            title: 'Failed',
+            message: response.errorMessage ?? "Unknown error"
+        );
         return;
       }
 
       resumedQuestions.value = ResumedQuestionsModel.fromJson(response.responseData);
-      isResumeInterviewLoading.value = false;
       isResumeInterviewError.value = false;
     } catch (e) {
-      isResumeInterviewLoading.value = false;
       isResumeInterviewError.value = true;
-      AppLoggerHelper.error(e.toString());
-      SnackBarConstant.errorThin(title: 'Failed', message: e.toString());
+      AppLoggerHelper.error("Resume Interview Error: $e");
     } finally {
       isResumeInterviewLoading.value = false;
     }
@@ -218,6 +227,37 @@ class HomeScreenController extends GetxController {
       isProgressLoading.value = false;
     }
   }
+
+  Future<void> getNotification() async {
+    try {
+      isNotificationLoading.value = true;
+      isNotificationError.value = false;
+      final token = StorageService.accessToken;
+      final response = await _networkCaller.getRequest(
+        ApiConstant.baseUrl + ApiConstant.notifications,
+        token: token,
+      );
+
+      if(!response.isSuccess) {
+        isNotificationLoading.value = false;
+        isNotificationError.value = true;
+        SnackBarConstant.errorThin(title: 'Failed', message: response.errorMessage);
+        return;
+      }
+
+      notifications.value = NotificationsModel.fromJson(response.responseData);
+      isNotificationLoading.value = false;
+      isNotificationError.value = false;
+    } catch (e) {
+      isNotificationLoading.value = false;
+      isNotificationError.value = true;
+      AppLoggerHelper.error(e.toString());
+      SnackBarConstant.errorThin(title: 'Failed', message: e.toString());
+    } finally {
+      isNotificationLoading.value = false;
+    }
+  }
+
 
   Data getResumedPlaceholderData() {
     return Data(

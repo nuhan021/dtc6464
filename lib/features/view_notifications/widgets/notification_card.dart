@@ -1,128 +1,87 @@
-import 'package:dtc6464/core/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../../core/common/styles/global_text_style.dart';
-import '../controllers/view_notifications_controller.dart';
+import '../../../../core/utils/constants/colors.dart';
 
 class NotificationCardWidget extends StatelessWidget {
-  final NotificationModel notification;
+  final dynamic notification;
   final VoidCallback onTap;
 
-  const NotificationCardWidget({
-    super.key,
-    required this.notification,
-    required this.onTap,
-  });
-
-  IconData _getIconData(String iconType) {
-    switch (iconType) {
-      case 'bell':
-        return Icons.notifications;
-      case 'calendar':
-        return Icons.event;
-      case 'trend':
-        return Icons.trending_up;
-      case 'bulb':
-        return Icons.lightbulb;
-      case 'target':
-        return Icons.public;
-      case 'chat':
-        return Icons.chat;
-      default:
-        return Icons.notifications;
-    }
-  }
+  const NotificationCardWidget({super.key, required this.notification, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
+    final bool isRead = notification.isRead;
     final bgColor = Color(int.parse(notification.backgroundColor));
 
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(16.w),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16.r),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFFA0A0C8).withValues(alpha: 0.1),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-              spreadRadius: 0,
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 12.w,
-          children: [
-            Expanded(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                spacing: 12.w,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Icon background
-                  Container(
-                    width: 40.w,
-                    height: 40.w,
-                    decoration: BoxDecoration(
-                      color: bgColor,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Icon(
-                        _getIconData(notification.iconType),
-                        size: 20.w,
-                        color: AppColors.softPurpleNormal,
-                      ),
-                    ),
-                  ),
-                  // Title and description
-                  Expanded(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 4.h,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 300),
+        opacity: isRead ? 0.6 : 1.0, // Visual "Read" effect
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(16.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16.r),
+            border: isRead ? null : Border.all(color: AppColors.softPurpleNormal.withOpacity(0.1)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(isRead ? 0.02 : 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Icon Section
+              Container(
+                width: 40.w, height: 40.w,
+                decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
+                child: Icon(Icons.notifications, size: 20.w, color: AppColors.softPurpleNormal),
+              ),
+              SizedBox(width: 12.w),
+              // Content Section
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
-                        Text(
-                          notification.title,
-                          style: getTextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
-                            color: const Color(0xFF4A4A6A),
+                        if (!isRead) // Red dot for unread
+                          Container(
+                            margin: EdgeInsets.only(right: 6.w),
+                            width: 8.w, height: 8.w,
+                            decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
                           ),
-                        ),
-                        Text(
-                          notification.description,
-                          style: getTextStyle(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w400,
-                            color: const Color(0xFF9B9BAA),
+                        Expanded(
+                          child: Text(
+                            notification.title,
+                            overflow: TextOverflow.ellipsis,
+                            style: getTextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: const Color(0xFF4A4A6A)),
                           ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
-                  ),
-                ],
+                    SizedBox(height: 4.h),
+                    Text(
+                      notification.description,
+                      style: getTextStyle(fontSize: 12.sp, color: const Color(0xFF9B9BAA)),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            // Time
-            Text(
-              notification.timeAgo,
-              style: getTextStyle(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w500,
-                color: const Color(0xFFA78BFA),
+              SizedBox(width: 8.w),
+              Text(
+                notification.timeAgo,
+                style: getTextStyle(fontSize: 11.sp, fontWeight: FontWeight.w500, color: const Color(0xFFA78BFA)),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -81,29 +81,33 @@ class HomeScreen extends StatelessWidget {
 
                 // resumed task
                 Obx(() {
-                  final bool isLoading =
-                      controller.isResumeInterviewLoading.value;
+                  final bool isLoading = controller.isResumeInterviewLoading.value;
                   final resumedModel = controller.resumedQuestions.value;
+                  final bool isError = controller.isResumeInterviewError.value;
 
-                  if(controller.resumedQuestions.value == null) {
-                    return Text("Pull to refresh");
-                  }
-
-                  if (!isLoading &&
-                      (resumedModel == null ||
-                          resumedModel.data.hasResume == false)) {
+                  // 1. Handle Error State
+                  if (isError) {
                     return _buildErrorWidget(onPressed: () => controller.getResumedQuestions(context));
                   }
 
-                  if(controller.isResumeInterviewError.value) {
-                    return _buildErrorWidget(onPressed: () => controller.getResumedQuestions(context));
+                  // // 2. Handle Loading (If no data yet)
+                  // if (isLoading && resumedModel == null) {
+                  //   return const Center(child: CircularProgressIndicator());
+                  // }
+
+                  // 3. Handle Empty/Null Data
+                  if (resumedModel == null || resumedModel.data.hasResume == false) {
+                    // If not loading and no data, show error/empty state
+                    if(!isLoading) {
+                      return _buildErrorWidget(onPressed: () => controller.getResumedQuestions(context));
+                    }
                   }
+
+                  // 4. Success State
                   return Skeletonizer(
                     enabled: isLoading,
                     child: Practice(
-                      data:
-                          resumedModel?.data ??
-                          controller.getResumedPlaceholderData(),
+                      data: resumedModel?.data ?? controller.getResumedPlaceholderData(),
                     ),
                   );
                 }),

@@ -34,23 +34,27 @@ class LoginModel {
 
 class Data {
   User user;
+  bool isFirstTimer;
   String accessToken;
   String refreshToken;
 
   Data({
     required this.user,
+    required this.isFirstTimer,
     required this.accessToken,
     required this.refreshToken,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
     user: User.fromJson(json["user"]),
+    isFirstTimer: json["isFirstTimer"],
     accessToken: json["accessToken"],
     refreshToken: json["refreshToken"],
   );
 
   Map<String, dynamic> toJson() => {
     "user": user.toJson(),
+    "isFirstTimer": isFirstTimer,
     "accessToken": accessToken,
     "refreshToken": refreshToken,
   };
@@ -64,9 +68,9 @@ class User {
   String verificationCode;
   DateTime verificationCodeExpiry;
   String refreshToken;
-  dynamic fcmTokens;
+  List<FcmToken> fcmTokens;
   String profileId;
-  dynamic lastActiveAt;
+  DateTime lastActiveAt;
   DateTime createdAt;
   DateTime updatedAt;
 
@@ -93,9 +97,9 @@ class User {
     verificationCode: json["verificationCode"],
     verificationCodeExpiry: DateTime.parse(json["verificationCodeExpiry"]),
     refreshToken: json["refreshToken"],
-    fcmTokens: json["fcmTokens"],
+    fcmTokens: List<FcmToken>.from(json["fcmTokens"].map((x) => FcmToken.fromJson(x))),
     profileId: json["profileId"],
-    lastActiveAt: json["lastActiveAt"],
+    lastActiveAt: DateTime.parse(json["lastActiveAt"]),
     createdAt: DateTime.parse(json["createdAt"]),
     updatedAt: DateTime.parse(json["updatedAt"]),
   );
@@ -108,10 +112,38 @@ class User {
     "verificationCode": verificationCode,
     "verificationCodeExpiry": verificationCodeExpiry.toIso8601String(),
     "refreshToken": refreshToken,
-    "fcmTokens": fcmTokens,
+    "fcmTokens": List<dynamic>.from(fcmTokens.map((x) => x.toJson())),
     "profileId": profileId,
-    "lastActiveAt": lastActiveAt,
+    "lastActiveAt": lastActiveAt.toIso8601String(),
     "createdAt": createdAt.toIso8601String(),
     "updatedAt": updatedAt.toIso8601String(),
+  };
+}
+
+class FcmToken {
+  String token;
+  String deviceId;
+  String platform;
+  DateTime createdAt;
+
+  FcmToken({
+    required this.token,
+    required this.deviceId,
+    required this.platform,
+    required this.createdAt,
+  });
+
+  factory FcmToken.fromJson(Map<String, dynamic> json) => FcmToken(
+    token: json["token"],
+    deviceId: json["deviceId"],
+    platform: json["platform"],
+    createdAt: DateTime.parse(json["createdAt"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "token": token,
+    "deviceId": deviceId,
+    "platform": platform,
+    "createdAt": createdAt.toIso8601String(),
   };
 }
