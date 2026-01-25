@@ -23,7 +23,7 @@ class CollectInfoScreen extends StatelessWidget {
   CollectInfoScreen({super.key});
 
   final PageController _pageController = PageController();
-  final CollectInfoController _controller = Get.find<CollectInfoController>();
+  final CollectInfoController _controller = Get.put(CollectInfoController());
 
   @override
   Widget build(BuildContext context) {

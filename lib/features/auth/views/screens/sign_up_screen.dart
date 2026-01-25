@@ -1,4 +1,8 @@
+import 'package:dtc6464/core/services/storage_service.dart';
+import 'package:dtc6464/core/utils/helpers/app_helper.dart';
+import 'package:dtc6464/core/utils/logging/logger.dart';
 import 'package:dtc6464/features/auth/controller/sign_up_controller.dart';
+import 'package:dtc6464/features/auth/views/screens/otp_screen.dart';
 import 'package:dtc6464/features/background/views/widgets/background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -89,7 +93,7 @@ class SignUpScreen extends StatelessWidget {
 
               // submit
 
-              CustomFilledButton(text: 'Sign In', onPressed: () {}),
+              Obx(() => CustomFilledButton(text: 'Sign Up', onPressed: () => controller.signUp(context), isLoading: controller.isSignUpLoading.value,),),
 
               // seperate lines
               Row(
@@ -118,7 +122,7 @@ class SignUpScreen extends StatelessWidget {
 
               InkWell(
                 onTap: () {
-                  Get.offAllNamed(AppRoute.getSignInScreen());
+                  Get.back();
                 },
                 borderRadius: BorderRadius.circular(8.r),
                 child: Padding(

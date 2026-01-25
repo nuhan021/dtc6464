@@ -13,6 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/services/storage_service.dart';
+
 class SignInScreen extends StatelessWidget {
   SignInScreen({super.key});
 
@@ -129,7 +131,12 @@ class SignInScreen extends StatelessWidget {
 
               InkWell(
                 onTap: () {
-                  Get.offAllNamed(AppRoute.getSignUpScreen());
+                  final userProfileId = StorageService.userProfileId;
+                  if(userProfileId == null) {
+                    Get.toNamed(AppRoute.collectInfoScreen);
+                  } else {
+                    Get.toNamed(AppRoute.getSignUpScreen());
+                  }
                 },
                 borderRadius: BorderRadius.circular(8.r),
                 child: Padding(

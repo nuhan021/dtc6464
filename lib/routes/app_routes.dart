@@ -1,3 +1,4 @@
+import 'package:dtc6464/features/auth/views/screens/otp_screen.dart';
 import 'package:dtc6464/features/auth/views/screens/sign_in_screen.dart';
 import 'package:dtc6464/features/interview_planner/views/screens/add_interview_screen.dart';
 import 'package:dtc6464/features/interview_planner/views/screens/interview_planner_screen.dart';
@@ -31,6 +32,7 @@ class AppRoute {
   static String aiBriefScreen = "/aiBriefScreen";
   static String signUpScreen = "/signUpScreen";
   static String signInScreen = "/signInScreen";
+  static String verifyOtpScreen = "/verifyOtpScreen";
   static String resetPasswordScreen = "/resetPasswordScreen";
   static String enterNameScreen = "/enterNameScreen";
   static String avatarSelectionScreen = "/avatarSelectionScreen";
@@ -53,6 +55,7 @@ class AppRoute {
   static String getAiBriefScreen() => aiBriefScreen;
   static String getSignUpScreen() => signUpScreen;
   static String getSignInScreen() => signInScreen;
+  static String getVerifyOtpScreen() => verifyOtpScreen;
   static String getResetPasswordScreen() => resetPasswordScreen;
   static String getEnterNameScreen() => enterNameScreen;
   static String getAvatarSelectionScreen() => avatarSelectionScreen;
@@ -76,6 +79,7 @@ class AppRoute {
     GetPage(name: aiBriefScreen, page: () => AiBrief()),
     GetPage(name: signUpScreen, page: () => SignUpScreen()),
     GetPage(name: signInScreen, page: () => SignInScreen()),
+    GetPage(name: verifyOtpScreen, page: () => VerifyOtpScreen()),
     GetPage(name: resetPasswordScreen, page: () => ResetPasswordScreen()),
     GetPage(name: enterNameScreen, page: () => EnterNameScreen()),
     GetPage(name: avatarSelectionScreen, page: () => AvatarSelectionScreen()),
