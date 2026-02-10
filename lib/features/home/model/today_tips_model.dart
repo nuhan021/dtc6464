@@ -43,7 +43,7 @@ class Data {
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
     topic: json["topic"],
-    tip: json["tip"],
+    tip: json["tips"],
   );
 
   Map<String, dynamic> toJson() => {

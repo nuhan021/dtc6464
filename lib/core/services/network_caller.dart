@@ -13,6 +13,7 @@ import '../utils/constants/api_constants.dart';
 class NetworkCaller {
   final int timeoutDuration = 40;
   static bool _isRefreshing = false;
+  static Completer<String?>? _refreshCompleter;
   static int _retryCount = 0;
   static const int _maxRetries = 3;
 
@@ -193,47 +194,45 @@ class NetworkCaller {
   Future<ResponseData> _handleUnauthorized(
       Future<ResponseData> Function(String newToken) retryRequest,
       ) async {
-    // Check if max retries exceeded
-    if (_retryCount >= _maxRetries) {
-      log('Max retry attempts ($_maxRetries) reached. Redirecting to login.');
-      _retryCount = 0;
-      _isRefreshing = false;
-      await _navigateToLogin();
-      return _sessionExpiredResponse();
-    }
+    // If already refreshing, wait for the ongoing refresh to complete
+    if (_isRefreshing && _refreshCompleter != null) {
+      log('Token refresh already in progress. Waiting for completion...');
 
-    _retryCount++;
-    log('Token refresh attempt: $_retryCount/$_maxRetries');
+      try {
+        final newToken = await _refreshCompleter!.future
+            .timeout(Duration(seconds: timeoutDuration));
 
-    // If already refreshing, wait and retry with the updated token
-    if (_isRefreshing) {
-      log('Token refresh already in progress. Waiting...');
-      await Future.delayed(const Duration(seconds: 2));
-
-      final currentToken = StorageService.accessToken;
-      if (currentToken != null && currentToken.isNotEmpty) {
-        return await retryRequest(currentToken);
-      } else {
-        await _navigateToLogin();
+        if (newToken != null && newToken.isNotEmpty) {
+          log('✅ Got refreshed token from queue. Retrying request...');
+          return await retryRequest(newToken);
+        } else {
+          log('❌ Token refresh failed in queue');
+          return _sessionExpiredResponse();
+        }
+      } catch (e) {
+        log('❌ Error waiting for token refresh: $e');
         return _sessionExpiredResponse();
       }
     }
 
+    // Start a new refresh process
     _isRefreshing = true;
+    _refreshCompleter = Completer<String?>();
 
     try {
       final String? currentRefreshToken = StorageService.refreshToken;
 
       // If no refresh token exists, redirect to login immediately
       if (currentRefreshToken == null || currentRefreshToken.isEmpty) {
-        log('Refresh token missing. Redirecting to login.');
+        log('❌ Refresh token missing. Redirecting to login.');
+        _refreshCompleter!.complete(null);
         await _navigateToLogin();
         return _sessionExpiredResponse();
       }
 
       // Combine baseUrl and token path
       final String refreshUrl = ApiConstant.baseUrl + ApiConstant.token;
-      log('Attempting token refresh at: $refreshUrl');
+      log('🔄 Starting token refresh at: $refreshUrl');
 
       final response = await post(
         Uri.parse(refreshUrl),
@@ -245,40 +244,61 @@ class NetworkCaller {
       log('Refresh Response Body: ${response.body}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final decodedBody = jsonDecode(response.body);
+        try {
+          final decodedBody = jsonDecode(response.body);
+          log('Decoded refresh response: $decodedBody');
 
-        // Extract tokens from response
-        final String? newAccess = decodedBody['data']?['accessToken'];
-        final String? newRefresh = decodedBody['data']?['refreshToken'];
+          final data = decodedBody['data'];
+          if (data == null) {
+            log('❌ No data field in refresh response');
+            _refreshCompleter!.complete(null);
+            await _navigateToLogin();
+            return _sessionExpiredResponse();
+          }
 
-        if (newAccess != null && newAccess.isNotEmpty) {
-          // Save new tokens
-          await StorageService.saveTokens(
-            accessToken: newAccess,
-            refreshToken: newRefresh ?? currentRefreshToken,
-            userId: StorageService.userId ?? '',
-          );
+          final String? newAccess = data['accessToken']?.toString();
+          final String? newRefresh = data['refreshToken']?.toString();
 
-          log('✅ Token refreshed successfully. Retrying original request...');
+          log('New access token length: ${newAccess?.length ?? 0}');
+          log('New refresh token length: ${newRefresh?.length ?? 0}');
 
-          // Reset refresh flag before retry
-          _isRefreshing = false;
+          if (newAccess != null && newAccess.isNotEmpty) {
+            // Save new tokens
+            await StorageService.saveTokens(
+              accessToken: newAccess,
+              refreshToken: newRefresh ?? currentRefreshToken,
+              userId: StorageService.userId ?? '',
+            );
 
-          // Retry with the new token
-          return await retryRequest(newAccess);
-        } else {
-          log('❌ New access token is null or empty');
+            log('✅ Token refreshed successfully. Retrying original request...');
+
+            // Complete the future with the new token for other waiting requests
+            _refreshCompleter!.complete(newAccess);
+
+            // Retry with the new token
+            return await retryRequest(newAccess);
+          } else {
+            log('❌ New access token is null or empty');
+            _refreshCompleter!.complete(null);
+            await _navigateToLogin();
+            return _sessionExpiredResponse();
+          }
+        } catch (parseError) {
+          log('❌ Error parsing refresh response: $parseError');
+          _refreshCompleter!.complete(null);
           await _navigateToLogin();
           return _sessionExpiredResponse();
         }
       }
 
       // If response is not 200/201, the refresh token is invalid
-      log('❌ Refresh token is invalid or expired (Status: ${response.statusCode})');
+      log('❌ Refresh token invalid or expired (Status: ${response.statusCode})');
+      _refreshCompleter!.complete(null);
       await _navigateToLogin();
       return _sessionExpiredResponse();
     } on TimeoutException {
       log('❌ Token refresh timeout');
+      _refreshCompleter!.complete(null);
       await _navigateToLogin();
       return ResponseData(
         isSuccess: false,
@@ -288,18 +308,19 @@ class NetworkCaller {
       );
     } catch (e) {
       log('❌ Error during token refresh: $e');
+      _refreshCompleter!.complete(null);
       await _navigateToLogin();
       return _sessionExpiredResponse();
     } finally {
       _isRefreshing = false;
+      _refreshCompleter = null;
     }
   }
 
   /// Navigate to login screen and clear data
   Future<void> _navigateToLogin() async {
     try {
-      await StorageService.logoutUser(); // Clear tokens from storage
-      // Use GetX to clear the stack and go to login/onboarding
+      await StorageService.logoutUser();
       Get.offAllNamed(AppRoute.getOnboardingScreen2());
     } catch (e) {
       log('Error during navigation to login: $e');

@@ -2,7 +2,7 @@ class ApiConstant {
   ApiConstant._();
 
   // base url
-  static const String baseUrl = 'https://dtc4646-server.onrender.com/api/v1';
+  static const String baseUrl = 'https://api.datatechcon.com/api/v1';
   static const String imgBaseUrl = 'https://dtc4646-server.onrender.com';
 
   // analyze

@@ -124,6 +124,8 @@ class HomeScreenController extends GetxController {
         token: token,
       );
 
+      print('Data: ${response.responseData}');
+
       if (!response.isSuccess || response.responseData == null) {
         isResumeInterviewError.value = true;
         SnackBarConstant.errorThin(

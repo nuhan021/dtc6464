@@ -55,7 +55,7 @@ class Data {
 class LearningArea {
   String id;
   String area;
-  int progress;
+  double progress;
   int progressPercentage;
   List<String> topics;
   DateTime createdAt;

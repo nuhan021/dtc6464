@@ -72,7 +72,6 @@ class EnterNameController extends GetxController {
       SnackBarConstant.error(title: 'Failed', message: e.toString());
     } finally {
       isAvatarLoading.value = false;
-      isAvatarError.value = true;
     }
   }
 

@@ -47,8 +47,8 @@ class ProfileController extends GetxController {
       profile.value = model;
 
       // Update UI observables
-      userName.value = model.data.profile.fullName;
-      userAvatar.value = model.data.profile.profilePicture.fileUrl;
+      userName.value = model.data!.profile!.fullName;
+      userAvatar.value = model.data!.profile!.profilePicture!.fileUrl;
       isProfileLoading.value = false;
       isProfileError.value = false;
     } catch (e) {

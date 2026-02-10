@@ -1,35 +1,25 @@
-// To parse this JSON data, do
-//
-//     final loginModel = loginModelFromJson(jsonString);
-
 import 'dart:convert';
 
+// Use this if you have a raw String
 LoginModel loginModelFromJson(String str) => LoginModel.fromJson(json.decode(str));
-
-String loginModelToJson(LoginModel data) => json.encode(data.toJson());
 
 class LoginModel {
   bool success;
   String message;
-  Data data;
+  Data? data;
 
   LoginModel({
     required this.success,
     required this.message,
-    required this.data,
+    this.data,
   });
 
   factory LoginModel.fromJson(Map<String, dynamic> json) => LoginModel(
-    success: json["success"],
-    message: json["message"],
-    data: Data.fromJson(json["data"]),
+    success: json["success"] ?? false,
+    message: json["message"] ?? "",
+    // Guard against null 'data'
+    data: json["data"] == null ? null : Data.fromJson(json["data"]),
   );
-
-  Map<String, dynamic> toJson() => {
-    "success": success,
-    "message": message,
-    "data": data.toJson(),
-  };
 }
 
 class Data {
@@ -46,104 +36,64 @@ class Data {
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    user: User.fromJson(json["user"]),
-    isFirstTimer: json["isFirstTimer"],
-    accessToken: json["accessToken"],
-    refreshToken: json["refreshToken"],
+    user: User.fromJson(json["user"] ?? {}),
+    isFirstTimer: json["isFirstTimer"] ?? false,
+    accessToken: json["accessToken"] ?? "",
+    refreshToken: json["refreshToken"] ?? "",
   );
-
-  Map<String, dynamic> toJson() => {
-    "user": user.toJson(),
-    "isFirstTimer": isFirstTimer,
-    "accessToken": accessToken,
-    "refreshToken": refreshToken,
-  };
 }
 
 class User {
   String id;
   String email;
+  String role;
   String status;
   bool isEmailVerified;
-  String verificationCode;
-  DateTime verificationCodeExpiry;
+  String? verificationCode;
+  DateTime? verificationCodeExpiry;
   String refreshToken;
-  List<FcmToken> fcmTokens;
+  List<dynamic> fcmTokens;
   String profileId;
-  DateTime lastActiveAt;
+  DateTime? lastActiveAt;
   DateTime createdAt;
   DateTime updatedAt;
 
   User({
     required this.id,
     required this.email,
+    required this.role,
     required this.status,
     required this.isEmailVerified,
-    required this.verificationCode,
-    required this.verificationCodeExpiry,
+    this.verificationCode,
+    this.verificationCodeExpiry,
     required this.refreshToken,
     required this.fcmTokens,
     required this.profileId,
-    required this.lastActiveAt,
+    this.lastActiveAt,
     required this.createdAt,
     required this.updatedAt,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-    id: json["id"],
-    email: json["email"],
-    status: json["status"],
-    isEmailVerified: json["isEmailVerified"],
+    id: json["id"] ?? "",
+    email: json["email"] ?? "",
+    role: json["role"] ?? "USER",
+    status: json["status"] ?? "",
+    isEmailVerified: json["isEmailVerified"] ?? false,
     verificationCode: json["verificationCode"],
-    verificationCodeExpiry: DateTime.parse(json["verificationCodeExpiry"]),
-    refreshToken: json["refreshToken"],
-    fcmTokens: List<FcmToken>.from(json["fcmTokens"].map((x) => FcmToken.fromJson(x))),
-    profileId: json["profileId"],
-    lastActiveAt: DateTime.parse(json["lastActiveAt"]),
-    createdAt: DateTime.parse(json["createdAt"]),
-    updatedAt: DateTime.parse(json["updatedAt"]),
+    // SAFELY parse dates that might be null
+    verificationCodeExpiry: json["verificationCodeExpiry"] == null
+        ? null
+        : DateTime.tryParse(json["verificationCodeExpiry"].toString()),
+    refreshToken: json["refreshToken"] ?? "",
+    // SAFELY handle null list
+    fcmTokens: json["fcmTokens"] == null ? [] : List<dynamic>.from(json["fcmTokens"]),
+    profileId: json["profileId"] ?? "",
+    lastActiveAt: json["lastActiveAt"] == null
+        ? null
+        : DateTime.tryParse(json["lastActiveAt"].toString()),
+    // Use tryParse with a fallback to now() to avoid crashes
+    createdAt: DateTime.tryParse(json["createdAt"] ?? "") ?? DateTime.now(),
+    updatedAt: DateTime.tryParse(json["updatedAt"] ?? "") ?? DateTime.now(),
   );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "email": email,
-    "status": status,
-    "isEmailVerified": isEmailVerified,
-    "verificationCode": verificationCode,
-    "verificationCodeExpiry": verificationCodeExpiry.toIso8601String(),
-    "refreshToken": refreshToken,
-    "fcmTokens": List<dynamic>.from(fcmTokens.map((x) => x.toJson())),
-    "profileId": profileId,
-    "lastActiveAt": lastActiveAt.toIso8601String(),
-    "createdAt": createdAt.toIso8601String(),
-    "updatedAt": updatedAt.toIso8601String(),
-  };
-}
-
-class FcmToken {
-  String token;
-  String deviceId;
-  String platform;
-  DateTime createdAt;
-
-  FcmToken({
-    required this.token,
-    required this.deviceId,
-    required this.platform,
-    required this.createdAt,
-  });
-
-  factory FcmToken.fromJson(Map<String, dynamic> json) => FcmToken(
-    token: json["token"],
-    deviceId: json["deviceId"],
-    platform: json["platform"],
-    createdAt: DateTime.parse(json["createdAt"]),
-  );
-
-  Map<String, dynamic> toJson() => {
-    "token": token,
-    "deviceId": deviceId,
-    "platform": platform,
-    "createdAt": createdAt.toIso8601String(),
-  };
 }

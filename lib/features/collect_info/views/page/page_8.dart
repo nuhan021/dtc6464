@@ -18,42 +18,44 @@ class Page8 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Background(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            'Upload Resume',
-            style: getTextStyle(
-              fontSize: 28.sp,
-              fontWeight: FontWeight.w700,
-              color: AppColors.softPurpleDarker,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              'Upload Resume',
+              style: getTextStyle(
+                fontSize: 28.sp,
+                fontWeight: FontWeight.w700,
+                color: AppColors.softPurpleDarker,
+              ),
             ),
-          ),
-
-          10.verticalSpace,
-          Text(
-            'You can upload up to 3 resumes',
-            textAlign: TextAlign.center,
-            style: getTextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w400,
-              color: AppColors.softPurpleDarker,
+        
+            10.verticalSpace,
+            Text(
+              'You can upload up to 3 resumes',
+              textAlign: TextAlign.center,
+              style: getTextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
+                color: AppColors.softPurpleDarker,
+              ),
             ),
-          ),
-
-          40.verticalSpace,
-
-          for(int i = 0; i < 3; i++)
-            Obx(() => UploadResumeCad(
-              text: "Upload Resume ${i+1}",
-              fileName: controller.resumes[i+1]?.name,
-              fileSize: controller.resumes[i+1]?.size,
-              onTap: () => controller.pickResume(i+1),
-              onDelete: () => controller.resumes[i+1] = null,
-            )),
-
-        ],
-      ).paddingSymmetric(horizontal: 16.w),
+        
+            40.verticalSpace,
+        
+            for(int i = 0; i < 3; i++)
+              Obx(() => UploadResumeCad(
+                text: "Upload Resume ${i+1}",
+                fileName: controller.resumes[i+1]?.name,
+                fileSize: controller.resumes[i+1]?.size,
+                onTap: () => controller.pickResume(i+1),
+                onDelete: () => controller.resumes[i+1] = null,
+              )),
+        
+          ],
+        ).paddingSymmetric(horizontal: 16.w),
+      ),
     );
   }
 }

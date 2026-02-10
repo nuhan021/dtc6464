@@ -59,7 +59,7 @@ class AvatarGridWidget extends StatelessWidget {
                     : [],
               ),
               child: Center(
-                child: Image.network('${ApiConstant.imgBaseUrl}${avatars[index].fileUrl}', fit: BoxFit.contain),
+                child: Image.network('https://api.datatechcon.com${avatars[index].fileUrl}', fit: BoxFit.contain),
               ),
             ),
           );
