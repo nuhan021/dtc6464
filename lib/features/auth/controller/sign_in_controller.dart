@@ -50,19 +50,22 @@ class SignInController extends GetxController {
         },
       );
 
+
       if (!response.isSuccess) {
         isLoading.value = false;
         SnackBarConstant.error(title: 'Failed', message: response.errorMessage);
         return;
       }
 
+
+
       loginData.value = LoginModel.fromJson(response.responseData);
 
       // save token and user id
       await StorageService.saveTokens(
-        accessToken: loginData.value!.data.accessToken,
-        refreshToken: loginData.value!.data.refreshToken,
-        userId: loginData.value!.data.user.id,
+        accessToken: loginData.value!.data!.accessToken,
+        refreshToken: loginData.value!.data!.refreshToken,
+        userId: loginData.value!.data!.user.id,
       );
 
       AppLoggerHelper.debug(StorageService.accessToken.toString());
@@ -72,7 +75,7 @@ class SignInController extends GetxController {
       }
       isLoading.value = false;
       SnackBarConstant.success(title: 'Success', message: 'Login successful');
-      final isFirstTimer = loginData.value?.data.isFirstTimer ?? true;
+      final isFirstTimer = loginData.value?.data!.isFirstTimer ?? true;
       if(isFirstTimer) {
         Get.toNamed(AppRoute.getEnterNameScreen());
       } else {

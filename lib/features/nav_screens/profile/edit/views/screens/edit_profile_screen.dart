@@ -1,4 +1,5 @@
 import 'package:dtc6464/core/common/widgets/custom_filled_button.dart';
+import 'package:dtc6464/core/utils/logging/logger.dart';
 import 'package:dtc6464/features/background/views/widgets/background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -64,6 +65,8 @@ class EditProfileScreen extends StatelessWidget {
                       itemCount: controller.avatarsData.value!.data.length,
                       itemBuilder: (context, index) {
                         final avatar = controller.avatarsData.value!.data[index];
+
+                        AppLoggerHelper.info(avatar.fileUrl);
                         return GestureDetector(
                           onTap: () => controller.selectAvatar(avatar.id),
                           child: Obx(() => Container(
@@ -77,7 +80,7 @@ class EditProfileScreen extends StatelessWidget {
                               ),
                             ),
                             child: CircleAvatar(
-                              backgroundImage: NetworkImage(avatar.fileUrl),
+                              backgroundImage: NetworkImage("https://api.datatechcon.com${avatar.fileUrl}"),
                             ),
                           )),
                         );

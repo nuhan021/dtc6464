@@ -1,20 +1,24 @@
 import 'package:dtc6464/features/background/views/widgets/background.dart';
 import 'package:dtc6464/features/bottom_nav_bar/controller/bottom_nav_bar_conroller.dart';
+import 'package:dtc6464/features/home/controller/home_screen_controller.dart';
 import 'package:dtc6464/features/home/views/widgets/what_you_will_get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/common/styles/global_text_style.dart';
 import '../../../../core/utils/constants/colors.dart';
 import '../../../../core/utils/constants/icon_path.dart';
 import '../../../../routes/app_routes.dart';
+import '../../model/progress_model.dart';
 
 class PracticeModeScreen extends StatelessWidget {
   PracticeModeScreen({super.key});
   
   final BottomNavBarController controller = Get.find<BottomNavBarController>();
+  final HomeScreenController _controller = Get.find<HomeScreenController>();
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +167,21 @@ class PracticeModeScreen extends StatelessWidget {
 
               40.verticalSpace,
 
-              Progress(),
+              // progress
+              Obx(() {
+                final bool isLoading = _controller.isProgressLoading.value;
+                final progress = _controller.progress.value;
+
+
+                if(_controller.isProgressError.value) {
+                  return _buildErrorWidget(title: 'Progress',  gradient: const LinearGradient(
+                    begin: Alignment.topCenter, // 0%
+                    end: Alignment.bottomCenter, // 100%
+                    colors: [Color(0xFFFFDDC8), Color(0xFFFFECC3)],
+                  ),);
+                }
+                return Skeletonizer(enabled: isLoading, child: Progress(data: progress ?? _controller.getProgressPlaceholderData(),));
+              }),
 
               40.verticalSpace,
             ],
@@ -172,18 +190,88 @@ class PracticeModeScreen extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildErrorWidget({
+    required String title,
+    required LinearGradient gradient,
+  }) {
+    return Container(
+      width: double.maxFinite,
+      padding: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.r),
+        gradient: gradient,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: getTextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+
+          20.verticalSpace,
+
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+
+              children: [
+
+                Icon(
+                  Icons.inventory_2_outlined,
+                  size: 25.sp,
+                  color: Colors.red,
+                ),
+
+                10.verticalSpace,
+
+                Text(
+                  "No data found",
+                  style: getTextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black
+                  ),
+                ),
+                Text(
+                  "Pull to refresh",
+                  style: getTextStyle(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.grey,
+                  ),
+                ),
+
+              ],
+            ),
+          ),
+
+          SizedBox(width: 80.w),
+        ],
+      ),
+    );
+  }
+
 }
 
 class Progress extends StatelessWidget {
-  const Progress({super.key});
+  const Progress({super.key, required this.data});
+
+  final ProgressModel data;
 
   @override
   Widget build(BuildContext context) {
+    final item = data.data;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Your Practice Stats',
+          'Your Progress',
           style: getTextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.w700,
@@ -213,7 +301,7 @@ class Progress extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      '12',
+                      item.yourScore.toString(),
                       style: getTextStyle(
                         fontSize: 24.sp,
                         fontWeight: FontWeight.w700,
@@ -245,7 +333,7 @@ class Progress extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      '74%',
+                      "${item.avgScore.toStringAsFixed(2)}%",
                       style: getTextStyle(
                         fontSize: 24.sp,
                         fontWeight: FontWeight.w700,
@@ -270,7 +358,7 @@ class Progress extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      '5',
+                      item.streak.toString(),
                       style: getTextStyle(
                         fontSize: 24.sp,
                         fontWeight: FontWeight.w700,
@@ -298,3 +386,4 @@ class Progress extends StatelessWidget {
     );
   }
 }
+

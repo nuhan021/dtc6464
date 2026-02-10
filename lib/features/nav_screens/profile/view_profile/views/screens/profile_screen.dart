@@ -16,38 +16,37 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(ProfileController());
 
-    return RefreshIndicator(
-      onRefresh: () async {
-        controller.getProfile();
-      },
-      child: Background(
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          extendBodyBehindAppBar: true,
-          appBar: AppBar(
-            title: Text(
-              'Profile',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 24.sp,
-                fontWeight: FontWeight.w700,
-              ),
+    return Background(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          title: Text(
+            'Profile',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 24.sp,
+              fontWeight: FontWeight.w700,
             ),
-            actions: [
-              IconButton(
-                icon: Image.asset(
-                  IconPath.profileEditIcon,
-                  width: 40.w,
-                  height: 40.h,
-                ),
-                onPressed: () => controller.navigateToEditProfile(context),
-              ),
-            ],
-            backgroundColor: Colors.transparent,
-            elevation: 0,
           ),
-          body: SafeArea(
+          actions: [
+            IconButton(
+              icon: Image.asset(
+                IconPath.profileEditIcon,
+                width: 40.w,
+                height: 40.h,
+              ),
+              onPressed: () => controller.navigateToEditProfile(context),
+            ),
+          ],
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        body: SafeArea(
+          child: RefreshIndicator(
+            onRefresh: () => controller.getProfile(),
             child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
               child: Column(
                 children: [
                   28.verticalSpace,
