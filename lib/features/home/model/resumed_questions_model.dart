@@ -40,7 +40,7 @@ class Data {
   int answeredCount;
   int totalQuestions;
   String status;
-  DateTime updatedAt;
+  DateTime? updatedAt;
 
   Data({
     required this.hasResume,
@@ -50,18 +50,18 @@ class Data {
     required this.answeredCount,
     required this.totalQuestions,
     required this.status,
-    required this.updatedAt,
+    this.updatedAt,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    hasResume: json["hasResume"],
-    sessionId: json["sessionId"],
-    type: json["type"],
-    category: json["category"],
-    answeredCount: json["answeredCount"],
-    totalQuestions: json["totalQuestions"],
-    status: json["status"],
-    updatedAt: DateTime.parse(json["updatedAt"]),
+    hasResume: json["hasResume"] ?? false,
+    sessionId: json["sessionId"] ?? "",
+    type: json["type"] ?? "",
+    category: json["category"] ?? "",
+    answeredCount: json["answeredCount"] ?? 0,
+    totalQuestions: json["totalQuestions"] ?? 0,
+    status: json["status"] ?? "",
+    updatedAt: json["updatedAt"] != null ? DateTime.tryParse(json["updatedAt"]) : null,
   );
 
   Map<String, dynamic> toJson() => {
@@ -72,6 +72,6 @@ class Data {
     "answeredCount": answeredCount,
     "totalQuestions": totalQuestions,
     "status": status,
-    "updatedAt": updatedAt.toIso8601String(),
+    "updatedAt": updatedAt?.toIso8601String(),
   };
 }

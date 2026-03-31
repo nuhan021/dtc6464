@@ -56,15 +56,15 @@ class Data {
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    interviewPreparation: List<String>.from(json["Interview Preparation"].map((x) => x)),
-    duringTheInterview: List<String>.from(json["During the interview"].map((x) => x)),
-    technicalInterviews: List<String>.from(json["Technical Interviews"].map((x) => x)),
-    bodyLanguagePresence: List<String>.from(json["Body Language & Presence"].map((x) => x)),
-    behavioralQuestions: List<String>.from(json["Behavioral Questions"].map((x) => x)),
-    virtualInterviews: List<String>.from(json["Virtual Interviews"].map((x) => x)),
-    salaryNegotiation: List<String>.from(json["Salary Negotiation"].map((x) => x)),
-    followUpThankYou: List<String>.from(json["Follow-Up & Thank You"].map((x) => x)),
-    commonMistakesToAvoid: List<String>.from(json["Common Mistakes to Avoid"].map((x) => x)),
+    interviewPreparation: List<String>.from((json["Interview Preparation"] ?? []).map((x) => x)),
+    duringTheInterview: List<String>.from((json["During the interview"] ?? []).map((x) => x)),
+    technicalInterviews: List<String>.from((json["Technical Interviews"] ?? []).map((x) => x)),
+    bodyLanguagePresence: List<String>.from((json["Body Language & Presence"] ?? []).map((x) => x)),
+    behavioralQuestions: List<String>.from((json["Behavioral Questions"] ?? []).map((x) => x)),
+    virtualInterviews: List<String>.from((json["Virtual Interviews"] ?? []).map((x) => x)),
+    salaryNegotiation: List<String>.from((json["Salary Negotiation"] ?? []).map((x) => x)),
+    followUpThankYou: List<String>.from((json["Follow-Up & Thank You"] ?? []).map((x) => x)),
+    commonMistakesToAvoid: List<String>.from((json["Common Mistakes to Avoid"] ?? []).map((x) => x)),
   );
 
   Map<String, dynamic> toJson() => {

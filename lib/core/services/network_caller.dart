@@ -22,12 +22,16 @@ class NetworkCaller {
     log('GET Request: $url');
     log('GET Token: $token');
     try {
+      final headers = <String, String>{
+        'Content-type': 'application/json',
+      };
+      if (token != null && token.isNotEmpty) {
+        headers['Authorization'] = 'Bearer $token';
+      }
+
       final Response response = await get(
         Uri.parse(url),
-        headers: {
-          'Authorization': 'Bearer ${token.toString()}',
-          'Content-type': 'application/json',
-        },
+        headers: headers,
       ).timeout(
         Duration(seconds: timeoutDuration),
       );
@@ -54,12 +58,16 @@ class NetworkCaller {
     log('Request Body: ${jsonEncode(body)}');
 
     try {
+      final headers = <String, String>{
+        'Content-type': 'application/json',
+      };
+      if (token != null && token.isNotEmpty) {
+        headers['Authorization'] = 'Bearer $token';
+      }
+
       final Response response = await post(
         Uri.parse(url),
-        headers: {
-          'Authorization': 'Bearer ${token.toString()}',
-          'Content-type': 'application/json',
-        },
+        headers: headers,
         body: jsonEncode(body),
       ).timeout(Duration(seconds: timeoutDuration));
 
@@ -85,12 +93,16 @@ class NetworkCaller {
     log('Request Body: ${jsonEncode(body)}');
 
     try {
+      final headers = <String, String>{
+        'Content-type': 'application/json',
+      };
+      if (token != null && token.isNotEmpty) {
+        headers['Authorization'] = 'Bearer $token';
+      }
+
       final Response response = await patch(
         Uri.parse(url),
-        headers: {
-          'Authorization': 'Bearer ${token.toString()}',
-          'Content-type': 'application/json',
-        },
+        headers: headers,
         body: jsonEncode(body),
       ).timeout(Duration(seconds: timeoutDuration));
 
@@ -114,12 +126,16 @@ class NetworkCaller {
     log('DELETE Request: $url');
     log('DELETE Token: $token');
     try {
+      final headers = <String, String>{
+        'Content-type': 'application/json',
+      };
+      if (token != null && token.isNotEmpty) {
+        headers['Authorization'] = 'Bearer $token';
+      }
+
       final Response response = await delete(
         Uri.parse(url),
-        headers: {
-          'Authorization': 'Bearer ${token.toString()}',
-          'Content-type': 'application/json',
-        },
+        headers: headers,
         body: jsonEncode(body),
       ).timeout(
         Duration(seconds: timeoutDuration),
@@ -173,6 +189,55 @@ class NetworkCaller {
       if (response.statusCode == 401) {
         return await _handleUnauthorized(
               (newToken) => postMultipartRequest(
+            url,
+            fields: fields,
+            filePaths: filePaths,
+            token: newToken,
+            fileFieldName: fileFieldName,
+          ),
+        );
+      }
+
+      // Reset retry count on successful request
+      _retryCount = 0;
+      return _handleResponse(response);
+    } catch (e) {
+      return _handleError(e);
+    }
+  }
+
+  /// PATCH Multipart Request (for file uploads with PATCH)
+  Future<ResponseData> patchMultipartRequest(
+      String url, {
+        required Map<String, String> fields,
+        required List<String> filePaths,
+        String? token,
+        String fileFieldName = 'resume',
+      }) async {
+    log('PATCH Multipart Request: $url');
+    log('Fields: $fields');
+    log('File Paths: $filePaths');
+
+    try {
+      var request = MultipartRequest('PATCH', Uri.parse(url));
+
+      if (token != null && token.isNotEmpty) {
+        request.headers['Authorization'] = 'Bearer $token';
+      }
+
+      request.fields.addAll(fields);
+
+      for (String path in filePaths) {
+        request.files.add(await MultipartFile.fromPath(fileFieldName, path));
+      }
+
+      StreamedResponse streamedResponse = await request.send();
+      final response = await Response.fromStream(streamedResponse);
+
+      // Handle 401 - Unauthorized
+      if (response.statusCode == 401) {
+        return await _handleUnauthorized(
+              (newToken) => patchMultipartRequest(
             url,
             fields: fields,
             filePaths: filePaths,

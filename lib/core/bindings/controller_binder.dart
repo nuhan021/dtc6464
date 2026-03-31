@@ -8,6 +8,8 @@ import 'package:dtc6464/features/onboarding/controllers/onboarding_controller.da
 import 'package:dtc6464/features/practice/controller/practice_controller.dart';
 import 'package:get/get.dart';
 
+import '../services/fcm_service.dart';
+
 class ControllerBinder extends Bindings {
   @override
   void dependencies() {
@@ -15,6 +17,10 @@ class ControllerBinder extends Bindings {
       () => OnboardingController(),
       // fenix: true,
     );
+
+    Get.lazyPut(()=>FCMService());
+
+
 
     Get.lazyPut<CollectInfoController>(
       () => CollectInfoController(),

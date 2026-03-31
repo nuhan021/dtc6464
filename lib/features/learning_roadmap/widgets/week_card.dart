@@ -103,7 +103,7 @@ class WeekCard extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(999.r),
                       child: LinearProgressIndicator(
-                        value: item.progress / 100,
+                        value: item.progress,
                         minHeight: 4.h,
                         backgroundColor: const Color(0xFFD9D9D9),
                         valueColor: const AlwaysStoppedAnimation<Color>(

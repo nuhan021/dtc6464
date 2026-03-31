@@ -4,6 +4,7 @@ import 'package:dtc6464/core/services/network_caller.dart';
 import 'package:dtc6464/core/services/storage_service.dart';
 import 'package:dtc6464/core/utils/constants/api_constants.dart';
 import 'package:dtc6464/core/utils/logging/logger.dart';
+import 'package:dtc6464/features/nav_screens/profile/resumes/controllers/resumes_controller.dart';
 import 'package:dtc6464/features/practice/model/analize_model.dart';
 import 'package:dtc6464/features/practice/model/question_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,9 +34,18 @@ class PracticeController extends GetxController {
   // ==========================================
   var selectedIndex = 0.obs;
   var selectedTopic = "".obs;
-  List<String> interviewType = ["Technical", "Non-Technical"];
   RxInt selectedQuestion = 0.obs;
   RxString inputType = 'voice'.obs; // 'voice' or 'type'
+
+  // ==========================================
+  // RESUME & ROLE SELECTION
+  // ==========================================
+  RxList<ResumeItem> resumes = <ResumeItem>[].obs;
+  RxList<String> targetRoles = <String>[].obs;
+  RxBool isResumesLoading = false.obs;
+  RxBool isRolesLoading = false.obs;
+  RxInt selectedResumeIndex = (-1).obs;
+  RxString selectedRole = ''.obs;
 
   // ==========================================
   // SPEECH TO TEXT (STT) STATES
@@ -100,10 +110,60 @@ class PracticeController extends GetxController {
   }
 
   /// Configures Flutter Text-to-Speech settings.
-  void _initTts() async {
+  Future<void> _initTts() async {
     await flutterTts.setLanguage("en-US");
     await flutterTts.setPitch(1.0);
     await flutterTts.setSpeechRate(0.5);
+  }
+
+  // ---------------------------------------------------------------------------
+  // RESUME & ROLE FETCHING
+  // ---------------------------------------------------------------------------
+
+  /// Fetches user's resumes.
+  Future<void> fetchResumes() async {
+    try {
+      isResumesLoading.value = true;
+      final response = await _networkCaller.getRequest(
+        ApiConstant.baseUrl + ApiConstant.resumes,
+        token: StorageService.accessToken,
+      );
+
+      if (response.isSuccess) {
+        final data = response.responseData['data'];
+        if (data != null && data['resumes'] != null) {
+          resumes.assignAll(
+            (data['resumes'] as List).map((e) => ResumeItem.fromJson(e)).toList(),
+          );
+        }
+      }
+    } catch (e) {
+      AppLoggerHelper.error('Error fetching resumes: $e');
+    } finally {
+      isResumesLoading.value = false;
+    }
+  }
+
+  /// Fetches user's target roles.
+  Future<void> fetchRoles() async {
+    try {
+      isRolesLoading.value = true;
+      final response = await _networkCaller.getRequest(
+        ApiConstant.baseUrl + ApiConstant.targetRole,
+        token: StorageService.accessToken,
+      );
+
+      if (response.isSuccess) {
+        final data = response.responseData['data'];
+        if (data != null && data['targetRole'] != null) {
+          targetRoles.assignAll(List<String>.from(data['targetRole']));
+        }
+      }
+    } catch (e) {
+      AppLoggerHelper.error('Error fetching roles: $e');
+    } finally {
+      isRolesLoading.value = false;
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -175,14 +235,23 @@ class PracticeController extends GetxController {
   /// Fetches a new interview session from the backend.
   Future<void> startInterview(BuildContext context) async {
     try {
+      final role = selectedRole.value;
+      final resumeName = selectedResumeIndex.value >= 0
+          ? resumes[selectedResumeIndex.value].filename
+          : '';
+      final type = selectedIndex.value == 1 ? "behavioral" : "technical";
+      final category = selectedTopic.value;
+
       resetData();
       isStartPracticeLoading.value = true;
 
       final response = await _networkCaller.postRequest(
         ApiConstant.baseUrl + ApiConstant.startInterview,
         body: {
-          "type": selectedIndex.value == 1 ? "behavioral" : "technical",
-          "category": selectedTopic.value,
+          "type": type,
+          "category": category,
+          "selectedRole": role,
+          "selectedResume": resumeName,
         },
         token: StorageService.accessToken,
       );
@@ -311,13 +380,22 @@ class PracticeController extends GetxController {
     position.value = Duration.zero;
     duration.value = Duration.zero;
     questions.value = null;
+    selectedResumeIndex.value = -1;
+    selectedRole.value = '';
   }
 
   void selectType(int index) => selectedIndex.value = index;
 
-  /// Plays question text using TTS engine.
+  /// Plays question text using TTS engine. Re-initializes on failure.
   Future<void> speak(String text) async {
-    if (text.isNotEmpty) await flutterTts.speak(text);
+    if (text.isEmpty) return;
+    try {
+      await flutterTts.speak(text);
+    } catch (_) {
+      // TTS engine connection died — re-init and retry once
+      await _initTts();
+      await flutterTts.speak(text);
+    }
   }
 
   /// Default data for skeleton loading or error states.

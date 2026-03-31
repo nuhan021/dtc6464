@@ -74,7 +74,7 @@ class Profile {
   String id;
   String fullName;
   String currentRole;
-  String targetRole;
+  List<String> targetRole;
   List<String> targetCompany;
   String experienceLevel;
   List<String> careerGoals;
@@ -107,7 +107,7 @@ class Profile {
     id: json["id"] ?? "",
     fullName: json["fullName"] ?? "",
     currentRole: json["currentRole"] ?? "",
-    targetRole: json["targetRole"] ?? "",
+    targetRole: json["targetRole"] == null ? [] : (json["targetRole"] is List ? List<String>.from(json["targetRole"]) : [json["targetRole"].toString()]),
     targetCompany: json["targetCompany"] == null ? [] : List<String>.from(json["targetCompany"]),
     experienceLevel: json["experienceLevel"] ?? "",
     careerGoals: json["careerGoals"] == null ? [] : List<String>.from(json["careerGoals"]),

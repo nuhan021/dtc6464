@@ -5,6 +5,8 @@ import 'package:dtc6464/core/utils/helpers/app_helper.dart';
 import 'package:dtc6464/features/nav_screens/profile/edit/views/screens/edit_profile_screen.dart';
 import 'package:dtc6464/features/nav_screens/profile/history/views/screens/history_screen.dart';
 import 'package:dtc6464/features/nav_screens/profile/notifications/views/screens/notifications_screen.dart';
+import 'package:dtc6464/features/nav_screens/profile/resumes/views/screens/resumes_screen.dart';
+import 'package:dtc6464/features/nav_screens/profile/roles/views/screens/roles_screen.dart';
 import 'package:dtc6464/routes/app_routes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -47,8 +49,8 @@ class ProfileController extends GetxController {
       profile.value = model;
 
       // Update UI observables
-      userName.value = model.data!.profile!.fullName;
-      userAvatar.value = model.data!.profile!.profilePicture!.fileUrl;
+      userName.value = model.data?.profile?.fullName ?? '';
+      userAvatar.value = model.data?.profile?.profilePicture?.fileUrl ?? 'https://placehold.co/61x61';
       isProfileLoading.value = false;
       isProfileError.value = false;
     } catch (e) {
@@ -79,5 +81,13 @@ class ProfileController extends GetxController {
 
   void navigateToEditProfile(BuildContext context) {
     AppHelperFunctions.navigateToScreen(context, EditProfileScreen());
+  }
+
+  void navigateToResumes(BuildContext context) {
+    AppHelperFunctions.navigateToScreen(context, const ResumesScreen());
+  }
+
+  void navigateToRoles(BuildContext context) {
+    AppHelperFunctions.navigateToScreen(context, const RolesScreen());
   }
 }
