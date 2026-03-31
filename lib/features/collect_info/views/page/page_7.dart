@@ -20,12 +20,24 @@ class Page7 extends StatelessWidget {
     return Background(
       child: Column(
         children: [
-          Text(
-            'Paste the job description',
-            style: getTextStyle(
-              fontSize: 28.sp,
-              fontWeight: FontWeight.w700,
-              color: AppColors.softPurpleDarker,
+          Text.rich(
+            TextSpan(
+              text: 'Paste the job description',
+              style: getTextStyle(
+                fontSize: 28.sp,
+                fontWeight: FontWeight.w700,
+                color: AppColors.softPurpleDarker,
+              ),
+              children: [
+                TextSpan(
+                  text: ' (Optional)',
+                  style: getTextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
             ),
           ),
 

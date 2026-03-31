@@ -22,12 +22,24 @@ class Page6 extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'What are your weak areas?',
-            style: getTextStyle(
-              fontSize: 28.sp,
-              fontWeight: FontWeight.w700,
-              color: AppColors.softPurpleDarker,
+          Text.rich(
+            TextSpan(
+              text: 'What are your weak areas?',
+              style: getTextStyle(
+                fontSize: 28.sp,
+                fontWeight: FontWeight.w700,
+                color: AppColors.softPurpleDarker,
+              ),
+              children: [
+                TextSpan(
+                  text: ' *',
+                  style: getTextStyle(
+                    fontSize: 28.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.red,
+                  ),
+                ),
+              ],
             ),
           ),
 

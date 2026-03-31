@@ -22,12 +22,24 @@ class Page8 extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              'Upload Resume',
-              style: getTextStyle(
-                fontSize: 28.sp,
-                fontWeight: FontWeight.w700,
-                color: AppColors.softPurpleDarker,
+            Text.rich(
+              TextSpan(
+                text: 'Upload Resume',
+                style: getTextStyle(
+                  fontSize: 28.sp,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.softPurpleDarker,
+                ),
+                children: [
+                  TextSpan(
+                    text: ' (Optional)',
+                    style: getTextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
               ),
             ),
         

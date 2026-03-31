@@ -31,9 +31,19 @@ class SignInScreen extends StatelessWidget {
               80.verticalSpace,
 
               // logo
-              Image.asset(ImagePath.logo, height: 120.h),
+              Image.asset(ImagePath.logo, height: 100.h),
 
-              40.verticalSpace,
+              10.verticalSpace,
+
+              Text(
+                "Walk Into Every Interview knowing Exactly What To Say",
+                textAlign: TextAlign.center,
+                style: getTextStyle(
+                  fontSize: 11.sp,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.softPurpleDarker,
+                )
+              ),
 
               Text(
                 'Sign In',

@@ -2,7 +2,8 @@ class ApiConstant {
   ApiConstant._();
 
   // base url
-  static const String baseUrl = 'https://api.datatechcon.com/api/v1';
+  // static const String baseUrl = 'https://api.datatechcon.com/api/v1';
+  static const String baseUrl = "https://dtc4646-server.onrender.com/api/v1";
   static const String imgBaseUrl = 'https://dtc4646-server.onrender.com';
 
   // analyze
@@ -46,6 +47,13 @@ class ApiConstant {
   static const String practiceSessions = '/history/practice-sessions';
   static const String plannerHistory = '/history/planner';
   static const String statistics = '/history/statistics';
+
+  // resume
+  static const String resume = '/user/resume';
+  static const String resumes = '/user/resumes';
+
+  // target roles
+  static const String targetRole = '/user/target-role';
 
   // notification
   static const String notifications = '/notifications';

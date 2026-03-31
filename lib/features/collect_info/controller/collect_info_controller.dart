@@ -27,11 +27,14 @@ class CollectInfoController extends GetxController {
   final TextEditingController jobDescriptionController =
       TextEditingController();
 
+  // Target roles (array)
+  RxList<String> targetRoles = <String>[].obs;
+
   // upload loading
   RxBool isUploading = false.obs;
 
   // The list of companies
-  final List<String> companies = [
+  final RxList<String> companies = [
     'Google',
     'Facebook',
     'Amazon',
@@ -41,10 +44,53 @@ class CollectInfoController extends GetxController {
     'Shopify',
     'Spotify',
     'Startup',
-  ];
+  ].obs;
+
+  // Filtered companies based on search
+  RxList<String> filteredCompanies = <String>[].obs;
 
   // Reactive list to store selected items
   var selectedCompanies = <String>[].obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    filteredCompanies.assignAll(companies);
+    interviewingCompanyController.addListener(_filterCompanies);
+  }
+
+  void addTargetRole() {
+    final role = rolePreparingController.text.trim();
+    if (role.isEmpty) return;
+    if (targetRoles.any((r) => r.toLowerCase() == role.toLowerCase())) return;
+    targetRoles.add(role);
+    rolePreparingController.clear();
+  }
+
+  void removeTargetRole(String role) {
+    targetRoles.remove(role);
+  }
+
+  void _filterCompanies() {
+    final query = interviewingCompanyController.text.trim().toLowerCase();
+    if (query.isEmpty) {
+      filteredCompanies.assignAll(companies);
+    } else {
+      filteredCompanies.assignAll(
+        companies.where((c) => c.toLowerCase().contains(query)).toList(),
+      );
+    }
+  }
+
+  void addCompany() {
+    final name = interviewingCompanyController.text.trim();
+    if (name.isEmpty) return;
+    // Avoid duplicates (case-insensitive)
+    if (companies.any((c) => c.toLowerCase() == name.toLowerCase())) return;
+    companies.add(name);
+    selectedCompanies.add(name);
+    interviewingCompanyController.clear();
+  }
 
   void toggleSelection(String name) {
     if (selectedCompanies.contains(name)) {
@@ -156,12 +202,20 @@ class CollectInfoController extends GetxController {
 
   Future<void> pickResume(int index) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf', 'doc', 'docx'],
+      type: FileType.any,
     );
 
     if (result != null) {
       PlatformFile file = result.files.first;
+      final ext = file.extension?.toLowerCase() ?? '';
+      if (!['pdf', 'doc', 'docx'].contains(ext)) {
+        Get.snackbar('Invalid File', 'Please select a PDF, DOC, or DOCX file',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: AppColors.softPurpleDarker,
+          colorText: AppColors.whiteLight,
+        );
+        return;
+      }
 
       // Conversion logic as before...
       resumes[index] = ResumeModel(
@@ -181,9 +235,10 @@ class CollectInfoController extends GetxController {
         if (roleController.text.trim().isEmpty) {
           errorMessage = "Please enter your current role";
         }
-      case 1: // Roles & Company TextFields
-        if (rolePreparingController.text.trim().isEmpty)
-          errorMessage = "Please enter the role you are preparing for";
+      case 1: // Target Roles
+        if (targetRoles.isEmpty) {
+          errorMessage = "Please add at least one target role";
+        }
         break;
 
       case 2: // Company Selection (Chips)
@@ -206,13 +261,9 @@ class CollectInfoController extends GetxController {
           errorMessage = "Please select at least one area to improve";
         break;
 
-      case 6:
-        if (jobDescriptionController.text.trim().isEmpty)
-          errorMessage = "Please write job description";
+      case 6: // Job Description (optional)
         break;
-      case 7: // Resume Upload
-        if (!hasAtLeastOneResume)
-          errorMessage = "Please upload at least one resume";
+      case 7: // Resume Upload (optional)
         break;
     }
 
@@ -242,7 +293,7 @@ class CollectInfoController extends GetxController {
 
       final Map<String, String> body = {
         'currentRole': roleController.text.trim(),
-        'targetRole': rolePreparingController.text.trim(),
+        'targetRole': jsonEncode(targetRoles),
         'experienceLevel': selectedLevel.value,
         'jobDescription': jobDescriptionController.text.trim(),
         'targetCompany': jsonEncode(selectedCompanies),
@@ -309,7 +360,11 @@ class CollectInfoController extends GetxController {
     }
   }
 
-
+  @override
+  void onClose() {
+    interviewingCompanyController.removeListener(_filterCompanies);
+    super.onClose();
+  }
 }
 
 class ResumeModel {

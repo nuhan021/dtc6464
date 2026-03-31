@@ -22,12 +22,24 @@ class Page3 extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            Text(
-              'Which company are you interviewing with?',
-              style: getTextStyle(
-                fontSize: 28.sp,
-                fontWeight: FontWeight.w700,
-                color: AppColors.softPurpleDarker,
+            Text.rich(
+              TextSpan(
+                text: 'Which company are you interviewing with?',
+                style: getTextStyle(
+                  fontSize: 28.sp,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.softPurpleDarker,
+                ),
+                children: [
+                  TextSpan(
+                    text: ' *',
+                    style: getTextStyle(
+                      fontSize: 28.sp,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.red,
+                    ),
+                  ),
+                ],
               ),
             ).paddingOnly(left: 26.w),
         
@@ -35,17 +47,20 @@ class Page3 extends StatelessWidget {
         
             CustomTextField(
               controller: controller.interviewingCompanyController,
-              hintText: "IT Company",
-              suffixIcon: Icon(Icons.search),
+              hintText: "Search or add company",
+              suffixIcon: IconButton(
+                icon: Icon(Icons.add_circle_outline, color: AppColors.softPurpleDarker),
+                onPressed: controller.addCompany,
+              ),
             ),
-        
+
             12.verticalSpace,
-        
+
             Obx(
               () => Wrap(
                 spacing: 5.w, // Gap between chips
                 runSpacing: 15.h, // Gap between lines
-                children: controller.companies.map((company) {
+                children: controller.filteredCompanies.map((company) {
                   final isSelected = controller.selectedCompanies.contains(
                     company,
                   );

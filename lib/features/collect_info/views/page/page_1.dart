@@ -20,12 +20,24 @@ class Page1 extends StatelessWidget {
     return Background(
       child: Column(
         children: [
-          Text(
-            'What is your current role?',
-            style: getTextStyle(
-              fontSize: 28.sp,
-              fontWeight: FontWeight.w700,
-              color: AppColors.softPurpleDarker,
+          Text.rich(
+            TextSpan(
+              text: 'What is your current role?',
+              style: getTextStyle(
+                fontSize: 28.sp,
+                fontWeight: FontWeight.w700,
+                color: AppColors.softPurpleDarker,
+              ),
+              children: [
+                TextSpan(
+                  text: ' *',
+                  style: getTextStyle(
+                    fontSize: 28.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.red,
+                  ),
+                ),
+              ],
             ),
           ),
 
