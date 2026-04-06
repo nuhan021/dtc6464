@@ -33,7 +33,7 @@ class ProgressModel {
 }
 
 class Datam {
-  int yourScore;
+  double yourScore;
   double avgScore;
   int streak;
 
@@ -44,9 +44,9 @@ class Datam {
   });
 
   factory Datam.fromJson(Map<String, dynamic> json) => Datam(
-    yourScore: json["yourScore"],
-    avgScore: json["avgScore"]?.toDouble(),
-    streak: json["streak"],
+    yourScore: (json["yourScore"] as num).toDouble(),
+    avgScore: (json["avgScore"] as num).toDouble(),
+    streak: (json["streak"] as num).toInt(),
   );
 
   Map<String, dynamic> toJson() => {

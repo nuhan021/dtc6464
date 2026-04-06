@@ -291,7 +291,7 @@ class HomeScreenController extends GetxController {
       success: false,
       message: "Loading...",
       data: Datam(
-        yourScore: 0,
+        yourScore: 0.0,
         avgScore: 0.0,
         streak: 0,
       ),
