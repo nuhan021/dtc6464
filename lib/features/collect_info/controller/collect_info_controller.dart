@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:dtc6464/core/services/native_file_picker.dart';
 import 'package:dtc6464/core/utils/constants/colors.dart';
 import 'package:dtc6464/core/utils/constants/icon_path.dart';
 import 'package:dtc6464/core/utils/logging/logger.dart';
@@ -201,27 +203,63 @@ class CollectInfoController extends GetxController {
   bool get hasAtLeastOneResume => resumes.values.any((file) => file != null);
 
   Future<void> pickResume(int index) async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.any,
-    );
+    try {
+      if (Platform.isIOS) {
+        // Use native scene-aware picker on iOS
+        final result = await NativeFilePicker.pickFile();
+        if (result != null) {
+          final name = result['name'] as String;
+          final ext = name.contains('.') ? name.split('.').last.toLowerCase() : '';
 
-    if (result != null) {
-      PlatformFile file = result.files.first;
-      final ext = file.extension?.toLowerCase() ?? '';
-      if (!['pdf', 'doc', 'docx'].contains(ext)) {
-        Get.snackbar('Invalid File', 'Please select a PDF, DOC, or DOCX file',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: AppColors.softPurpleDarker,
-          colorText: AppColors.whiteLight,
+          if (!['pdf', 'doc', 'docx'].contains(ext)) {
+            Get.snackbar('Invalid File', 'Please select a PDF, DOC, or DOCX file',
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: AppColors.softPurpleDarker,
+              colorText: AppColors.whiteLight,
+            );
+            return;
+          }
+
+          final size = result['size'] as int;
+          resumes[index] = ResumeModel(
+            name: name,
+            size: "${(size / 1024 / 1024).toStringAsFixed(1)} MB",
+            path: result['path'] as String,
+          );
+        }
+      } else {
+        // Use file_picker on Android
+        FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: ['pdf', 'doc', 'docx'],
         );
-        return;
-      }
 
-      // Conversion logic as before...
-      resumes[index] = ResumeModel(
-        name: file.name,
-        size: "${(file.size / 1024 / 1024).toStringAsFixed(1)} MB",
-        path: file.path ?? '',
+        if (result != null && result.files.isNotEmpty) {
+          final file = result.files.first;
+          final ext = file.extension?.toLowerCase() ?? '';
+
+          if (!['pdf', 'doc', 'docx'].contains(ext)) {
+            Get.snackbar('Invalid File', 'Please select a PDF, DOC, or DOCX file',
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: AppColors.softPurpleDarker,
+              colorText: AppColors.whiteLight,
+            );
+            return;
+          }
+
+          resumes[index] = ResumeModel(
+            name: file.name,
+            size: "${(file.size / 1024 / 1024).toStringAsFixed(1)} MB",
+            path: file.path ?? '',
+          );
+        }
+      }
+    } catch (e, st) {
+      AppLoggerHelper.error('pickResume error: $e\n$st');
+      Get.snackbar('Error', 'Failed to pick file: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: AppColors.softPurpleDarker,
+        colorText: AppColors.whiteLight,
       );
     }
   }
