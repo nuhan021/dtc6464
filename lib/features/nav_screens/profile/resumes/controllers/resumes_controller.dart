@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dtc6464/core/services/native_file_picker.dart';
 import 'package:dtc6464/core/services/network_caller.dart';
 import 'package:dtc6464/core/services/storage_service.dart';
 import 'package:dtc6464/core/utils/constants/api_constants.dart';
@@ -57,15 +60,31 @@ class ResumesController extends GetxController {
 
   Future<void> addResume() async {
     try {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: FileType.any,
-      );
+      String? filePath;
+      String fileName = '';
+      String fileExt;
 
-      if (result == null) return;
+      if (Platform.isIOS) {
+        final result = await NativeFilePicker.pickFile();
+        if (result == null) return;
+        filePath = result['path'] as String;
+        fileName = result['name'] as String;
+      } else {
+        FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: ['pdf', 'doc', 'docx'],
+        );
+        if (result == null) return;
+        filePath = result.files.first.path;
+        fileName = result.files.first.name;
+      }
 
-      final file = result.files.first;
-      final ext = file.extension?.toLowerCase() ?? '';
-      if (!['pdf', 'doc', 'docx'].contains(ext)) {
+      if (filePath == null) return;
+
+      fileExt = fileName.contains('.')
+          ? fileName.split('.').last.toLowerCase()
+          : '';
+      if (!['pdf', 'doc', 'docx'].contains(fileExt)) {
         SnackBarConstant.error(
           title: 'Invalid File',
           message: 'Please select a PDF, DOC, or DOCX file',
@@ -78,7 +97,7 @@ class ResumesController extends GetxController {
       final response = await _networkCaller.postMultipartRequest(
         ApiConstant.baseUrl + ApiConstant.resume,
         fields: {},
-        filePaths: [file.path!],
+        filePaths: [filePath],
         token: StorageService.accessToken,
         fileFieldName: 'resume',
       );
