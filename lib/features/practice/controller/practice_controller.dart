@@ -178,6 +178,7 @@ class PracticeController extends GetxController {
         if (!isRecording.value) return;
 
         String currentWords = result.recognizedWords.trim();
+        if (currentWords.isEmpty) return;
 
         String finalCalculatedText = _completeSentence.isEmpty
             ? currentWords
@@ -192,11 +193,24 @@ class PracticeController extends GetxController {
         );
 
         if (result.finalResult) {
+          // Add period at the end of each completed sentence
+          if (!finalCalculatedText.endsWith('.') &&
+              !finalCalculatedText.endsWith('?') &&
+              !finalCalculatedText.endsWith('!')) {
+            finalCalculatedText = '$finalCalculatedText.';
+            recognizedText.value = finalCalculatedText;
+            answerController.text = finalCalculatedText;
+            answerController.selection = TextSelection.fromPosition(
+              TextPosition(offset: answerController.text.length),
+            );
+          }
           _completeSentence = finalCalculatedText;
         }
       },
-      listenMode: ListenMode.dictation,
-      partialResults: true,
+      listenOptions: SpeechListenOptions(
+        listenMode: ListenMode.dictation,
+        partialResults: true,
+      ),
     );
   }
 
@@ -255,6 +269,10 @@ class PracticeController extends GetxController {
         },
         token: StorageService.accessToken,
       );
+
+      AppLoggerHelper.info('Interview Response: ${response.responseData}');
+      AppLoggerHelper.info('Interview isSuccess: ${response.isSuccess}');
+      AppLoggerHelper.info('Interview errorMessage: ${response.errorMessage}');
 
       if (response.isSuccess) {
         questions.value = QuestionsModel.fromJson(response.responseData);

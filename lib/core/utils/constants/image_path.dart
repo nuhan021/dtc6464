@@ -1,5 +1,5 @@
 class ImagePath {
-  static String logo = 'assets/logo/logo.png';
+  static String logo = 'assets/logo/icon_android_transparent.png';
   static String textLogo = 'assets/logo/text_logo.png';
   static String background = 'assets/background/background.png';
 
