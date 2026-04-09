@@ -56,6 +56,7 @@ dependencies:
   speech_to_text: ^7.3.0
   firebase_core: ^4.4.0
   easy_push_notification: ^0.0.4
+  flutter_native_splash: ^2.4.7
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +68,29 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.4
+
+# pubspec.yaml
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path_ios: "assets/logo/logo.png"                    # white bg
+  image_path_android: "assets/logo/icon_android_transparent.png" # transparent
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/logo/icon_android_transparent.png"
+  remove_alpha_ios: false
+  min_sdk_android: 21
+
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/logo/logo.png
+
+  android_12:
+    image: assets/logo/icon_android12_splash.png   # enough padding
+    icon_background_color: "#FFFFFF"
+
+  fullscreen: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
